@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/signimusbench-main/app/page.tsx"],"sourcesContent":["\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useRouter } from \"next/navigation\";\n\nexport const dynamic = \"force-dynamic\";\n\nexport default function BenchPage() {\n  const router = useRouter();\n  \n  useEffect(() => {\n    try {\n      const qs = window.location.search || \"\";\n      router.replace(`/bench${qs}`);\n    } catch {\n      router.replace(`/bench`);\n    }\n  }, [router]);\n\n  return null;\n}\n"],"names":["dynamic","BenchPage","router","qs","window","location","search","replace"],"mappings":";;;;;;AAEA;AACA;;AAHA;;;AAKO,MAAMA,UAAU;AAER,SAASC;;IACtB,MAAMC,SAAS,IAAA,kJAAS;IAExB,IAAA,0KAAS;+BAAC;YACR,IAAI;gBACF,MAAMC,KAAKC,OAAOC,QAAQ,CAACC,MAAM,IAAI;gBACrCJ,OAAOK,OAAO,CAAC,CAAC,MAAM,EAAEJ,IAAI;YAC9B,EAAE,OAAM;gBACND,OAAOK,OAAO,CAAC,CAAC,MAAM,CAAC;YACzB;QACF;8BAAG;QAACL;KAAO;IAEX,OAAO;AACT;GAbwBD;;QACP,kJAAS;;;KADFA"}}]
-}

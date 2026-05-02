@@ -1,5 +1,8 @@
 .aider*
 
+# Next.js build cache
+.next/
+
 # Environment files with secrets
 .env
 .env.*
@@ -8,4 +11,6 @@
 
 # Local Netlify folder
 .netlify
+
+# Dependencies
 node_modules

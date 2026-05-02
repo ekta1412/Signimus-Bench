@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,49612,e=>{"use strict";var t=e.i(43476);e.s(["default",0,function(){return(0,t.jsx)("div",{className:"container mx-auto p-8",children:(0,t.jsx)("h1",{children:"Hello from Bench List Page!"})})}])}]);

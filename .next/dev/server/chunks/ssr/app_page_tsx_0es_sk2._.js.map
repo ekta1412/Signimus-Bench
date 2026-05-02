@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/signimusbench-main/app/page.tsx"],"sourcesContent":["\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useRouter } from \"next/navigation\";\n\nexport const dynamic = \"force-dynamic\";\n\nexport default function BenchPage() {\n  const router = useRouter();\n  \n  useEffect(() => {\n    try {\n      const qs = window.location.search || \"\";\n      router.replace(`/bench${qs}`);\n    } catch {\n      router.replace(`/bench`);\n    }\n  }, [router]);\n\n  return null;\n}\n"],"names":["dynamic","BenchPage","router","qs","window","location","search","replace"],"mappings":";;;;;;AAEA;AACA;AAHA;;;AAKO,MAAMA,UAAU;AAER,SAASC;IACtB,MAAMC,SAAS,IAAA,+IAAS;IAExB,IAAA,kNAAS,EAAC;QACR,IAAI;YACF,MAAMC,KAAKC,OAAOC,QAAQ,CAACC,MAAM,IAAI;YACrCJ,OAAOK,OAAO,CAAC,CAAC,MAAM,EAAEJ,IAAI;QAC9B,EAAE,OAAM;YACND,OAAOK,OAAO,CAAC,CAAC,MAAM,CAAC;QACzB;IACF,GAAG;QAACL;KAAO;IAEX,OAAO;AACT"}}]
-}
