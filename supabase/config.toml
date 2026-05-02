@@ -1,0 +1,13 @@
+project_id = "brroucjplqmngljroknr"
+
+[db]
+port = 54703
+
+[studio]
+port = 54325
+
+[kong]
+port = 54326
+
+[analytics]
+port = 54999

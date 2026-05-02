@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: psyche_architect_db
+      POSTGRES_USER: architect
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Default PostgreSQL port
+
+  posthog:
+    image: posthog/posthog:latest
+    restart: always
+    environment:
+      DATABASE_URL: postgres://architect:password@db:5432/psyche_architect_db
+      # REDIS_URL: redis://redis:6379 # Add Redis service if needed later
+    depends_on:
+      - db
+    ports:
+      - "8000:8000" # Default PostHog port
+
+  ghost:
+    image: ghost:5-alpine
+    restart: always
+    environment:
+      database__client: postgres
+      database__connection__host: db
+      database__connection__user: architect
+      database__connection__password: password
+      database__connection__database: psyche_architect_db
+      url: http://localhost:2368 # Default Ghost URL
+    depends_on:
+      - db
+    volumes:
+      - ghost_content:/var/lib/ghost/content
+    ports:
+      - "2368:2368" # Default Ghost port
+
+volumes:
+  db_data:
+  ghost_content:

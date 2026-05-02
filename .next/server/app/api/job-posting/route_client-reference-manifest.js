@@ -1,0 +1,1 @@
+globalThis.__RSC_MANIFEST=(globalThis.__RSC_MANIFEST||{});globalThis.__RSC_MANIFEST["/api/job-posting/route"]={"moduleLoading":{"prefix":"/_next/"},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"clientModules":{},"entryCSSFiles":{"D:\\signimusbench-main\\":[],"D:\\signimusbench-main\\app\\api\\job-posting\\route":[]},"rscModuleMapping":{},"edgeRscModuleMapping":{}}

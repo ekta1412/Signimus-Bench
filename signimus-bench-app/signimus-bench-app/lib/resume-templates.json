@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Classic",
+    "styles": {
+      "fontFamily": "serif",
+      "fontSize": "16px",
+      "color": "#000000"
+    }
+  },
+  {
+    "name": "Modern",
+    "styles": {
+      "fontFamily": "sans-serif",
+      "fontSize": "14px",
+      "color": "#333333"
+    }
+  },
+  {
+    "name": "Creative",
+    "styles": {
+      "fontFamily": "monospace",
+      "fontSize": "15px",
+      "color": "#555555"
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "for-loop-vs-foreach",
+    "title": "For Loop vs. forEach: A Performance Deep Dive",
+    "description": "Which is faster for iterating over arrays in JavaScript? We benchmark the classic for loop against the forEach method to find out.",
+    "code_a": "const arr = Array.from({length: 1000000}, (_, i) => i);\nfor (let i = 0; i < arr.length; i++) {\n  // Do something\n}",
+    "code_b": "const arr = Array.from({length: 1000000}, (_, i) => i);\narr.forEach(item => {\n  // Do something\n});"
+  },
+  {
+    "slug": "lodash-vs-underscore",
+    "title": "Lodash vs. Underscore: The Ultimate Performance Showdown",
+    "description": "Two of the most popular utility libraries for JavaScript go head-to-head. We compare the performance of common functions to see which one comes out on top.",
+    "code_a": "// Using Lodash\n_.map([1, 2, 3], n => n * 2);",
+    "code_b": "// Using Underscore\n_.map([1, 2, 3], n => n * 2);"
+  },
+  {
+    "slug": "map-vs-object",
+    "title": "Map vs. Object: Which is Better for Key-Value Pairs?",
+    "description": "When it comes to storing key-value pairs in JavaScript, should you use a Map or a plain Object? We benchmark the performance of both to help you decide.",
+    "code_a": "const map = new Map();\nfor (let i = 0; i < 1000000; i++) {\n  map.set(i, i);\n}",
+    "code_b": "const obj = {};\nfor (let i = 0; i < 1000000; i++) {\n  obj[i] = i;\n}"
+  },
+  {
+    "slug": "promise-vs-async-await",
+    "title": "Promise vs. Async/Await: A Modern JavaScript Performance Comparison",
+    "description": "Is there a performance difference between using traditional Promises and the modern async/await syntax? We benchmark both to find out.",
+    "code_a": "function promiseBased() {\n  return new Promise(resolve => {\n    resolve('done');\n  });\n}",
+    "code_b": "async function asyncBased() {\n  return await 'done';\n}"
+  },
+  {
+    "slug": "axios-vs-fetch",
+    "title": "Axios vs. Fetch: Which is Faster for HTTP Requests?",
+    "description": "We compare the performance of the popular Axios library and the native Fetch API for making HTTP requests in the browser.",
+    "code_a": "// Using Axios\naxios.get('https://api.github.com');",
+    "code_b": "// Using Fetch\nfetch('https://api.github.com');"
+  },
+  {
+    "slug": "moment-vs-date-fns",
+    "title": "Moment.js vs. Date-fns: The Ultimate Date Library Performance Battle",
+    "description": "Two of the most popular date manipulation libraries for JavaScript go head-to-head. We compare the performance of common date operations to see which one is faster.",
+    "code_a": "// Using Moment.js\nmoment().format('MMMM Do YYYY, h:mm:ss a');",
+    "code_b": "// Using Date-fns\nformat(new Date(), 'MMMM do yyyy, h:mm:ss a');"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "blocked_modules": {
+    "Local Infrastructure Genesis": "Critical: Unable to start local Supabase via CLI. The command `npx supabase start` consistently fails because port 54321 is allocated by OrbStack, despite attempts to configure a different port in `supabase/config.toml`. The Supabase CLI appears to ignore the `[kong]` port configuration or has a hardcoded dependency on port 54321. Manual intervention required to free port 54321 or configure OrbStack to not use it.",
+    "Create Database Tables": "Blocked because the PostgreSQL container is not accessible.",
+    "pSEO Engine": "Blocked due to database connectivity issues.",
+    "UGC Flywheel": "Blocked due to database connectivity issues.",
+    "Analytics & Optimization Core": "Blocked due to database connectivity issues."
+  },
+  "missing_credentials": {
+    "GEMINI_API_KEY": "Required for LLM API calls in content_generator.ts, ugc_curator.ts, and webhook_listener.ts",
+    "GHOST_CONTENT_API_KEY": "Required for publishing articles to Ghost CMS in content_generator.ts",
+    "MEDIUM_API_KEY": "Required for publishing Community Spotlight posts to Medium in webhook_listener.ts",
+    "POSTHOG_API_KEY": "Required for connecting to PostHog API in analytics_core.ts"
+  },
+  "current_phase": "Blocked",
+  "next_development_task": "Requires manual intervention to resolve PostgreSQL connectivity."
+}

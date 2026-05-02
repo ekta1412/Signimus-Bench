@@ -1,0 +1,11 @@
+.aider*
+
+# Environment files with secrets
+.env
+.env.*
+*.env
+!.env.example
+
+# Local Netlify folder
+.netlify
+node_modules

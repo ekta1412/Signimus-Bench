@@ -1,0 +1,9 @@
+ ⚠ Port 3000 is in use by process 89347, using available port 3001 instead.
+   ▲ Next.js 15.5.2
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.29.144:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+[Error: > Couldn't find any `pages` or `app` directory. Please create one under the project root]
+[?25h

@@ -1,0 +1,86 @@
+
+> signimus-bench-app@0.1.0 dev
+> next dev -p 3000
+
+   ▲ Next.js 15.5.2
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.116.10:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 4.5s
+ ○ Compiling /bench ...
+ ✓ Compiled /bench in 6.4s (651 modules)
+ GET /bench 200 in 7010ms
+ ✓ Compiled in 854ms (245 modules)
+ ✓ Compiled in 287ms (245 modules)
+ GET /bench 200 in 200ms
+ ✓ Compiled in 250ms (244 modules)
+ ○ Compiling /_error ...
+ GET /bench 500 in 9018ms
+ GET /bench 500 in 30ms
+ GET /bench 500 in 28ms
+ GET /bench 500 in 49ms
+ GET /bench 500 in 27ms
+ GET /bench 500 in 68ms
+ GET /bench 500 in 86ms
+ ✓ Compiled /_error in 501ms (402 modules)
+ GET /bench 500 in 101ms
+ GET /bench 500 in 151ms
+ ✓ Compiled in 389ms (402 modules)
+ GET /bench 500 in 418ms
+ GET /bench 500 in 236ms
+ GET /bench 500 in 40ms
+ ○ Compiling / ...
+ GET / 500 in 1726ms
+ GET / 500 in 601ms
+ GET / 500 in 197ms
+ GET / 500 in 41ms
+ ✓ Compiled / in 1200ms (984 modules)
+ GET / 200 in 202ms
+ GET / 200 in 1089ms
+ ✓ Compiled in 2.1s (986 modules)
+ GET /bench 200 in 280ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 519ms (977 modules)
+ GET / 404 in 1254ms
+ ✓ Compiled in 463ms (409 modules)
+ ✓ Compiled in 1125ms (409 modules)
+ ✓ Compiled in 794ms (409 modules)
+ ✓ Compiled in 336ms (409 modules)
+ ✓ Compiled in 3.9s (967 modules)
+ ✓ Compiled in 926ms (405 modules)
+ ✓ Compiled in 447ms (405 modules)
+ ✓ Compiled in 478ms (405 modules)
+ ✓ Compiled in 1316ms (979 modules)
+ ✓ Compiled in 817ms (981 modules)
+ ✓ Compiled in 1389ms (981 modules)
+ ✓ Compiled in 3.9s (405 modules)
+ ✓ Compiled in 618ms (405 modules)
+ ✓ Compiled in 28.1s (405 modules)
+ ✓ Compiled in 1229ms (405 modules)
+ ✓ Compiled in 10.8s (967 modules)
+ ✓ Compiled in 1157ms (979 modules)
+ ✓ Compiled in 2.4s (967 modules)
+ ✓ Compiled in 3.3s (405 modules)
+ ✓ Compiled in 1815ms (967 modules)
+ ✓ Compiled in 366ms (405 modules)
+ ○ Compiling /api/profiles ...
+ ✓ Compiled /api/profiles in 1261ms (987 modules)
+ GET /api/profiles 200 in 1789ms
+ ✓ Compiled in 423ms (406 modules)
+ ✓ Compiled in 412ms (406 modules)
+ ✓ Compiled in 2.9s (982 modules)
+ ✓ Compiled in 5.4s (406 modules)
+ ✓ Compiled in 729ms (406 modules)
+ ✓ Compiled in 389ms (406 modules)
+ ✓ Compiled in 431ms (406 modules)
+ ✓ Compiled in 358ms (406 modules)
+ ✓ Compiled in 301ms (406 modules)
+ ✓ Compiled in 1633ms (406 modules)
+ ✓ Compiled in 730ms (406 modules)
+ ✓ Compiled in 6.3s (968 modules)
+ ✓ Compiled in 1700ms (982 modules)
+ ✓ Compiled in 1762ms (982 modules)
+ ✓ Compiled in 275ms (406 modules)
+[?25h

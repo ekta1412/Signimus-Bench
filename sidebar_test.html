@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Test Page</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234F46E5'%3E%3Cpath d='M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z'/%3E%3Cpath d='M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z' fill='%23FFFFFF'/%3E%3C/svg%3E" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .sidebar-mobile {
+            transform: translateX(-100%);
+        }
+        .sidebar-mobile.open {
+            transform: translateX(0);
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+        .sidebar-overlay.open {
+            display: block;
+        }
+        .hamburger-btn {
+            display: none;
+        }
+        @media (max-width: 1023px) {
+            .hamburger-btn {
+                display: block;
+            }
+            .sidebar-desktop {
+                display: none;
+            }
+        }
+        @media (min-width: 1024px) {
+            .sidebar-mobile {
+                display: none;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Hamburger Button (Mobile) -->
+    <button id="hamburger-btn" class="hamburger-btn fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-md lg:hidden">
+        <i class="fas fa-bars text-xl text-slate-700"></i>
+    </button>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Sidebar (Desktop) -->
+    <aside class="sidebar sidebar-desktop fixed top-0 left-0 h-full w-64 bg-white shadow-lg p-6 lg:translate-x-0">
+        <div class="flex items-center space-x-2 mb-10 mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z" />
+            </svg>
+            <h1 class="text-xl font-bold text-slate-800">Signimus</h1>
+        </div>
+        
+        <nav class="space-y-2">
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700 font-medium">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-users"></i>
+                <span>Developers</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-file-contract"></i>
+                <span>Contracts</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="mt-auto pt-6 border-t border-slate-200">
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Mobile Sidebar -->
+    <aside id="mobile-sidebar" class="sidebar sidebar-mobile fixed top-0 left-0 h-full w-64 bg-white shadow-lg p-6 transform transition-transform duration-300 ease-in-out">
+        <div class="flex items-center justify-between mb-10 mt-4">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z" />
+                </svg>
+                <h1 class="text-xl font-bold text-slate-800">Signimus</h1>
+            </div>
+            <button id="close-sidebar" class="p-2 rounded-lg hover:bg-slate-100">
+                <i class="fas fa-times text-slate-500"></i>
+            </button>
+        </div>
+        
+        <nav class="space-y-2">
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700 font-medium">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-users"></i>
+                <span>Developers</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-file-contract"></i>
+                <span>Contracts</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="mt-auto pt-6 border-t border-slate-200">
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pt-16 lg:pt-6 p-6">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Sidebar Test Page</h1>
+            <p class="text-lg text-slate-600 mb-8">This is a test page to verify that the sidebar is working correctly.</p>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Sidebar Visibility</h2>
+                <p class="text-slate-600 mb-4">The sidebar should be visible on the left side of the screen on desktop and accessible via the hamburger menu on mobile.</p>
+                <div class="flex items-center space-x-2 text-sm p-3 bg-green-50 text-green-700 rounded-lg">
+                    <i class="fas fa-check-circle"></i>
+                    <span>If you can see this message and the sidebar, the test is successful!</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-3">Desktop View</h3>
+                    <p class="text-slate-600 mb-4">On screens wider than 1024px, the sidebar should be permanently visible on the left side.</p>
+                    <div class="flex items-center space-x-2 text-sm p-3 bg-blue-50 text-blue-700 rounded-lg">
+                        <i class="fas fa-desktop"></i>
+                        <span>Resize your browser to test responsive behavior</span>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-3">Mobile View</h3>
+                    <p class="text-slate-600 mb-4">On screens narrower than 1024px, the sidebar should be hidden and accessible via the hamburger menu.</p>
+                    <div class="flex items-center space-x-2 text-sm p-3 bg-purple-50 text-purple-700 rounded-lg">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Click the hamburger icon to open the sidebar</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Test Instructions</h2>
+                <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                    <li>Check that the sidebar is visible on the left side of the screen on desktop</li>
+                    <li>Resize your browser to a mobile width (&lt;1024px)</li>
+                    <li>Verify that the sidebar disappears and a hamburger menu appears in the top-left</li>
+                    <li>Click the hamburger menu to open the mobile sidebar</li>
+                    <li>Verify that the sidebar overlay appears and the sidebar slides in from the left</li>
+                    <li>Click the close button or overlay to close the mobile sidebar</li>
+                </ol>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile sidebar toggle functionality
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        
+        function openMobileSidebar() {
+            mobileSidebar.classList.add('open');
+            sidebarOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open
+        }
+        
+        function closeMobileSidebar() {
+            mobileSidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        }
+        
+        hamburgerBtn.addEventListener('click', openMobileSidebar);
+        closeSidebar.addEventListener('click', closeMobileSidebar);
+        sidebarOverlay.addEventListener('click', closeMobileSidebar);
+        
+        // Close sidebar if window is resized to desktop size
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                closeMobileSidebar();
+            }
+        });
+    </script>
+
+</body>
+</html>

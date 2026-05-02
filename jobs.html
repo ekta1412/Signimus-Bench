@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signimus Jobs</title>
+    <meta name="description" content="Browse open Signimus jobs, apply as a developer, or add a new hiring requirement.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='8' fill='%234F46E5'/%3E%3Cpath d='M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5' stroke='white' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: rgba(15,23,42,0.94); color: white; padding: 0.75rem 1.25rem; border-radius: 9999px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 50; }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
+        <nav class="container mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <a href="index.html" class="inline-flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+                    <rect width="36" height="36" rx="8" fill="#4F46E5"/>
+                    <path d="M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </svg>
+                <div>
+                    <p class="text-lg font-extrabold leading-tight text-slate-900">Signimus Jobs</p>
+                    <p class="text-xs text-slate-500">Remote developer roles and hiring requirements</p>
+                </div>
+            </a>
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="jobs.html" class="px-3 py-2 rounded-lg bg-purple-100 text-purple-700 text-sm font-bold hover:bg-purple-200"><i class="fas fa-briefcase mr-1"></i> Jobs</a>
+                <a href="homepage.html" class="px-3 py-2 rounded-lg bg-indigo-100 text-indigo-700 text-sm font-bold hover:bg-indigo-200"><i class="fas fa-book-open mr-1"></i> Resources</a>
+                <a href="index.html" class="px-3 py-2 rounded-lg bg-slate-800 text-white text-sm font-bold hover:bg-slate-700"><i class="fas fa-users mr-1"></i> Talent Bench</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="app" class="container mx-auto px-4 py-8"></main>
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const SIGNIMUS_WHATSAPP_NUMBER = '918225998112';
+        const CUSTOM_JOBS_KEY = 'signimus_custom_jobs';
+        const JOB_APPLICATIONS_KEY = 'signimus_job_applications';
+
+        const defaultJobs = [
+            {
+                id: 'react-frontend-developer',
+                title: 'React.js Frontend Developer',
+                type: 'Full-Time / Remote',
+                experience: '2-5 years',
+                location: 'Remote (India)',
+                badge: 'Urgent',
+                badgeColor: 'bg-red-100 text-red-600',
+                iconClass: 'fa-brands fa-react',
+                summary: 'We are looking for a skilled React.js developer to build fast, scalable, and polished frontend applications for our clients.',
+                responsibilities: [
+                    'Build responsive UI components using React.js and Tailwind CSS',
+                    'Integrate REST APIs and manage state with Redux, Zustand, or Context',
+                    'Write clean, maintainable, and well-tested code',
+                    'Collaborate with backend developers and designers',
+                    'Optimize app performance and debug production issues'
+                ],
+                requirements: [
+                    '2+ years of hands-on React.js experience',
+                    'Strong JavaScript ES6+, HTML, and CSS fundamentals',
+                    'Experience with Next.js is a plus',
+                    'Familiarity with Git and Agile workflows',
+                    'Good communication skills'
+                ],
+                salary: 'INR 55,000 - 1,50,000 /month',
+                applyEmail: 'contact@signimus.com'
+            },
+            {
+                id: 'python-django-backend-developer',
+                title: 'Python / Django Backend Developer',
+                type: 'Full-Time / Remote',
+                experience: '3-6 years',
+                location: 'Remote (India)',
+                badge: 'Hiring',
+                badgeColor: 'bg-green-100 text-green-600',
+                iconClass: 'fa-brands fa-python',
+                summary: 'Join our team as a Python backend developer to build robust APIs and data pipelines for SaaS products.',
+                responsibilities: [
+                    'Design and develop REST APIs using Django, FastAPI, or Flask',
+                    'Work with PostgreSQL, MySQL, and Redis',
+                    'Implement CI/CD pipelines and Docker-based deployments',
+                    'Write unit and integration tests with Pytest',
+                    'Review code and mentor junior developers'
+                ],
+                requirements: [
+                    '3+ years of Python backend development experience',
+                    'Deep knowledge of Django ORM, DRF, or FastAPI',
+                    'Experience with AWS, GCP, or Azure cloud services',
+                    'Strong understanding of database design and optimization',
+                    'Docker and Linux proficiency'
+                ],
+                salary: 'INR 70,000 - 2,00,000 /month',
+                applyEmail: 'contact@signimus.com'
+            },
+            {
+                id: 'java-spring-boot-developer',
+                title: 'Java Spring Boot Developer',
+                type: 'Full-Time / Remote',
+                experience: '2-7 years',
+                location: 'Remote (India)',
+                badge: 'Open',
+                badgeColor: 'bg-blue-100 text-blue-600',
+                iconClass: 'fa-brands fa-java',
+                summary: 'We need an experienced Java developer to design and implement microservices-based backend systems for enterprise clients.',
+                responsibilities: [
+                    'Develop RESTful microservices using Spring Boot and Spring Cloud',
+                    'Design relational database schemas with MySQL or PostgreSQL',
+                    'Integrate Kafka for event-driven architecture',
+                    'Ensure high availability, scalability, and security',
+                    'Write comprehensive unit and integration tests'
+                ],
+                requirements: [
+                    'Strong proficiency in Core Java and Spring Boot',
+                    'Hands-on experience with Hibernate, JPA, and REST APIs',
+                    'Experience with Docker or Kubernetes is a plus',
+                    'Familiarity with AWS services like EC2, S3, and RDS',
+                    'Good problem-solving and debugging skills'
+                ],
+                salary: 'INR 60,000 - 1,80,000 /month',
+                applyEmail: 'contact@signimus.com'
+            },
+            {
+                id: 'flutter-mobile-app-developer',
+                title: 'Flutter Mobile App Developer',
+                type: 'Full-Time / Remote',
+                experience: '2-5 years',
+                location: 'Remote (India)',
+                badge: 'Open',
+                badgeColor: 'bg-blue-100 text-blue-600',
+                iconClass: 'fas fa-mobile-screen-button',
+                summary: 'Build cross-platform mobile applications for iOS and Android using Flutter and Dart.',
+                responsibilities: [
+                    'Develop high-quality Flutter apps for iOS and Android',
+                    'Integrate Firebase for auth, database, and push notifications',
+                    'Consume REST APIs and manage state with Provider, Riverpod, or Bloc',
+                    'Publish apps to Play Store and App Store',
+                    'Debug and performance-tune existing apps'
+                ],
+                requirements: [
+                    '2+ years of Flutter and Dart experience',
+                    'Published at least one app on Play Store or App Store',
+                    'Knowledge of native Android or iOS is a plus',
+                    'Experience with Firebase and REST API integration',
+                    'Strong UI/UX sensibility'
+                ],
+                salary: 'INR 55,000 - 1,60,000 /month',
+                applyEmail: 'contact@signimus.com'
+            },
+            {
+                id: 'ai-ml-engineer',
+                title: 'AI / ML Engineer',
+                type: 'Full-Time / Remote',
+                experience: '2-5 years',
+                location: 'Remote (India)',
+                badge: 'Urgent',
+                badgeColor: 'bg-red-100 text-red-600',
+                iconClass: 'fas fa-brain',
+                summary: 'Work on AI products from RAG systems and LLM integrations to computer vision and voice assistants.',
+                responsibilities: [
+                    'Build and deploy ML models using PyTorch, TensorFlow, or Scikit-learn',
+                    'Develop RAG pipelines using LlamaIndex, LangChain, or FAISS',
+                    'Integrate OpenAI, Azure OpenAI, and Hugging Face APIs',
+                    'Build data pipelines with Pandas, NumPy, and SQL',
+                    'Collaborate with product teams to ship AI features'
+                ],
+                requirements: [
+                    '2+ years of hands-on ML or AI engineering experience',
+                    'Proficiency in Python and core ML libraries',
+                    'Experience with LLMs, embeddings, and vector databases',
+                    'Strong mathematical foundations',
+                    'Ability to move from prototype to production'
+                ],
+                salary: 'INR 80,000 - 2,50,000 /month',
+                applyEmail: 'contact@signimus.com'
+            },
+            {
+                id: 'devops-aws-cloud-engineer',
+                title: 'DevOps / AWS Cloud Engineer',
+                type: 'Full-Time / Remote',
+                experience: '4-10 years',
+                location: 'Remote (India)',
+                badge: 'Open',
+                badgeColor: 'bg-blue-100 text-blue-600',
+                iconClass: 'fas fa-cloud',
+                summary: 'Own cloud infrastructure for client projects, from CI/CD pipelines to Kubernetes orchestration and cost optimization.',
+                responsibilities: [
+                    'Design and manage AWS infrastructure',
+                    'Build CI/CD pipelines using GitHub Actions, Jenkins, or GitLab CI',
+                    'Manage Kubernetes clusters and Docker-based deployments',
+                    'Write infrastructure-as-code using Terraform or CDK',
+                    'Monitor systems with CloudWatch, Datadog, or Prometheus'
+                ],
+                requirements: [
+                    '4+ years of DevOps or SRE experience',
+                    'AWS certified or strong hands-on AWS experience',
+                    'Proficiency in Kubernetes, Docker, and Terraform',
+                    'Scripting skills in Python or Bash',
+                    'Experience with Linux administration'
+                ],
+                salary: 'INR 1,50,000 - 4,50,000 /month',
+                applyEmail: 'contact@signimus.com'
+            }
+        ];
+
+        const app = document.getElementById('app');
+        const toast = document.getElementById('toast');
+        let remoteJobs = [];
+        let jobsLoaded = false;
+        let jobsLoadError = '';
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[ch]));
+        }
+
+        function slugify(value) {
+            return String(value || 'job')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '') || 'job';
+        }
+
+        function getSavedArray(key) {
+            try {
+                const saved = JSON.parse(localStorage.getItem(key) || '[]');
+                return Array.isArray(saved) ? saved : [];
+            } catch (error) {
+                console.warn(`Unable to read ${key}.`, error);
+                return [];
+            }
+        }
+
+        function saveArray(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function getJobs() {
+            const allJobs = [...defaultJobs, ...remoteJobs, ...getSavedArray(CUSTOM_JOBS_KEY)];
+            const seen = new Set();
+            return allJobs.filter(job => {
+                if (seen.has(job.id)) return false;
+                seen.add(job.id);
+                return true;
+            });
+        }
+
+        function getJobById(id) {
+            return getJobs().find(job => job.id === id);
+        }
+
+        async function loadRemoteJobs(force = false) {
+            if (jobsLoaded && !force) return;
+            try {
+                const response = await fetch('/api/job-posting', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+                const data = await response.json();
+                remoteJobs = Array.isArray(data.jobs) ? data.jobs : [];
+                jobsLoadError = '';
+            } catch (error) {
+                console.warn('Unable to load shared jobs.', error);
+                jobsLoadError = 'Shared jobs API unavailable. New jobs will only show publicly after the API/Supabase setup is running.';
+            } finally {
+                jobsLoaded = true;
+            }
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        function listToItems(items, iconClass) {
+            return (items || []).map(item => `
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                    <i class="${iconClass} mt-0.5 flex-shrink-0"></i>
+                    <span>${escapeHtml(item)}</span>
+                </li>
+            `).join('');
+        }
+
+        function renderJobCard(job) {
+            return `
+                <article class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-11 h-11 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
+                                <i class="${job.iconClass || 'fas fa-briefcase'} text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h2 class="text-lg font-extrabold text-slate-900">${escapeHtml(job.title)}</h2>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded-full ${job.badgeColor || 'bg-slate-100 text-slate-600'}">${escapeHtml(job.badge || 'Open')}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">${escapeHtml(job.type)} | ${escapeHtml(job.experience)} | ${escapeHtml(job.location)}</p>
+                            </div>
+                        </div>
+                        <p class="hidden md:block text-sm font-bold text-purple-700 whitespace-nowrap">${escapeHtml(job.salary)}</p>
+                    </div>
+                    <p class="text-sm text-slate-600 leading-6 mt-4">${escapeHtml(job.summary)}</p>
+                    <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-100 pt-4">
+                        <p class="text-sm font-bold text-purple-700 md:hidden">${escapeHtml(job.salary)}</p>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="jobs.html#job-${job.id}" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold hover:bg-purple-700">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <a href="jobs.html#job-${job.id}-apply" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600">
+                                <i class="fas fa-paper-plane"></i> Apply
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderJobsList() {
+            const jobs = getJobs();
+            const sharedStatus = jobsLoadError
+                ? `<p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3">${escapeHtml(jobsLoadError)}</p>`
+                : `<p class="text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mt-3">Jobs are loaded from the shared database, so they can appear in normal and incognito browsers.</p>`;
+            document.title = 'Signimus Jobs';
+            app.innerHTML = `
+                <section class="mb-8">
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                            <div>
+                                <p class="text-sm font-bold text-purple-600 uppercase">Open Positions</p>
+                                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Jobs at Signimus</h1>
+                                <p class="text-slate-600 mt-2 max-w-2xl">Apply for open developer roles or add a hiring requirement that should appear in this job list.</p>
+                                ${sharedStatus}
+                            </div>
+                            <a href="#add-job" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-slate-900 text-white rounded-lg text-sm font-bold hover:bg-slate-700">
+                                <i class="fas fa-plus"></i> Add New Job
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-10">
+                    ${jobs.map(renderJobCard).join('')}
+                </section>
+
+                <section id="add-job" class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-900">Add New Job</h2>
+                            <p class="text-xs text-slate-500">Saved to the shared database and shown in this jobs list.</p>
+                        </div>
+                    </div>
+                    <form id="add-job-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="text-sm font-bold text-slate-700">Job Title
+                            <input id="job-title" required class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g. Senior MERN Developer">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Work Type
+                            <input id="job-type" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Full-Time / Remote">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Experience
+                            <input id="job-exp" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="3-6 years">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Location
+                            <input id="job-location" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Remote (India)">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Salary
+                            <input id="job-salary" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="INR 80,000 - 1,80,000 /month">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Status
+                            <select id="job-badge" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400">
+                                <option value="Open">Open</option>
+                                <option value="Urgent">Urgent</option>
+                                <option value="Hiring">Hiring</option>
+                            </select>
+                        </label>
+                        <label class="text-sm font-bold text-slate-700 md:col-span-2">Summary
+                            <textarea id="job-summary" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none" placeholder="Short role summary"></textarea>
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Responsibilities
+                            <textarea id="job-responsibilities" rows="5" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none" placeholder="One responsibility per line"></textarea>
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Requirements
+                            <textarea id="job-requirements" rows="5" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none" placeholder="One requirement per line"></textarea>
+                        </label>
+                        <div class="md:col-span-2 flex justify-end">
+                            <button type="submit" class="inline-flex items-center gap-2 px-5 py-3 bg-purple-600 text-white rounded-lg text-sm font-bold hover:bg-purple-700">
+                                <i class="fas fa-plus"></i> Save Job
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            `;
+            document.getElementById('add-job-form').addEventListener('submit', handleAddJob);
+        }
+
+        function renderJobDetail(job, focusApply = false) {
+            document.title = `${job.title} | Signimus Jobs`;
+            const whatsappText = encodeURIComponent(`Hi Signimus, I want to apply for the ${job.title} role.`);
+            app.innerHTML = `
+                <a href="jobs.html" class="inline-flex items-center gap-2 text-sm font-bold text-purple-700 hover:underline mb-5">
+                    <i class="fas fa-arrow-left"></i> Back to Jobs
+                </a>
+                <article class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm mb-6">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
+                                <i class="${job.iconClass || 'fas fa-briefcase'} text-2xl"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">${escapeHtml(job.title)}</h1>
+                                    <span class="text-xs font-bold px-2 py-1 rounded-full ${job.badgeColor || 'bg-slate-100 text-slate-600'}">${escapeHtml(job.badge || 'Open')}</span>
+                                </div>
+                                <p class="text-sm text-slate-500 mt-2">${escapeHtml(job.type)} | ${escapeHtml(job.experience)} | ${escapeHtml(job.location)}</p>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 lg:min-w-72">
+                            <p class="text-xs text-purple-600 font-bold uppercase">Monthly Salary</p>
+                            <p class="text-xl font-extrabold text-purple-800 mt-1">${escapeHtml(job.salary)}</p>
+                            <a href="https://wa.me/${SIGNIMUS_WHATSAPP_NUMBER}?text=${whatsappText}" target="_blank" class="mt-4 inline-flex items-center justify-center gap-2 w-full px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600">
+                                <i class="fab fa-whatsapp"></i> Apply on WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 leading-7 mt-6">${escapeHtml(job.summary)}</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                        <div>
+                            <h2 class="font-extrabold text-slate-900 mb-3 flex items-center gap-2"><i class="fas fa-list-check text-purple-500"></i> Responsibilities</h2>
+                            <ul class="space-y-2">${listToItems(job.responsibilities, 'fas fa-circle-check text-green-500')}</ul>
+                        </div>
+                        <div>
+                            <h2 class="font-extrabold text-slate-900 mb-3 flex items-center gap-2"><i class="fas fa-star text-purple-500"></i> Requirements</h2>
+                            <ul class="space-y-2">${listToItems(job.requirements, 'fas fa-check text-indigo-500')}</ul>
+                        </div>
+                    </div>
+                </article>
+
+                <section id="apply" class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-900">Developer Application Form</h2>
+                            <p class="text-xs text-slate-500">Application will be saved for this job in this browser.</p>
+                        </div>
+                    </div>
+                    <form id="apply-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="hidden" id="apply-job-id" value="${escapeHtml(job.id)}">
+                        <label class="text-sm font-bold text-slate-700">Developer Name
+                            <input id="apply-name" required class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Your name">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Email
+                            <input id="apply-email" type="email" required class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="you@example.com">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Phone / WhatsApp
+                            <input id="apply-phone" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="+91 ...">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700">Experience
+                            <input id="apply-exp" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="3 years">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700 md:col-span-2">Skills
+                            <input id="apply-skills" required class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="React.js, Node.js, MongoDB">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700 md:col-span-2">Resume Link
+                            <input id="apply-resume" type="url" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="https://...">
+                        </label>
+                        <label class="text-sm font-bold text-slate-700 md:col-span-2">Message
+                            <textarea id="apply-message" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-green-400 resize-none" placeholder="Short note for Signimus"></textarea>
+                        </label>
+                        <div class="md:col-span-2 flex flex-col sm:flex-row justify-end gap-3">
+                            <a href="mailto:${escapeHtml(job.applyEmail || 'contact@signimus.com')}?subject=Application for ${encodeURIComponent(job.title)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">
+                                <i class="fas fa-envelope"></i> Apply via Email
+                            </a>
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600">
+                                <i class="fas fa-paper-plane"></i> Save Application
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            `;
+            document.getElementById('apply-form').addEventListener('submit', handleApply);
+            if (focusApply) {
+                setTimeout(() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+            }
+        }
+
+        function splitLines(value) {
+            return String(value || '')
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean);
+        }
+
+        function handleAddJob(event) {
+            submitJob(event);
+        }
+
+        async function submitJob(event) {
+            event.preventDefault();
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const title = document.getElementById('job-title').value.trim();
+            if (!title) return;
+            const badge = document.getElementById('job-badge').value || 'Open';
+            const badgeColor = badge === 'Urgent' ? 'bg-red-100 text-red-600' : badge === 'Hiring' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600';
+            const job = {
+                id: `${slugify(title)}-${Date.now().toString(36)}`,
+                title,
+                type: document.getElementById('job-type').value.trim() || 'Full-Time / Remote',
+                experience: document.getElementById('job-exp').value.trim() || 'Experience flexible',
+                location: document.getElementById('job-location').value.trim() || 'Remote (India)',
+                badge,
+                badgeColor,
+                iconClass: 'fas fa-briefcase',
+                summary: document.getElementById('job-summary').value.trim() || 'New hiring requirement added by Signimus.',
+                responsibilities: splitLines(document.getElementById('job-responsibilities').value).slice(0, 10),
+                requirements: splitLines(document.getElementById('job-requirements').value).slice(0, 10),
+                salary: document.getElementById('job-salary').value.trim() || 'On Request',
+                applyEmail: 'contact@signimus.com',
+                createdAt: Date.now()
+            };
+            if (job.responsibilities.length === 0) job.responsibilities = ['Role responsibilities will be discussed during screening.'];
+            if (job.requirements.length === 0) job.requirements = ['Relevant experience and strong communication skills.'];
+
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-70', 'cursor-not-allowed');
+
+            try {
+                const response = await fetch('/api/job-posting', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jobTitle: job.title,
+                        companyName: 'Signimus',
+                        jobType: job.type,
+                        experience: job.experience,
+                        location: job.location,
+                        salary: job.salary,
+                        badge: job.badge,
+                        summary: job.summary,
+                        responsibilities: job.responsibilities,
+                        requirements: job.requirements,
+                        applyEmail: job.applyEmail,
+                        jobDescription: job.summary,
+                    }),
+                });
+
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(result.error || `API returned ${response.status}`);
+
+                showToast('New job saved to shared database.');
+                form.reset();
+                jobsLoaded = false;
+                await loadRemoteJobs(true);
+                const savedId = result.data?.[0]?.id || job.id;
+                window.location.hash = `job-${savedId}`;
+            } catch (error) {
+                console.warn('Shared save failed. Falling back to localStorage.', error);
+                const customJobs = getSavedArray(CUSTOM_JOBS_KEY);
+                customJobs.push(job);
+                saveArray(CUSTOM_JOBS_KEY, customJobs);
+                showToast('API unavailable, job saved only in this browser.');
+                window.location.hash = `job-${job.id}`;
+            } finally {
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+
+        function handleApply(event) {
+            event.preventDefault();
+            const jobId = document.getElementById('apply-job-id').value;
+            const applications = getSavedArray(JOB_APPLICATIONS_KEY);
+            applications.push({
+                id: `application-${Date.now().toString(36)}`,
+                jobId,
+                jobTitle: getJobById(jobId)?.title || '',
+                name: document.getElementById('apply-name').value.trim(),
+                email: document.getElementById('apply-email').value.trim(),
+                phone: document.getElementById('apply-phone').value.trim(),
+                experience: document.getElementById('apply-exp').value.trim(),
+                skills: document.getElementById('apply-skills').value.trim(),
+                resume: document.getElementById('apply-resume').value.trim(),
+                message: document.getElementById('apply-message').value.trim(),
+                appliedAt: Date.now()
+            });
+            saveArray(JOB_APPLICATIONS_KEY, applications);
+            event.target.reset();
+            showToast('Application saved for this job.');
+        }
+
+        async function router() {
+            await loadRemoteJobs();
+            const hash = window.location.hash.replace(/^#/, '');
+            const applyMatch = hash.match(/^job-(.+)-apply$/);
+            const detailMatch = hash.match(/^job-(.+)$/);
+            if (applyMatch) {
+                const job = getJobById(applyMatch[1]);
+                if (job) renderJobDetail(job, true);
+                else renderJobsList();
+                return;
+            }
+            if (detailMatch) {
+                const job = getJobById(detailMatch[1]);
+                if (job) renderJobDetail(job, false);
+                else renderJobsList();
+                return;
+            }
+            renderJobsList();
+        }
+
+        window.addEventListener('hashchange', router);
+        window.addEventListener('DOMContentLoaded', router);
+    </script>
+</body>
+</html>

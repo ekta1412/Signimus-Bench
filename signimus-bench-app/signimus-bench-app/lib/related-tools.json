@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Code Profiler Pro",
+    "description": "A powerful tool for in-depth performance analysis of your applications.",
+    "url": "https://example.com/code-profiler-pro"
+  },
+  {
+    "name": "CI/CD Optimizer",
+    "description": "Optimize your CI/CD pipelines for speed and efficiency.",
+    "url": "https://example.com/ci-cd-optimizer"
+  },
+  {
+    "name": "Frontend Asset Analyzer",
+    "description": "Analyze and optimize your frontend assets for faster load times.",
+    "url": "https://example.com/frontend-asset-analyzer"
+  }
+]

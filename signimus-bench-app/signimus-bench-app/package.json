@@ -1,0 +1,42 @@
+{
+  "name": "signimus-bench-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "next telemetry disable",
+    "dev": "next dev -p 3009",
+    "dev:3001": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3009",
+    "start:3001": "next start -p 3001",
+    "clean": "rm -rf .next",
+    "lint": "next lint",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "test:health": "tsx scripts/health.ts"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.54.2",
+    "@supabase/supabase-js": "^2.55.0",
+    "mammoth": "^1.10.0",
+    "pdfjs-dist": "^5.4.54",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "resend": "^6.0.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^17.2.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.6",
+    "next": "^15.4.6",
+    "supabase": "^1.187.3",
+    "tailwindcss": "^4",
+    "tsx": "^4.16.2",
+    "typescript": "^5"
+  }
+}

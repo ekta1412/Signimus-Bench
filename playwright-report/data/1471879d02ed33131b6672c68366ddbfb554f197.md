@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e4]
+      - generic [ref=e7]: Signimus
+    - navigation [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - heading "Main" [level=2] [ref=e11]
+          - list [ref=e12]:
+            - listitem [ref=e13]:
+              - link "Home" [ref=e14] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e15]:
+              - link "Talent Bench" [ref=e16] [cursor=pointer]:
+                - /url: /talent-bench
+        - listitem [ref=e17]:
+          - heading "Tools" [level=2] [ref=e18]
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - link "Salary Calculator" [ref=e21] [cursor=pointer]:
+                - /url: /tools/salary-calculator
+            - listitem [ref=e22]:
+              - link "React Guide" [ref=e23] [cursor=pointer]:
+                - /url: /tools/react-guide
+            - listitem [ref=e24]:
+              - link "Python Guide" [ref=e25] [cursor=pointer]:
+                - /url: /tools/python-guide
+            - listitem [ref=e26]:
+              - link "WordPress Guide" [ref=e27] [cursor=pointer]:
+                - /url: /tools/wordpress-guide
+            - listitem [ref=e28]:
+              - link "Kotlin vs Java" [ref=e29] [cursor=pointer]:
+                - /url: /tools/kotlin-vs-java
+        - listitem [ref=e30]:
+          - heading "Resources" [level=2] [ref=e31]
+          - list [ref=e32]:
+            - listitem [ref=e33]:
+              - link "Help Center" [ref=e34] [cursor=pointer]:
+                - /url: /resources/help-center
+            - listitem [ref=e35]:
+              - link "Community" [ref=e36] [cursor=pointer]:
+                - /url: /resources/community
+            - listitem [ref=e37]:
+              - link "Blog" [ref=e38] [cursor=pointer]:
+                - /url: /resources/blog
+            - listitem [ref=e39]:
+              - link "New Feature" [ref=e40] [cursor=pointer]:
+                - /url: /resources/new-feature
+        - listitem [ref=e41]:
+          - generic [ref=e42]:
+            - heading "Check out our latest tools" [level=3] [ref=e43]
+            - paragraph [ref=e44]: Explore our newest features designed to boost your productivity.
+  - main [ref=e46]:
+    - generic [ref=e48]:
+      - heading "404" [level=1] [ref=e49]
+      - heading "This page could not be found." [level=2] [ref=e51]
+```

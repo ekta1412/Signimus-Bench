@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Signimus Developer Profiles</title>
+    <!-- Favicon for branding -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234F46E5'%3E%3Cpath d='M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z'/%3E%3Cpath d='M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z' fill='%23FFFFFF'/%3E%3C/svg%3E" type="image/svg+xml">
+    <!-- Tailwind CSS CDN for a modern, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for a wide range of icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS (xlsx) library for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        /* Custom font import for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Filter badge active state for clear highlighting */
+        .filter-badge.active {
+            @apply bg-indigo-600 text-white;
+        }
+        /* Interactive filter badges have a special class */
+        .interactive-filter-badge {
+            cursor: pointer;
+        }
+
+        /* The clear button within the active filter badge */
+        .active-filter-badge .clear-btn {
+            @apply ml-2 text-white/80 hover:text-white;
+        }
+        
+        /* Modal backdrop for filter window */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        /* Modal content box styling */
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+        
+        /* Toast/Notification for copy action */
+        .copy-toast {
+            position: fixed;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(30, 41, 59, 0.9);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -11px rgba(0, 0, 0, 0.06);
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            z-index: 100;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+        }
+
+        /* Class for selected profile card highlighting */
+        .profile-card.selected-card {
+            background-color: #eff6ff; /* Lighter blue background */
+            border-color: #3b82f6; /* Bold blue border */
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); /* Blue glow effect */
+            transform: scale(1.02); /* Slight scale up effect */
+        }
+
+        /* New class for non-matching profiles */
+        .profile-card.not-a-fit-card {
+            @apply opacity-50 cursor-not-allowed border-gray-200;
+        }
+        
+        /* Per-card loading spinner for analysis */
+        .loading-spinner-small {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border-left-color: #4f46e5;
+            animation: spin 1s ease infinite;
+        }
+        /* Global loading overlay */
+        #main-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(248, 250, 252, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #main-loading-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Custom Range Slider Styles */
+        .range-slider {
+            position: relative;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+        }
+        .range-slider input[type=range] {
+            position: absolute;
+            width: 100%;
+            -webkit-appearance: none;
+            background: transparent;
+            pointer-events: none;
+        }
+        .range-slider input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            pointer-events: auto;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            box-shadow: 0 0 0 2px white, 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .range-slider input[type=range]::-moz-range-thumb {
+            pointer-events: auto;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 0 2px white, 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .slider-track {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+        }
+        #slider-range-fill {
+            position: absolute;
+            height: 5px;
+            background-color: #6366f1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Fixed, Compact Header -->
+    <header class="bg-white text-slate-800 shadow-lg sticky top-0 z-50 p-4">
+        <div class="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <!-- Left Side: Logo, Title, and Job Description Input -->
+            <div class="flex items-start md:items-center space-x-4 w-full md:w-1/3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12V22" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L12 12" />
+                </svg>
+                <div class="flex flex-col flex-grow">
+                    <a href="https://signimus.com" id="main-heading" class="text-xl font-extrabold tracking-tight hover:text-indigo-600 transition-colors duration-150">Signimus Talent Bench</a>
+                    <div class="relative mt-1">
+                        <textarea id="job-description-input" class="w-full h-12 p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 resize-none" placeholder="Paste a job description here..."></textarea>
+                    </div>
+                    <button id="export-excel-button" class="mt-2 text-sm font-semibold text-green-600 hover:text-green-800 transition duration-150 ease-in-out flex items-center justify-center space-x-2 bg-green-100 p-2 rounded-lg">
+                       <i class="fas fa-file-excel"></i>
+                       <span>Export Bench List</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: Filters and Contact Icons -->
+            <div class="w-full md:w-2/3 flex flex-col">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold text-gray-700">Filters:</span>
+                    <div class="flex items-center space-x-4">
+                        <a href="https://wa.me/+918225998112?text=Hello%20Signimus" target="_blank" class="text-gray-600 hover:text-green-500 transition-colors duration-150">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                        <a href="mailto:contact@signimus.com" class="text-gray-600 hover:text-blue-500 transition-colors duration-150">
+                            <i class="fas fa-envelope text-lg"></i>
+                        </a>
+                        <a href="tel:+918225998112" class="text-gray-600 hover:text-indigo-500 transition-colors duration-150">
+                            <i class="fas fa-phone text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                <div id="filter-bar" class="flex items-center flex-wrap md:flex-nowrap gap-2 overflow-x-auto pb-2 -mr-4 md:mr-0">
+                    <div id="active-filters" class="flex flex-wrap md:flex-nowrap gap-2">
+                        <!-- Active filter badges will be injected here by JS -->
+                    </div>
+                    <div id="popular-filters" class="flex flex-wrap md:flex-nowrap gap-2">
+                        <!-- Popular filters will be injected here by JS -->
+                    </div>
+                    <button id="more-filters-button" class="filter-badge text-xs font-semibold px-3 py-1 rounded-full cursor-pointer transition-colors duration-150 bg-gray-200 text-gray-800 hover:bg-gray-300 flex-shrink-0">
+                        More...
+                    </button>
+                </div>
+                 <!-- Experience Range Slider moved here -->
+                <div id="experience-filter-container" class="w-full mt-2">
+                    <label class="text-sm font-semibold text-gray-700">Experience Range: <span id="experience-range-label" class="font-bold text-indigo-600">All</span></label>
+                    <div class="range-slider mt-2">
+                        <div class="slider-track"></div>
+                        <div id="slider-range-fill"></div>
+                        <input type="range" id="min-exp-slider" min="0" max="15" value="0" class="z-10">
+                        <input type="range" id="max-exp-slider" min="0" max="15" value="15">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Bar -->
+        <div id="status-bar" class="container mx-auto mt-4 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg flex items-center justify-center space-x-2 font-medium text-sm transition-all duration-200 ease-in-out">
+            <i id="status-icon" class="fas fa-info-circle"></i>
+            <span id="status-message">Waiting for your input...</span>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Developer Profiles Section -->
+        <div id="profiles-container" class="w-full grid gap-6 grid-cols-1 lg:grid-cols-2">
+            <!-- Profile cards will be injected here by JavaScript -->
+        </div>
+        <div id="pagination" class="mt-6 flex items-center justify-center flex-wrap gap-2"></div>
+    </main>
+
+    <!-- Modal for All Filters -->
+    <div id="all-filters-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button id="close-filters-modal" class="modal-close-btn">&times;</button>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">All Skills</h3>
+            
+            <div id="all-filters-container" class="flex flex-wrap gap-2 transition-all duration-300 ease-in-out">
+                <!-- All filters will be injected here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Footer for Selected Profiles -->
+    <div id="footer-actions" class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-2xl transition-transform duration-300 ease-in-out transform translate-y-full flex items-center justify-center space-x-4 z-50">
+        <button id="copy-profiles-button" class="py-3 px-6 bg-green-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 transition duration-150 ease-in-out flex items-center space-x-2">
+            <i class="fas fa-copy"></i>
+            <span>Copy Selected Profiles</span>
+        </button>
+        <button id="arrange-interview-button" class="py-3 px-6 bg-blue-500 text-white font-bold rounded-full shadow-lg hover:bg-blue-600 transition duration-150 ease-in-out flex items-center space-x-2">
+            <i class="fab fa-whatsapp"></i>
+            <span>Arrange Interview for Selected</span>
+        </button>
+    </div>
+    
+    <!-- New Footer -->
+    <footer class="bg-gray-800 text-white text-center text-sm p-4 mt-8">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-4">
+                <p>&copy; 2024 Powered by Signimus.</p>
+                <div class="flex items-center space-x-4 mt-2 md:mt-0">
+                    <a href="https://wa.me/+918225998112?text=Hello%20Signimus" target="_blank" class="text-white hover:text-green-400 transition-colors duration-150 flex items-center">
+                        <i class="fab fa-whatsapp mr-1"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="mailto:contact@signimus.com" class="text-white hover:text-blue-400 transition-colors duration-150 flex items-center">
+                        <i class="fas fa-envelope mr-1"></i>
+                        <span>Email</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Toast/Notification for copy action -->
+    <div id="copy-toast" class="copy-toast">
+        <!-- Message will be dynamically injected -->
+    </div>
+    
+    <!-- Toast/Notification for analysis prompt -->
+    <div id="analysis-toast" class="copy-toast">
+        <!-- Message will be dynamically injected -->
+    </div>
+    
+    <!-- Global Loading Overlay -->
+    <div id="main-loading-overlay" class="hidden">
+        <div class="loading-spinner-small w-12 h-12 border-4"></div>
+        <p class="mt-4 text-indigo-700 font-semibold">Loading data...</p>
+    </div>
+
+    <!-- JavaScript for dynamic functionality -->
+    <script>
+        const profilesData = [
+            { id: 'pranay-singhal', name: 'Pranay Singhal', title: 'Salesforce Developer', experience: '5 years', skills: ['Salesforce Developer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '80,000' },
+            { id: 'bhavesh-mistry', name: 'Bhavesh Mistry', title: 'Full Stack Designer', experience: '4 years', skills: ['Design', 'Bootstrap', 'Tailwind CSS', 'Material UI', 'Responsive Design', 'Animations', 'Figma', 'Photoshop', 'Adobe XD', 'React.js', 'Ruby on Rails', '.NET', 'Angular'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '75,000' },
+            { id: 'sagar-shinde', name: 'Sagar Shinde', title: 'Senior Java Developer', experience: '3 years', skills: ['Core Java', 'Spring', 'Spring Boot', 'REST API', 'Spring Data JPA', 'Hibernate', 'JPA', 'MySQL', 'Kafka', 'Redis', 'AWS', 'Spring Security'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '70,000' },
+            { id: 'abhishek-parihar', name: 'Abhishek Parihar', title: 'Full Stack Java/Python Developer', experience: '6 years', skills: ['Java', 'Spring', 'Spring Boot', 'REST API', 'Spring Data JPA', 'Hibernate', 'JPA', 'MySQL', 'Kafka', 'Redis', 'AWS', 'Spring Security', 'Python3', 'Django', 'Rest Framework', 'Git', 'Bit-bucket', 'SQLite', 'Slack', 'JIRA', 'Scrum', 'Kan-ban'], monthlyRate: 'On Request', resumeLink: 'https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit', marketRate: '120,000' },
+            { id: 'shikha-gupta', name: 'Shikha Gupta', title: 'Marketing Specialist', experience: '2 years', skills: ['Marketing'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '50,000' },
+            { id: 'aishwarya-kulkarni', name: 'Aishwarya Kulkarni', title: 'UI/UX Designer', experience: '5 years', skills: ['Product Designer', 'UI/UX', 'Graphics Design', 'Figma', 'XD', 'Davanci Resolve', 'UIZARD', 'Zeplin', 'Photoshop', 'Illustrator', 'Canva'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '90,000' },
+            { id: 'anshul-arnav', name: 'Anshul Arnav', title: 'Ethical Hacker / Penetration Tester', experience: '3 years', skills: ['Ethical Hacking', 'Penetration Tester', 'WAPT', 'Python', 'Scapy', 'Reverse Engineering', 'Automation'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '85,000' },
+            { id: 'kumar-gaurav', name: 'Kumar Gaurav', title: 'Senior iOS Developer', experience: '7 years', skills: ['iOS', 'Swift', 'Objective-C', 'SwiftUI'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '150,000' },
+            { id: 'bablu-kumar', name: 'Bablu Kumar', title: 'Python Django Developer', experience: '4 years', skills: ['Python', 'Django Developer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '90,000' },
+            { id: 'sayed-mohammad-hanzala', name: 'Sayed Mohammad Hanzala', title: 'Data Scientist / AI/ML Engineer', experience: '1 year', skills: ['Scikit-learn', 'Basic Data Science', 'Data Scientist / AI/ML Engineer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '45,000' },
+            { id: 'shagufta-naaz', name: 'Shagufta Naaz', title: 'Data Engineer', experience: '2 years', skills: ['TensorFlow', 'PyTorch', 'Scikit-learn', 'Data Engineer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '60,000' },
+            { id: 'shahzaib-alam', name: 'Shahzaib Alam', title: 'Java Spring Boot Developer', experience: '3 years', skills: ['Java', 'Spring Boot'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '65,000' },
+            { id: 'shiva-paul', name: 'Shiva Paul', title: 'Frontend Developer', experience: '2 years', skills: ['Frontend', 'JavaScript', 'HTML', 'CSS'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '55,000' },
+            { id: 'ankit', name: 'Ankit', title: 'Java Spring Boot Developer', experience: '2 years', skills: ['Java Developer', 'Spring Boot'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1tkjTteVMCQiAOfD_47E8ELkx2AN3xcbUbH8csulFONc/edit', marketRate: '70,000' },
+            { id: 'chirag-tiwari', name: 'Chirag Tiwari', title: 'MERN Stack Developer', experience: '2 years', skills: ['MERN Stack', 'React.js', 'Node.js', 'MongoDB', 'Express.js'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1si7zK0nSTtKVKr-yEog85_bF-7ufSbDl/edit', marketRate: '80,000' },
+            { id: 'ashish-verma', name: 'Ashish Verma', title: 'Java Microservices Developer', experience: '2 years', skills: ['Java', 'Spring Boot', 'Microservices', 'AWS'], monthlyRate: '60000', resumeLink: 'https://docs.google.com/document/d/1kTtxgOKLsc40QDTGbpZeSffyaG-7e0vcdZ3pGOe3eMY/edit', marketRate: '75,000' },
+            { id: 'tushar-talmale', name: 'Tushar Talmale', title: 'Full Stack Java/React Developer', experience: '2 years', skills: ['Java', 'Spring Boot', 'J2EE', 'Hibernate', 'Microservices', 'Docker', 'React.js', 'Next.js'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1ytiJox862gSAIK2mrm73VT3-tFeu_sv6ZrNd_XeMXRk/edit', marketRate: '85,000' },
+            { id: 'kamna-daulat-rohida-2', name: 'Kamna Daulat Rohida', title: 'Java Developer', experience: '3.5 years', skills: ['Java', 'Python'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1raOGldsXgid0FuLDaXQ9B3ftE9os9wXp/edit', marketRate: '85,000' },
+            { id: 'atif-2', name: 'Atif', title: 'Python/React Full Stack Developer', experience: '7 years', skills: ['Python', 'Flask', 'FastAPI', 'Pytest', 'Django', 'Express.js', 'React.js'], monthlyRate: '180000', resumeLink: 'https://docs.google.com/document/d/1g3IVKjbPd7wRKkIfYHJBFBryNyoPxvye3NhhSywTYPU/edit', marketRate: '190,000' },
+            { id: 'sunny-2', name: 'Sunny', title: 'Full Stack Developer', experience: '4.5 years', skills: ['Django', 'Flask', 'FastAPI', 'Express.js', 'TypeScript', 'Node.js'], monthlyRate: '100000', resumeLink: 'https://docs.google.com/document/d/1Rc84WXE_PQKpA999VZ8JgKN0xAE9Fsgw/edit', marketRate: '120,000' },
+            { id: 'ankur-2', name: 'Ankur', title: 'Python/AWS DevOps Developer', experience: '6 years', skills: ['Python', 'Django', 'DRF', 'FastAPI', 'Pytest', 'Flask', 'AWS', 'Docker'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1YXAO0VrfQO5-UJLibgh9psra8wDGTpgw5H9VxjDDJ1c/edit', marketRate: '210,000' },
+            { id: 'rounit-agrawal-2', name: 'Rounit Agrawal', title: 'AI/ML Engineer', experience: '4 years', skills: ['Python', 'C', 'SQL', 'PyTorch', 'TensorFlow', 'Scikit-Learn', 'Hugging Face Transformers', 'OpenCV', 'FAISS', 'LlamaIndex', 'OpenAI API', 'Open Lama', 'Speech-to-Text (ASR)', 'Machine Translation (MT)', 'Text-to-Speech (TTS)', 'Intent Classification', 'Pandas', 'NumPy', 'SciPy', 'Matplotlib', 'Jupyter Notebook', 'MySQL', 'Git', 'Docker', 'Azure OpenAI', 'Azure Speech Services', 'RAG systems', 'voice assistants', 'vision AI', 'LLM integration'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1qV_uFa-FVBmsLa2vRWY75oG6A53BIcUr/edit', marketRate: '200,000', professionalSummary: "AI & Machine Learning Engineer with 4+ years of experience delivering end-to-end AI solutions—from data collection and model training to production-grade deployment. Proven track record in RAG systems, voice assistants, vision AI, and LLM integration. Skilled at transforming research prototypes into scalable products.", fullExperience: "Machine Learning & AI Engineer\nSignimus Technologies Pvt. Ltd. (Remote) • Nov 2024 – Present\n- PUCHHO (RAG Query System): Built vector store using FAISS for document similarity search in Hindi, Tamil, and Marathi. Integrated OpenAI LLMs to generate context-aware responses from corporate documents.\n- VERA (Voice Railway Assistant): Added ASR (Azure Speech-to-Text) + Intent Classification to PUCHHO for voice queries. Queried live train data via REST APIs; returned spoken answers via Azure TTS.\n\nProject Associate\nCEET, IIT Madras Research Park • Aug 2021 – Nov 2024\n- Sign Language Recognition: Reproduced AI4Bharat LSTM model; mapped sign-video embeddings to text via GPT.\n- Automated Wheelchair Control (AWCV): Merged ASR, sign-recognition, and motor-control algorithms for hands-free navigation.\n- Multilingual Voice-Web Assistant: Developed web frontend with live speech / translation / TTS using Flask + JavaScript.\n- ASR-MT-TTS API Suite: Packaged speech pipelines into Dockerized microservices for enterprise use." },
+            { id: 'suranjan-bhattacharjee-2', name: 'Suranjan Bhattacharjee', title: 'Flutter Developer', experience: '3 years', skills: ['Flutter', 'PHP', 'Dart', 'Firebase'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1qsLFEYe0qTE42Em_3XhSV14RtUmQ2_s2hOKajhxG22Y/edit', marketRate: '75,000' },
+            { id: 'hemant-2', name: 'Hemant', title: 'React/Node Full Stack Developer', experience: '6+ years', skills: ['React.js', 'Node.js', 'TypeScript', 'AWS', 'Docker', 'Microservices'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1lbdqZMUSaTnE2lyHvWWDKtN3ITQdfkqM8INpx-mfEXI/edit', marketRate: '210,000' },
+            { id: 'potti-amarendra-2', name: 'Potti Amarendra', title: 'Technical Lead', experience: '7 years', skills: ['Java', 'Microservices', 'Spring'], monthlyRate: '180000', resumeLink: 'Profile on Request', marketRate: '200,000' },
+            { id: 'umang-2', name: 'Umang', title: 'Mobile App Developer', experience: '7 years', skills: ['Flutter', 'Dart', 'Android', 'Kotlin', 'Java', 'Firebase'], monthlyRate: '160000', resumeLink: 'https://docs.google.com/document/d/1gknrLi8pbmPwEkfWbLNpWk_wLXlxrf1VcV5u_9JSXeM/edit', marketRate: '170,000' },
+            { id: 'gauri-2', name: 'Gauri', title: 'Full Stack Software Engineer', experience: '8 years', skills: ['Node.js', 'AWS services', 'Angular', 'React.js', 'Kubernetes', 'Docker'], monthlyRate: '500000', resumeLink: 'https://docs.google.com/document/d/1Niw2MCfBgBuvU1l3l2G5VsTqG9balYE-/edit', marketRate: '450,000' },
+            { id: 'vijay-2', name: 'Vijay', title: 'PHP/Laravel Developer', experience: '9 years', skills: ['Laravel', 'Next.js', 'CodeIgniter', 'PHP', 'MySQL'], monthlyRate: '180000', resumeLink: 'https://docs.google.com/document/d/1U0Uh7tEe9RqyVaNDrLGf3tyHIHf_KX-8JQ7Qzv32u-Y/edit', marketRate: '200,000' },
+            { id: 'vaibhav-pathak-2', name: 'Vaibhav Pathak', title: 'DevOps/SRE Engineer', experience: '11 years', skills: ['DevOps', 'SRE', 'AWS', 'Kubernetes', 'Terraform', 'CI/CD'], monthlyRate: '400000', resumeLink: 'Profile on Request', marketRate: '450,000' },
+            { id: 'amarendra-dell-2', name: 'Amarendra', title: 'Dell Boomi Developer', experience: '7 years', skills: ['Dell Boomi Developer', 'Integration', 'API Development'], monthlyRate: '1500000', resumeLink: 'Profile on Request', marketRate: '1,400,000' },
+            { id: 'nikunj-node-react-2', name: 'Nikunj', title: 'Full Stack Developer', experience: '3 years', skills: ['Node.js', 'React', 'App Script', 'Core PHP', 'MySQL', 'MongoDB', 'GoDaddy', 'AWS', 'Digital Ocean', 'Razorpay Payment Gateway', 'Git', 'Firebase'], monthlyRate: '60000', resumeLink: 'Profile on Request', marketRate: '70,000' },
+            { id: 'sadab-shaikh-2', name: 'Sadab Shaikh', title: 'Senior iOS Developer', experience: '7 years', skills: ['Sr iOS Developer', 'Swift', 'Objective-C', 'iOS SDK'], monthlyRate: '2400000', resumeLink: 'Profile on Request', marketRate: '250,000' },
+            { id: 'akash-2', name: 'Akash', title: 'Python/AI Developer', experience: '3 years', skills: ['Python', 'Power BI', 'Pytest', 'AI Development'], monthlyRate: '60000', resumeLink: 'https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit', marketRate: '65,000' },
+            { id: 'pratibha-nallapaneni-2', name: 'Pratibha Nallapaneni', title: 'ETL Data Stage Developer', experience: '3 years', skills: ['Oracle & Data Warehousing', 'ETL Data Stage Developer', 'SQL'], monthlyRate: '140000', resumeLink: 'Profile on Request', marketRate: '140,000' },
+            { id: 'hema-2', name: 'Hema', title: 'Data Analytics/Front-End Developer', experience: '3 years', skills: ['Power BI', 'Data Analytics', 'Adobe DTM', 'Adobe Launch', 'Google Tag Manager', 'Adobe Analytics', 'Front-End Technologies'], monthlyRate: '120000', resumeLink: 'https://docs.google.com/document/d/1vtNS8ObZPkSX-deXxiPDfO6Qcqs8xR4hlhpda8a2yeo/edit', marketRate: '120,000' },
+            { id: 'ayan-2', name: 'Ayan', title: 'Python/Data Developer', experience: '1.6 years', skills: ['Python', 'Selenium', 'Power BI', 'Django', 'SQL'], monthlyRate: '30000', resumeLink: 'Profile on Request', marketRate: '40,000' },
+            { id: 'ishika-s-dabare-2', name: 'Ishika S Dabare', title: 'Gen AI Assistant', experience: '1.8 years', skills: ['Python', 'C++', 'SQL', 'DBMS', 'Prompt Engineering', 'RAG', 'AutoGen', 'Gen AI on Azure', 'MS Excel', 'Machine Learning', 'Gen AI Assistant', 'Junior Developer', 'Project Manager'], monthlyRate: 'On Request', resumeLink: 'https://docs.google.com/document/d/19odqw3zP8Ya6W7NwTdQnw0B0VNF-4ySro6H8vXVkQIc/edit', marketRate: '60,000' },
+            { id: 'bhavik-2', name: 'Bhavik', title: 'MERN Stack Developer', experience: '3 years', skills: ['React.js', 'Node.js', 'Express.js', 'MongoDB'], monthlyRate: '110000', resumeLink: 'https://docs.google.com/document/d/1fJDuun2-0c26Do5Kkvj-ndyHIJB-yb1V/edit', marketRate: '110,000' },
+            { id: 'yasir-2', name: 'Yasir', title: 'Frontend ReactJS Developer', experience: '3 years', skills: ['JavaScript (ES6+)', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'Node.js', 'Express', 'MongoDB', 'REST APIs'], monthlyRate: '140000', resumeLink: 'https://docs.google.com/document/d/1g1_kJYbDe_d_AHC54BnjCSVDGLt1f0tf4MyNq8VKS7c/edit', marketRate: '150,000' },
+            { id: 'ankit-react-2', name: 'Ankit', title: 'React Developer', experience: '2 years', skills: ['React', 'JavaScript', 'HTML', 'CSS'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1tkjTteVMCQiAOfD_47E8ELkx2AN3xcbUbH8csulFONc/edit', marketRate: '60,000' },
+            { id: 'kevadiya-2', name: 'Kevadiya', title: 'React/Next.js Developer', experience: '4 years', skills: ['React.js', 'Next.js', 'Redux', 'TypeScript'], monthlyRate: '160000', resumeLink: 'Profile on Request', marketRate: '160,000' },
+            { id: 'ashish-wordpress-2', name: 'Ashish', title: 'WordPress Developer', experience: '3 years', skills: ['WordPress Website Developer'], monthlyRate: '55000', resumeLink: 'Profile on Request', marketRate: '60,000' },
+            { id: 'sujit-frontend-2', name: 'Sujit', title: 'Frontend Developer', experience: '2 years', skills: ['Frontend Developer', 'JavaScript', 'HTML', 'CSS'], monthlyRate: '55000', resumeLink: 'Profile on Request', marketRate: '60,000' }
+        ];
+
+        // WhatsApp number placeholder, please replace with a valid number for live use
+        const SIGNIMUS_WHASSAPP_NUMBER = '+15551234567';
+        const DEFAULT_JOB_DESCRIPTION = ``;
+        
+        // Initial data for filters
+        let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
+        const allSkillsAndRoles = [
+            'Salesforce Developer', 'Design', 'Bootstrap', 'Tailwind CSS', 'Material UI', 'Responsive Websites', 'Animations', 'Figma', 'Photoshop', 'Adobe XD', 'React.js', 'Ruby on Rails', '.NET', 'Angular', 'Java', 'Core Java', 'Spring', 'Spring Boot', 'REST API', 'Spring Data JPA', 'Hibernate', 'JPA', 'MySQL', 'Kafka', 'Redis', 'AWS', 'Spring Security', 'Marketing', 'Product Designer', 'UI/UX', 'Graphics Design', 'XD', 'DaVinci Resolve', 'UIZARD', 'Zeplin', 'Illustrator', 'Canva', 'Ethical Hacking', 'Penetration Tester', 'WAPT', 'Python', 'Scapy', 'Reverse Engineering', 'Automation', 'iOS', 'Swift', 'Objective-C', 'SwiftUI', 'Python Django Developer', 'Scikit-learn', 'Basic Data Science', 'Data Scientist', 'AI/ML Engineer', 'TensorFlow', 'PyTorch', 'Scikit-learn', 'Data Engineer', 'Frontend', 'Java Developer', 'MERN Stack', 'Node.js', 'Microservices', 'Docker', 'Next.js', 'J2EE', 'Django', 'DRF', 'FastAPI', 'Pytest', 'Flask', 'TypeScript', 'NodeJs', 'Technical Lead', 'Flutter', 'Dart', 'Android', 'Kotlin', 'Laravel', 'CodeIgniter', 'PHP', 'DevOps', 'SRE', 'Kubernetes', 'Terraform', 'CI/CD', 'Dell Boomi Developer', 'Integration', 'API Development', 'App Script', 'Core PHP', 'MongoDB', 'GoDaddy', 'Digital Ocean', 'Razorpay Payment Gateway', 'Git', 'Firebase', 'Sr iOS Developer', 'Power BI', 'AI Development', 'Oracle', 'Data Warehousing', 'ETL', 'DataStage', 'SQL', 'Data Analytics', 'Adobe DTM', 'Adobe Launch', 'Google Tag Manager', 'Adobe Analytics', 'Front-End Technologies', 'Selenium', 'AutoGen', 'Gen AI (Azure)', 'MS Excel', 'Machine Learning', 'Gen AI Assistant', 'Junior Developer', 'Project Manager', 'WordPress Website Developer', 'Frontend Development'
+        ];
+        let allSkills = [...new Set(allSkillsAndRoles)].sort();
+        const allExperience = [...new Set(profilesData.map(p => p.experience))].sort((a, b) => {
+            const numA = parseFloat(a);
+            const numB = parseFloat(b);
+            if (!isNaN(numA) && !isNaN(numB)) {
+                return numA - numB;
+            }
+            return a.localeCompare(b);
+        });
+
+        let activeFilters = [];
+        let selectedProfiles = [];
+        let analysisResults = {}; // Cache for analysis results keyed by profile ID
+        let isAnalysisInProgress = false; // New global state for analysis status
+        let hasShownApiError = false; // Flag to show API error toast only once
+        
+        // DOM element references
+        const profilesContainer = document.getElementById('profiles-container');
+        const paginationContainer = document.getElementById('pagination');
+        let currentPage = 1;
+        let pageSize = 10;
+        const popularFiltersContainer = document.getElementById('popular-filters');
+        const allFiltersContainer = document.getElementById('all-filters-container');
+        const activeFiltersContainer = document.getElementById('active-filters');
+        const moreFiltersButton = document.getElementById('more-filters-button');
+        const allFiltersModal = document.getElementById('all-filters-modal');
+        const closeFiltersModal = document.getElementById('close-filters-modal');
+        const jobDescriptionInput = document.getElementById('job-description-input');
+        const footerActions = document.getElementById('footer-actions');
+        const copyProfilesButton = document.getElementById('copy-profiles-button');
+        const arrangeInterviewButton = document.getElementById('arrange-interview-button');
+        const copyToast = document.getElementById('copy-toast');
+        const analysisToast = document.getElementById('analysis-toast');
+        const mainLoadingOverlay = document.getElementById('main-loading-overlay');
+        const statusBar = document.getElementById('status-bar');
+        const statusIcon = document.getElementById('status-icon');
+        const statusMessage = document.getElementById('status-message');
+        
+        // Experience Slider elements
+        const minExpSlider = document.getElementById('min-exp-slider');
+        const maxExpSlider = document.getElementById('max-exp-slider');
+        const experienceRangeLabel = document.getElementById('experience-range-label');
+        const sliderRangeFill = document.getElementById('slider-range-fill');
+        const exportExcelButton = document.getElementById('export-excel-button');
+
+
+        /**
+         * Updates the status bar with a new message and icon.
+         * @param {string} message The message to display.
+         * @param {boolean} [isLoading=false] Whether to show a loading spinner.
+         */
+        function updateStatusBar(message, isLoading = false) {
+            if (!statusBar) return;
+            statusMessage.textContent = message;
+            if (isLoading) {
+                statusIcon.className = 'fas fa-spinner animate-spin';
+                statusBar.classList.remove('bg-green-100', 'text-green-700');
+                statusBar.classList.add('bg-indigo-50', 'text-indigo-700');
+            } else {
+                statusIcon.className = 'fas fa-check-circle';
+                statusBar.classList.remove('bg-indigo-50', 'text-indigo-700');
+                statusBar.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
+        
+        /**
+         * Helper function for API calls with exponential backoff.
+         * @param {string} url The API endpoint URL.
+         * @param {RequestInit} options The fetch options.
+         * @param {number} [retries=3] Number of retry attempts.
+         * @param {number} [delay=1000] Initial delay in milliseconds.
+         * @returns {Promise<any>} The parsed JSON response.
+         */
+        async function exponentialBackoffFetch(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return exponentialBackoffFetch(url, options, retries - 1, delay * 2);
+                }
+                throw error;
+            }
+        }
+        
+        /**
+         * Maps an AI ranking score to a badge text and color class.
+         * @param {number} ranking The AI ranking score.
+         * @returns {{text: string, color: string}} The badge text and CSS class.
+         */
+        function getRankingBadge(ranking) {
+            if (ranking >= 9) return { text: 'Ideal Match', color: 'bg-green-600' };
+            if (ranking >= 7) return { text: 'Strong Match', color: 'bg-blue-600' };
+            if (ranking >= 4) return { text: 'Strong Potential', color: 'bg-yellow-500' };
+            if (ranking >= 1) return { text: 'Low Match', color: 'bg-orange-500' };
+            return { text: 'Low Match', color: 'bg-red-600' };
+        }
+        
+        /**
+         * A simple debounce function to limit how often a function is called.
+         * @param {Function} func The function to debounce.
+         * @param {number} [timeout=500] The delay in milliseconds.
+         */
+        function debounce(func, timeout = 500) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+        
+        /**
+         * Fetches resume content from Google Docs and extracts skills, caching the result.
+         */
+        async function fetchAndCacheResumes() {
+            updateStatusBar("Fetching and caching resume data...");
+
+            const promises = profilesData.map(async profile => {
+                if (profile.resumeLink && profile.resumeLink.includes("docs.google.com/document/")) {
+                    const docIdMatch = profile.resumeLink.match(/\/d\/(.+?)\//);
+                    if (!docIdMatch) {
+                        profile.resumeContent = 'Failed to fetch resume content.';
+                        return;
+                    }
+                    const docId = docIdMatch[1];
+                    const exportUrl = `https://docs.google.com/document/d/${docId}/export?format=txt`;
+                    
+                    try {
+                        const response = await fetch(exportUrl);
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch resume content. Status: ${response.status}`);
+                        }
+                        const text = await response.text();
+                        profile.resumeContent = text;
+                        // Only update skills if resume content is successfully fetched and parsed
+                        profile.skills = await extractSkillsFromResume(text);
+                    } catch (error) {
+                        console.error(`Failed to fetch content for ${profile.name}:`, error);
+                        showToast(`Resume for ${profile.name} is not accessible.`, true);
+                        profile.resumeContent = 'Failed to fetch resume content.';
+                        // Do NOT overwrite existing skills if fetch fails
+                    }
+                }
+            });
+            
+            await Promise.allSettled(promises);
+            
+            // Rebuild the list of all available skills after fetching resumes
+            allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
+            renderFilters();
+            triggerAnalysisForFilteredProfiles();
+        }
+
+        /**
+         * Uses the Gemini API to extract a list of skills from a given text.
+         * @param {string} resumeText The text content of the resume.
+         * @returns {Promise<string[]>} An array of skills.
+         */
+        async function extractSkillsFromResume(resumeText) {
+             const prompt = `Extract a comprehensive list of all skills (programming languages, frameworks, libraries, tools, and technical concepts) from the following resume text. Return the skills as a JSON array of strings. Do not include any other text or formatting in the response.
+              Resume Text:
+              ---
+              ${resumeText}
+              ---
+              `;
+              
+             const payload = {
+                  contents: [{ role: "user", parts: [{ text: prompt }] }],
+                  generationConfig: {
+                      responseMimeType: "application/json",
+                      responseSchema: {
+                          type: "ARRAY",
+                          items: { "type": "STRING" }
+                      }
+                  }
+             };
+              
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+             try {
+                  const response = await exponentialBackoffFetch(apiUrl, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(payload)
+                  });
+                  const resultJson = response.candidates?.[0]?.content?.parts?.[0]?.text;
+                  if (resultJson) {
+                      return JSON.parse(resultJson);
+                  }
+                  return [];
+             } catch (error) {
+                  console.error("Failed to extract skills:", error);
+                  return [];
+             }
+        }
+
+        /**
+         * Analyzes a single profile with the AI against the current JD.
+         * @param {object} profile The profile data object.
+         */
+        async function analyzeSingleProfile(profile) {
+            const jobDescription = jobDescriptionInput.value.trim();
+            if (!jobDescription) {
+                analysisResults[profile.id] = {};
+                renderProfiles();
+                return;
+            }
+
+            const isFullResumeAvailable = profile.resumeContent && profile.resumeContent !== 'Failed to fetch resume content.';
+            const isFilterMatchResult = isProfileMatch(profile, activeFilters);
+
+            // If we have a filter match but no JD, skip AI analysis to avoid unnecessary calls.
+            if (!jobDescription && (isFilterMatchResult.isExactMatch || isFilterMatchResult.isPartialMatch)) {
+                return;
+            }
+
+            let prompt;
+            
+            if (isFullResumeAvailable) {
+                prompt = `You are an expert talent recruiter and salesperson. Your primary goal is to persuasively highlight why a candidate is a strong fit for a role, focusing on their skills and experience. Frame your analysis to build client confidence in Signimus.com's talent bench.
+                Analyze the candidate's full resume against the provided job description.
+                - Provide a ranking from 0-10.
+                - Write a compelling 'matchSummary' that emphasizes their key strengths and alignment.
+                - List their 'keyStrengths' as bullet points.
+                - If there are areas of partial alignment (e.g., title vs. skills), frame these positively as 'opportunityAreas', suggesting how the candidate's skills are transferable or relevant. Avoid negative language.
+
+                Job Description:
+                ${jobDescription}
+
+                Full Resume to Analyze:
+                ${profile.resumeContent}`;
+            } else {
+                prompt = `You are an expert talent recruiter and salesperson. Your primary goal is to persuasively highlight why a candidate is a strong fit for a role, focusing on their skills and experience. Frame your analysis to build client confidence in Signimus.com's talent bench.
+                Analyze the candidate's limited profile against the provided job description.
+                - Provide a ranking from 0-10.
+                - Write a compelling 'matchSummary' that emphasizes their key strengths and alignment.
+                - List their 'keyStrengths' as bullet points.
+                - If there are areas of partial alignment (e.g., title vs. skills), frame these positively as 'opportunityAreas', suggesting how the candidate's skills are transferable or relevant. Avoid negative language. Explicitly state that this analysis is based on a limited summary.
+
+                Job Description:
+                ${jobDescription}
+
+                Limited Developer Profile Data:
+                Name: ${profile.name}, Title: ${profile.title}, Skills: ${profile.skills.join(', ')}, Experience: ${profile.experience}`;
+            }
+
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "name": { "type": "STRING" },
+                            "ranking": { "type": "NUMBER" },
+                            "matchSummary": { "type": "STRING" },
+                            "keyStrengths": {
+                                "type": "ARRAY",
+                                "items": { "type": "STRING" }
+                            },
+                             "opportunityAreas": {
+                                "type": "ARRAY",
+                                "items": { "type": "STRING" }
+                            }
+                        },
+                        "propertyOrdering": ["name", "ranking", "matchSummary", "keyStrengths", "opportunityAreas"]
+                    }
+                }
+            };
+            
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await exponentialBackoffFetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const resultJson = response.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (resultJson) {
+                    const parsedResult = JSON.parse(resultJson);
+                    analysisResults[profile.id] = parsedResult;
+                } else {
+                    performSimpleKeywordAnalysis(profile, jobDescription);
+                }
+            } catch (error) {
+                console.error(`AI analysis failed for profile ${profile.name}:`, error);
+                if (error.message.includes('401') && !hasShownApiError) {
+                     showToast(`AI analysis failed: Check API Key.`, true);
+                     hasShownApiError = true; // Set flag so it only shows once
+                }
+                performSimpleKeywordAnalysis(profile, jobDescription);
+            }
+            renderSingleProfileCard(profile);
+        }
+
+        /**
+         * Performs a simple keyword-based analysis as a fallback.
+         * @param {object} profile The profile data object.
+         * @param {string} jobDescription The job description text.
+         * @param {number|null} minExp The minimum experience parsed from JD.
+         * @param {number|null} maxExp The maximum experience parsed from JD.
+         */
+        function performSimpleKeywordAnalysis(profile, jobDescription, minExp, maxExp) {
+            const jdWords = jobDescription.split(/\s+|(?=\/)/).map(word => word.toLowerCase().trim()).filter(word => word.length > 0);
+            let matchScore = 0;
+            let matchSummaryParts = [];
+            let mismatchedCriteria = [];
+
+            const normalizedProfileTitle = profile.title.toLowerCase();
+            const normalizedProfileSkills = profile.skills.map(skill => skill.toLowerCase().trim());
+
+            // Check for title match
+            const titleMatches = jdWords.filter(jdWord => normalizedProfileTitle.includes(jdWord));
+            if (titleMatches.length > 0) {
+                matchScore += titleMatches.length * 4;
+                matchSummaryParts.push(`Title keywords found: ${titleMatches.join(', ')}.`);
+            } else {
+                mismatchedCriteria.push("Title keywords could be stronger.");
+            }
+
+            // Check for skill matches (allowing partial matches within skill strings)
+            const skillsMatched = jdWords.filter(jdWord => normalizedProfileSkills.some(skill => skill.includes(jdWord)));
+            if (skillsMatched.length > 0) {
+                matchScore += skillsMatched.length * 2;
+                matchSummaryParts.push(`Key skills identified: ${skillsMatched.join(', ')}.`);
+            } else {
+                mismatchedCriteria.push("Additional relevant skills would enhance fit.");
+            }
+
+            // Check for experience match
+            const experienceMatches = checkExperienceMatch(profile.experience, minExp, maxExp);
+            if (minExp !== null || maxExp !== null) {
+                if (experienceMatches) {
+                    matchScore += 2;
+                    matchSummaryParts.push("Experience aligns with requirements.");
+                } else {
+                    matchScore -= 3; // Penalize for experience mismatch
+                    mismatchedCriteria.push(`Experience (${profile.experience}) may not fully meet the desired range.`);
+                }
+            }
+
+            const finalRanking = Math.min(Math.max(matchScore, 0), 10);
+            
+            let finalSummary = matchSummaryParts.length > 0 ? matchSummaryParts.join(' ') : "Review for additional details.";
+
+            if (finalRanking >= 9) {
+                finalSummary = "Excellent alignment with job description, strong skills and experience.";
+            } else if (finalRanking >= 7) {
+                finalSummary = "Good overall match with strong relevant skills and experience.";
+            } else if (finalRanking >= 4) {
+                finalSummary = "Promising candidate with some core strengths, consider for potential.";
+            } else {
+                finalSummary = "Further review recommended for alignment with specific needs.";
+            }
+
+            analysisResults[profile.id] = {
+                name: profile.name,
+                ranking: finalRanking,
+                matchSummary: finalSummary,
+                mismatchedCriteria: mismatchedCriteria
+            };
+        }
+        
+        /**
+         * Extracts keywords from a given text.
+         * @param {string} text The text to extract keywords from.
+         * @returns {string[]} An array of keywords.
+         */
+        function extractKeywords(text) {
+            const commonWords = new Set(['a', 'an', 'the', 'is', 'in', 'and', 'for', 'to', 'of', 'on', 'with', 'or', 'and']);
+            return text.toLowerCase().replace(/[.,'":;-]/g, '').split(/\s+/)
+                .filter(word => word.length > 2 && !commonWords.has(word));
+        }
+
+        /**
+         * Helper to parse experience string to number
+         * @param {string} expString The experience string (e.g., "5 years", "6+ years").
+         * @returns {number} The parsed number of years.
+         */
+        function parseExperience(expString) {
+            if (!expString) return 0;
+            const match = String(expString).match(/(\d+(\.\d+)?)/);
+            return match ? parseFloat(match[1]) : 0;
+        }
+
+        /**
+         * New function to parse experience from JD string
+         * @param {string} jdText The job description text.
+         * @returns {{min: number|null, max: number|null}} Parsed min and max experience.
+         */
+        function parseExperienceFromJd(jdText) {
+            let min = null;
+            let max = null;
+
+            // Regex for "X+ years"
+            const plusMatch = jdText.match(/(\d+)\s*\+\s*years?/i);
+            if (plusMatch) {
+                min = parseInt(plusMatch[1], 10);
+            }
+
+            // Regex for "X-Y years"
+            const rangeMatch = jdText.match(/(\d+)\s*-\s*(\d+)\s*years?/i);
+            if (rangeMatch) {
+                min = parseInt(rangeMatch[1], 10);
+                max = parseInt(rangeMatch[2], 10);
+            }
+            
+            // Regex for "X years" (single number, not part of X+ or X-Y)
+            const singleNumberMatch = jdText.match(/(?<!\d[+-])(\d+)\s*years?/i); 
+            if (!plusMatch && !rangeMatch && singleNumberMatch) {
+                min = parseInt(singleNumberMatch[1], 10);
+                max = parseInt(singleNumberMatch[1], 10); // Treat single number as both min and max for exact match
+            }
+
+            return { min, max };
+        }
+
+        /**
+         * New function to check experience match
+         * @param {string} profileExperience The profile's experience string.
+         * @param {number|null} minExp The minimum experience in years.
+         * @param {number|null} maxExp The maximum experience in years.
+         * @returns {boolean} True if the profile's experience matches the range.
+         */
+        function checkExperienceMatch(profileExperience, minExp, maxExp) {
+            const profileYears = parseExperience(profileExperience);
+            let isMatch = true;
+
+            if (minExp !== null && profileYears < minExp) {
+                isMatch = false;
+            }
+            if (maxExp !== null && profileYears > maxExp) {
+                isMatch = false;
+            }
+            return isMatch;
+        }
+        
+        /**
+         * Checks if a profile is a match based on current filters.
+         * @param {object} profile The profile to check.
+         * @param {Array<string>} filters The active filters.
+         * @returns {{isExactMatch: boolean, isPartialMatch: boolean}} Match status.
+         */
+        function isProfileMatch(profile, filters) {
+            if (filters.length === 0) {
+                 return { isExactMatch: true, isPartialMatch: false }; // If no filters, consider it a full match
+            }
+            const normalizedProfileSkills = profile.skills.map(s => s.toLowerCase());
+            const normalizedProfileTitle = profile.title.toLowerCase();
+
+            let matchedCount = 0;
+            filters.forEach(filter => {
+                const normalizedFilter = filter.toLowerCase();
+                // Check if the filter is an exact match for a skill OR if the title contains the filter word
+                if (normalizedProfileSkills.includes(normalizedFilter) || normalizedProfileTitle.includes(normalizedFilter)) {
+                    matchedCount++;
+                }
+            });
+            
+            return {
+                isExactMatch: matchedCount === filters.length,
+                isPartialMatch: matchedCount > 0 && matchedCount < filters.length
+            };
+        }
+
+        
+        /**
+         * Renders a single profile card.
+         * @param {object} profile The profile data object.
+         * @param {boolean} isMatch If the profile is a match based on current filters/JD.
+         */
+        function renderSingleProfileCard(profile, isMatch) {
+            let card = document.querySelector(`[data-profile-id="${profile.id}"]`);
+            if (!card) {
+                card = document.createElement('div');
+                card.dataset.profileId = profile.id;
+                profilesContainer.appendChild(card);
+            }
+
+            const analysis = analysisResults[profile.id] || {};
+            const isSelected = selectedProfiles.includes(profile.id);
+            
+            // Define these variables before use
+            const jobDescription = jobDescriptionInput.value.trim();
+            const filtersActive = activeFilters.length > 0;
+            const hasAnalysis = analysis.ranking !== undefined;
+            const isAnalysisLoading = isAnalysisInProgress && !hasAnalysis;
+            const showAiAnalysis = jobDescription && hasAnalysis;
+
+            // Determine filter match status
+            const filterMatchStatus = isProfileMatch(profile, activeFilters);
+
+            // Set the base classes and conditionally add selected/not-a-fit classes
+            card.className = `profile-card relative p-6 bg-white rounded-xl shadow-lg border-2 transition-all duration-200 ease-in-out cursor-pointer flex flex-col`;
+            
+            if (isMatch) {
+                if (isSelected) {
+                    card.classList.add('selected-card');
+                } else {
+                    card.classList.remove('selected-card');
+                }
+                card.classList.remove('not-a-fit-card');
+            } else {
+                card.classList.add('not-a-fit-card');
+                card.classList.remove('selected-card'); // Ensure non-matching profiles can't be selected
+            }
+            
+            let analysisHtml = '';
+            let aiBadge = '';
+            
+            // Logic to determine which badge to show based on match status
+            if (!isMatch) {
+                aiBadge = `
+                    <div class="text-sm font-semibold px-3 py-1 rounded-full bg-red-500 text-white flex items-center space-x-2">
+                        <i class="fas fa-times-circle mr-2"></i>
+                        <span>Not a Fit</span>
+                    </div>
+                `;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-normal italic">This profile does not match your current criteria.</p>`;
+            } else {
+                 if (isAnalysisLoading) {
+                    aiBadge = `<div class="text-sm font-semibold px-3 py-1 rounded-full bg-indigo-500 text-white flex items-center space-x-2"><i class="fas fa-spinner animate-spin mr-2"></i><span>Analyzing...</span></div>`;
+                    analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-normal italic">Performing AI analysis for this profile...</p>`;
+                } else if (showAiAnalysis) {
+                    const badge = getRankingBadge(analysis.ranking);
+                    const fullSummary = analysis.matchSummary || 'Analysis unavailable.';
+                    const summaryTruncated = fullSummary.length > 150 ? fullSummary.substring(0, 150) + '...' : fullSummary;
+                    
+                    aiBadge = `
+                        <div class="text-sm font-bold px-3 py-1 rounded-full text-white ${badge.color} flex items-center space-x-2">
+                            <i class="fas fa-microchip"></i>
+                            <span>${badge.text}</span>
+                        </div>
+                    `;
+                    
+                    analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-medium">Review: <span class="font-normal italic">${summaryTruncated}</span></p>`;
+                    
+                    // Render Key Strengths
+                    if (analysis.keyStrengths && analysis.keyStrengths.length > 0) {
+                        const strengthsListHtml = analysis.keyStrengths.slice(0, 3).map(item => `<li class="text-sm text-green-600"><i class="fas fa-check-circle mr-2"></i>${item}</li>`).join('');
+                        analysisHtml += `
+                            <div class="mt-2">
+                                <p class="text-sm font-medium text-gray-700">Key Strengths:</p>
+                                <ul class="list-none space-y-1 mt-1">
+                                    ${strengthsListHtml}
+                                </ul>
+                            </div>
+                        `;
+                    }
+
+                    // Render Opportunity Areas
+                    if (analysis.opportunityAreas && analysis.opportunityAreas.length > 0) {
+                        const discussionListHtml = analysis.opportunityAreas.slice(0, 2).map(item => `<li class="text-sm text-gray-600 italic"><i class="fas fa-info-circle mr-2"></i>${item}</li>`).join('');
+                        analysisHtml += `
+                            <div class="mt-2">
+                                <p class="text-sm font-medium text-gray-700">Opportunity Areas:</p>
+                                <ul class="list-none space-y-1 mt-1">
+                                    ${discussionListHtml}
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    
+                    if (analysis.ranking < 7 || (analysis.opportunityAreas && analysis.opportunityAreas.length > 0)) {
+                        analysisHtml += `<p class="text-xs text-gray-500 mt-2">Please review the full profile for details.</p>`;
+                    }
+
+                    if (fullSummary.length > 150 || (analysis.keyStrengths && analysis.keyStrengths.length > 3) || (analysis.opportunityAreas && analysis.opportunityAreas.length > 2)) {
+                        analysisHtml += `<div class="mt-2"><button onclick="toggleDetails(this)" class="text-xs text-indigo-600 font-semibold hover:underline">Show More</button></div>`;
+                        analysisHtml += `
+                            <div class="full-details hidden">
+                                <p class="text-sm text-gray-600 mt-2 font-medium">Full Review: <span class="font-normal italic">${fullSummary}</span></p>
+                                ${analysis.keyStrengths && analysis.keyStrengths.length > 0 ? `
+                                    <div class="mt-2">
+                                        <p class="text-sm font-medium">Full Key Strengths:</p>
+                                        <ul class="list-none space-y-1">
+                                            ${analysis.keyStrengths.map(item => `<li class="text-sm text-green-600"><i class="fas fa-check-circle mr-2"></i>${item}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                                ${analysis.opportunityAreas && analysis.opportunityAreas.length > 0 ? `
+                                    <div class="mt-2">
+                                        <p class="text-sm font-medium">Full Opportunity Areas:</p>
+                                        <ul class="list-none space-y-1">
+                                            ${analysis.opportunityAreas.map(item => `<li class="text-sm text-gray-600 italic"><i class="fas fa-info-circle mr-2"></i>${item}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                    
+                } else if (!jobDescription && filtersActive && filterMatchStatus.isExactMatch) {
+                    aiBadge = `
+                        <div class="text-sm font-semibold px-3 py-1 rounded-full bg-blue-500 text-white flex items-center space-x-2">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span>Suitable Match</span>
+                        </div>
+                    `;
+                    analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-normal italic">This profile meets your selected filter criteria.</p>`;
+                } else if (!jobDescription && filtersActive && filterMatchStatus.isPartialMatch) {
+                    aiBadge = `
+                        <div class="text-sm font-semibold px-3 py-1 rounded-full bg-yellow-500 text-white flex items-center space-x-2">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span>Potential Match</span>
+                        </div>
+                    `;
+                    analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-normal italic">This profile partially matches your selected filter criteria. Please review the full profile for details.</p>`;
+                } else {
+                    // No AI analysis available, either because no JD or analysis failed
+                    aiBadge = `
+                        <div class="text-sm font-semibold px-3 py-1 rounded-full bg-gray-300 text-gray-700 flex items-center space-x-2">
+                            <i class="fas fa-question-circle mr-2"></i>
+                            <span>Analysis Unavailable</span>
+                        </div>
+                    `;
+                    analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-normal italic">Choose a filter or enter a job description to get a match analysis. Please review the full profile for details.</p>`;
+                }
+            }
+            
+            let resumeActionHtml = '';
+            if (profile.resumeLink && profile.resumeLink !== 'Profile on Request') {
+                resumeActionHtml = `
+                    <a href="${profile.resumeLink}" target="_blank" class="text-sm font-medium text-indigo-600 hover:underline transition-colors duration-150">
+                        View Resume
+                    </a>
+                `;
+            } else {
+                resumeActionHtml = `
+                    <button class="bg-indigo-100 text-indigo-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-200 transition-colors duration-150" onclick="event.stopPropagation(); requestProfile('${profile.id}')">
+                        Profile on Request
+                    </button>
+                `;
+            }
+            let summaryDetailsHtml = '';
+            if (profile.professionalSummary) {
+                summaryDetailsHtml = `
+                    <p class="text-sm text-gray-600 mb-2 font-normal italic">${profile.professionalSummary}</p>
+                `;
+            }
+
+            let experienceDetailsHtml = '';
+            if (profile.fullExperience) {
+                experienceDetailsHtml = `
+                    <div class="mt-4">
+                        <h4 class="text-md font-semibold text-gray-700 mb-2">Experience:</h4>
+                        <div class="text-sm text-gray-600 whitespace-pre-wrap">${profile.fullExperience}</div>
+                    </div>
+                `;
+            }
+
+            // Truncate skills list
+            const maxVisibleSkills = 8;
+            const visibleSkills = profile.skills.slice(0, maxVisibleSkills);
+            const hiddenSkills = profile.skills.slice(maxVisibleSkills);
+            let skillsHtml = visibleSkills.map(skill => createFilterBadge(skill, false)).join('');
+
+            if (hiddenSkills.length > 0) {
+                skillsHtml += `
+                    <div class="show-more-container">
+                        <div class="hidden-skills hidden">
+                            ${hiddenSkills.map(skill => createFilterBadge(skill, false)).join('')}
+                        </div>
+                        <button onclick="toggleSkills(this)" class="text-xs text-indigo-600 font-semibold hover:underline mt-2">Show More</button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fas fa-user-circle text-2xl text-gray-400"></i>
+                        <span>${profile.name}</span>
+                    </h3>
+                    ${aiBadge}
+                </div>
+                <p class="text-lg font-semibold text-gray-800 -mt-2 mb-4">${profile.title}</p>
+                
+                ${summaryDetailsHtml}
+                ${analysisHtml}
+
+                <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4 mt-4">
+                    <i class="fas fa-briefcase"></i>
+                    <span>${profile.experience} Experience</span>
+                    <span class="mx-2">•</span>
+                    <i class="fas fa-indian-rupee-sign"></i>
+                    <span class="font-medium">${profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request'}</span>
+                </div>
+                
+                <p class="text-xs text-gray-400 italic mb-4">
+                    Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month
+                </p>
+
+                <div class="flex flex-wrap gap-2 mb-6">
+                    ${skillsHtml}
+                </div>
+                
+                ${experienceDetailsHtml}
+
+                <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                    ${resumeActionHtml}
+                </div>
+            `;
+        }
+        
+        /**
+         * Toggles the visibility of the full details section on a profile card.
+         * @param {HTMLElement} button The "Show More/Less" button element.
+         */
+        function toggleSkills(button) {
+            const skillsContainer = button.previousElementSibling;
+            if (skillsContainer) {
+                if (skillsContainer.classList.contains('hidden')) {
+                    skillsContainer.classList.remove('hidden');
+                    button.textContent = 'Show Less';
+                } else {
+                    skillsContainer.classList.add('hidden');
+                    button.textContent = 'Show More';
+                }
+            }
+        }
+        
+        /**
+         * Toggles the visibility of the full AI analysis section on a profile card.
+         * @param {HTMLElement} button The "Show More/Less" button element.
+         */
+        function toggleDetails(button) {
+            const detailsContainer = button.parentElement.nextElementSibling;
+            if (detailsContainer) {
+                detailsContainer.classList.toggle('hidden');
+                if (detailsContainer.classList.contains('hidden')) {
+                    button.textContent = 'Show More';
+                } else {
+                    button.textContent = 'Show Less';
+                }
+            }
+        }
+
+
+        /**
+         * Renders all profile cards based on a given array of profiles.
+         * This function now renders all profiles and visually demotes those that do not match the criteria.
+         */
+        function renderProfiles() {
+            const jobDescription = jobDescriptionInput.value.trim().toLowerCase();
+            const isJdActive = jobDescription !== '';
+            const isFilterActive = activeFilters.length > 0;
+
+            const minExperience = parseFloat(minExpSlider.value);
+            const maxExperience = parseFloat(maxExpSlider.value);
+            const isExperienceFilterActive = minExperience > 0 || maxExperience < 15;
+
+
+            const profilesToRender = profilesData.filter(profile => {
+                const normalizedProfileSkills = new Set(profile.skills.map(s => s.toLowerCase()));
+                const normalizedProfileTitle = profile.title.toLowerCase();
+
+                const filterMatchStatus = isProfileMatch(profile, activeFilters);
+                const experienceMatches = checkExperienceMatch(profile.experience, minExperience, maxExperience);
+                
+                const jdWords = isJdActive ? jobDescription.split(/\s+|(?=\/)/).map(word => word.replace(/[.,'":;-]/g, '').toLowerCase().trim()).filter(word => word.length > 0) : [];
+                
+                const profileMatchesJd = isJdActive && (jdWords.some(jdWord => {
+                    return profile.skills.some(skill => skill.toLowerCase().includes(jdWord));
+                }) || jdWords.some(jdWord => normalizedProfileTitle.includes(jdWord)));
+
+                // Determine overall match based on active criteria
+                let isOverallMatch = false;
+                if (isJdActive && isFilterActive && isExperienceFilterActive) {
+                    isOverallMatch = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd && experienceMatches;
+                } else if (isJdActive && isFilterActive) {
+                    isOverallMatch = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd;
+                } else if (isJdActive && isExperienceFilterActive) {
+                    isOverallMatch = profileMatchesJd && experienceMatches;
+                } else if (isFilterActive && isExperienceFilterActive) {
+                    isOverallMatch = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && experienceMatches;
+                } else if (isJdActive) {
+                    isOverallMatch = profileMatchesJd;
+                } else if (isFilterActive) {
+                    isOverallMatch = filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch;
+                } else if (isExperienceFilterActive) {
+                    isOverallMatch = experienceMatches;
+                } else {
+                    isOverallMatch = true; // Show all if no filters, no JD, no experience range
+                }
+
+                return isOverallMatch;
+            });
+            
+            profilesToRender.sort((a, b) => {
+                const rankA = analysisResults[a.id]?.ranking || 0;
+                const rankB = analysisResults[b.id]?.ranking || 0;
+                if (rankA !== rankB) {
+                    return rankB - rankA;
+                }
+                return a.name.localeCompare(b.name);
+            });
+            
+            const nonMatchingProfiles = profilesData.filter(profile => !profilesToRender.includes(profile));
+            const orderedProfiles = [...profilesToRender, ...nonMatchingProfiles];
+
+            if (orderedProfiles.length === 0) {
+                profilesContainer.innerHTML = `
+                    <div class="col-span-1 lg:col-span-2 p-8 bg-white rounded-xl shadow-lg text-center text-gray-500">
+                        <i class="fas fa-exclamation-circle text-4xl mb-4 text-gray-400"></i>
+                        <p class="text-xl font-semibold mb-2">No Profiles Found</p>
+                        <p>Please adjust your filters or add new profiles to the list.</p>
+                    </div>
+                `;
+                if (typeof paginationContainer !== 'undefined' && paginationContainer) {
+                    paginationContainer.innerHTML = '';
+                }
+                return;
+            }
+
+            const totalItems = orderedProfiles.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalItems);
+            const pageItems = orderedProfiles.slice(startIndex, endIndex);
+
+            profilesContainer.innerHTML = '';
+            pageItems.forEach(profile => {
+                const isMatch = profilesToRender.includes(profile);
+                renderSingleProfileCard(profile, isMatch);
+            });
+
+            if (typeof paginationContainer !== 'undefined' && paginationContainer) {
+                let pagesHtml = '';
+                for (let p = 1; p <= totalPages; p++) {
+                    const activeClasses = p === currentPage ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+                    pagesHtml += `<button class="px-3 py-1 rounded-full text-xs font-semibold ${activeClasses}" onclick="currentPage=${p}; renderProfiles();">${p}</button>`;
+                }
+                const prevDisabled = currentPage === 1 ? 'opacity-50 cursor-not-allowed' : '';
+                const nextDisabled = currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : '';
+
+                paginationContainer.innerHTML = `
+                    <div class="flex items-center justify-center flex-wrap gap-2 w-full">
+                        <button class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 ${prevDisabled}" onclick="if (currentPage > 1) { currentPage--; renderProfiles(); }">Prev</button>
+                        ${pagesHtml}
+                        <button class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 ${nextDisabled}" onclick="if (currentPage < ${totalPages}) { currentPage++; renderProfiles(); }">Next</button>
+                        <div class="ml-4 flex items-center gap-2">
+                            <label for="page-size-select" class="text-xs text-gray-600">Per page</label>
+                            <select id="page-size-select" class="text-xs border border-gray-300 rounded-md px-2 py-1" onchange="pageSize=parseInt(this.value,10); currentPage=1; renderProfiles();">
+                                ${[6,8,10,12,16,20].map(size => `<option value="${size}" ${size === pageSize ? 'selected' : ''}>${size}</option>`).join('')}
+                            </select>
+                            <span class="text-xs text-gray-500 ml-2">${startIndex + 1}-${endIndex} of ${totalItems}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        /**
+         * Renders all filter sections, showing only available (non-active) filters in the main lists.
+         */
+        function renderFilters() {
+            // Filter out skills that are already in the activeFilters array
+            const availablePopularSkills = popularSkills.filter(skill => !activeFilters.includes(skill));
+            const availableAllSkills = allSkills.filter(skill => !activeFilters.includes(skill));
+
+            popularFiltersContainer.innerHTML = availablePopularSkills.map(skill => createFilterBadge(skill, true)).join('');
+            allFiltersContainer.innerHTML = availableAllSkills.map(skill => createFilterBadge(skill, true)).join('');
+            
+            renderActiveFilters();
+        }
+
+        /**
+         * Renders the badges for the active filters section.
+         */
+        function renderActiveFilters() {
+            activeFiltersContainer.innerHTML = activeFilters.map(filter => `
+                <span class="active-filter-badge text-xs font-semibold px-3 py-1 rounded-full bg-indigo-600 text-white flex items-center interactive-filter-badge" data-filter="${filter}">
+                    ${filter}
+                    <button class="clear-btn text-white/80 hover:text-white">
+                        <i class="fas fa-times text-xs ml-1"></i>
+                    </button>
+                </span>
+            `).join('');
+        }
+
+        /**
+         * Creates a clickable filter badge HTML string.
+         * @param {string} text The text to display on the badge.
+         * @param {boolean} isInteractive If the badge is clickable.
+         * @returns {string} The HTML string for the badge.
+         */
+        function createFilterBadge(text, isInteractive) {
+            const isActive = activeFilters.includes(text);
+            const activeClass = isActive ? 'active' : '';
+            const cursorClass = isInteractive ? 'cursor-pointer' : '';
+            const interactiveClass = isInteractive ? 'interactive-filter-badge' : '';
+            return `
+                <button class="filter-badge text-xs font-semibold px-3 py-1 rounded-full ${cursorClass} ${interactiveClass} transition-colors duration-150 bg-gray-100 text-gray-700 hover:bg-gray-200 ${activeClass}" data-filter="${text}">
+                    ${text}
+                </button>
+            `;
+        }
+
+        /**
+         * Toggles a filter badge and triggers new analysis.
+         * @param {string} filter The filter value to toggle.
+         */
+        async function toggleFilter(filter) {
+            const index = activeFilters.indexOf(filter);
+            if (index > -1) {
+                activeFilters.splice(index, 1);
+            } else {
+                activeFilters.push(filter);
+            }
+            renderFilters();
+            updateTitle();
+            if (typeof currentPage !== 'undefined') currentPage = 1;
+            await triggerAnalysisForFilteredProfiles();
+        }
+        
+        /**
+         * Performs AI analysis on all currently filtered profiles.
+         */
+        async function triggerAnalysisForFilteredProfiles() {
+            const jobDescription = jobDescriptionInput.value.trim();
+            const isJdActive = jobDescription !== '';
+            const isFilterActive = activeFilters.length > 0;
+            let minExperience = parseFloat(minExpSlider.value);
+            let maxExperience = parseFloat(maxExpSlider.value);
+
+            // Parse experience from JD if not explicitly set by inputs
+            if (isJdActive && minExperience === 0 && maxExperience === 15) {
+                const jdExp = parseExperienceFromJd(jobDescription);
+                minExperience = jdExp.min;
+                maxExperience = jdExp.max;
+            }
+            const isExperienceFilterActive = minExperience > 0 || maxExperience < 15;
+
+
+            const profilesToAnalyze = profilesData.filter(profile => {
+                const normalizedProfileSkills = new Set(profile.skills.map(s => s.toLowerCase()));
+                const normalizedProfileTitle = profile.title.toLowerCase();
+
+                const filterMatchStatus = isProfileMatch(profile, activeFilters);
+                const experienceMatches = checkExperienceMatch(profile.experience, minExperience, maxExperience);
+                
+                const jdWords = isJdActive ? jobDescription.split(/\s+|(?=\/)/).map(word => word.replace(/[.,'":;-]/g, '').toLowerCase().trim()).filter(word => word.length > 0) : [];
+                
+                const profileMatchesJd = isJdActive && (jdWords.some(jdWord => {
+                    return profile.skills.some(skill => skill.toLowerCase().includes(jdWord));
+                }) || jdWords.some(jdWord => normalizedProfileTitle.includes(jdWord)));
+
+                // Determine if this profile should be analyzed by AI (i.e., if it's a "match" for any active criteria)
+                let shouldAnalyze = false;
+                if (isJdActive && isFilterActive && isExperienceFilterActive) {
+                    shouldAnalyze = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd && experienceMatches;
+                } else if (isJdActive && isFilterActive) {
+                    shouldAnalyze = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd;
+                } else if (isJdActive && isExperienceFilterActive) {
+                    shouldAnalyze = profileMatchesJd && experienceMatches;
+                } else if (isFilterActive && isExperienceFilterActive) {
+                    shouldAnalyze = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && experienceMatches;
+                } else if (isJdActive) {
+                    shouldAnalyze = profileMatchesJd;
+                } else if (isFilterActive) {
+                    shouldAnalyze = filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch;
+                } else if (isExperienceFilterActive) {
+                    shouldAnalyze = experienceMatches;
+                } else {
+                    shouldAnalyze = true; // Analyze all if no filters, no JD, no experience range
+                }
+                return shouldAnalyze;
+            });
+
+            // Don't trigger analysis if no job description or filters are active.
+            if (jobDescription === "" && activeFilters.length === 0 && !isExperienceFilterActive) {
+                analysisResults = {};
+                renderProfiles();
+                updateStatusBar("Waiting for a job description or filter to perform analysis...");
+                return;
+            }
+            
+            isAnalysisInProgress = true;
+            hasShownApiError = false; // Reset flag
+            updateStatusBar("Analyzing profiles for your requirements...", true);
+            renderProfiles(); // Re-render to show "Analyzing..." state
+
+            const promises = profilesToAnalyze.map(profile => analyzeSingleProfile(profile, minExperience, maxExperience)); // Pass min/max experience
+            await Promise.all(promises);
+
+            isAnalysisInProgress = false;
+            renderProfiles();
+            updateStatusBar(`Analysis complete. Found ${profilesToAnalyze.length} matching profiles.`);
+        }
+
+        /**
+         * Toggles profile selection, but only for profiles that are a match.
+         * @param {string} id The profile ID to toggle.
+         * @param {boolean} isMatch The match status of the profile.
+         */
+        function toggleProfileSelection(id, isMatch) {
+            if (!isMatch) return; // Prevent selection if the profile is not a match
+
+            const index = selectedProfiles.indexOf(id);
+            const card = document.querySelector(`[data-profile-id="${id}"]`);
+            if (index > -1) {
+                selectedProfiles.splice(index, 1);
+                card.classList.remove('selected-card');
+            } else {
+                selectedProfiles.push(id);
+                card.classList.add('selected-card');
+            }
+            updateFooterVisibility();
+        }
+
+        /**
+         * Shows or hides the fixed footer based on the number of selected profiles.
+         */
+        function updateFooterVisibility() {
+            if (selectedProfiles.length > 0) {
+                footerActions.classList.remove('translate-y-full');
+            } else {
+                footerActions.classList.add('translate-y-full');
+            }
+        }
+
+        /**
+         * Handles the "Copy Selected Profiles" action.
+         */
+        async function copyProfilesToClipboard() {
+            if (selectedProfiles.length === 0) return;
+
+            const profiles = profilesData.filter(p => selectedProfiles.includes(p.id));
+            const details = profiles.map((p, index) => {
+                const skills = p.skills.join(', ');
+                const resumeInfo = p.resumeLink === 'Profile on Request' ? 'Resume: On Request' : `Resume Link: ${p.resumeLink}`;
+                const rateInfo = p.monthlyRate === 'On Request' ? 'Monthly Rate: On Request' : `Monthly Rate: ${p.monthlyRate} INR`;
+                return `
+${index + 1}. Name: ${p.name}
+Experience: ${p.experience}
+Skills: ${skills}
+${rateInfo}
+${resumeInfo}`;
+            }).join('\n\n---\n\n');
+
+            const message = `Total Profiles Selected: ${selectedProfiles.length}\n\nThese are available profiles for an interview. Please review their details and let me know for the next steps.\n\n${details}`;
+
+            try {
+                // Use document.execCommand for better compatibility in iframes
+                const textArea = document.createElement("textarea");
+                textArea.value = message;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                showToast('Profiles copied to clipboard!', false);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        }
+
+        /**
+         * Handles "Arrange Interview" for selected profiles.
+         */
+        function arrangeInterviewSelected() {
+            if (selectedProfiles.length === 0) return;
+
+            const profiles = profilesData.filter(p => selectedProfiles.includes(p.id));
+            const names = profiles.map((p, index) => `${index + 1}. ${p.name}`).join('\n');
+            const message = `Hello Signimus, I would like to arrange an interview for the following ${selectedProfiles.length} profiles: \n\n${names}?`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${SIGNIMUS_WHASSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+        }
+        
+        /**
+         * Handles 'Profile on Request' button clicks.
+         * @param {string} profileId The ID of the profile to request.
+         */
+        function requestProfile(profileId) {
+            const profile = profilesData.find(p => p.id === profileId);
+            if (!profile) return;
+            const message = `Hello Signimus, I am interested in the profile of ${profile.name}. Can you please provide their resume?`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${SIGNIMUS_WHASSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+            showToast(`Request sent for ${profile.name}!`);
+        }
+
+        /**
+         * Shows a toast notification.
+         * @param {string} message The message to display.
+         * @param {boolean} [isError=false] Whether this is an error toast.
+         */
+        function showToast(message, isError = false) {
+            const toast = isError ? analysisToast : copyToast;
+            if (!toast) return;
+            toast.innerHTML = isError ? `<i class="fas fa-exclamation-triangle mr-2"></i> ${message}` : `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handles showing and hiding the modals
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Dynamic title update
+        function updateTitle() {
+            const jd = jobDescriptionInput.value.trim();
+            const maxTitleLength = 40; // Max characters for the heading
+            let displayTitle = 'Signimus Talent Bench';
+
+            if (jd) {
+                displayTitle = jd.length > maxTitleLength ? jd.substring(0, maxTitleLength) + '...' : jd;
+                document.title = `Signimus: Candidates for ${displayTitle}`;
+                document.getElementById('main-heading').textContent = `Candidates for "${displayTitle}"`;
+            } else if (activeFilters.length > 0) {
+                const filters = activeFilters.join(', ');
+                displayTitle = filters.length > maxTitleLength ? filters.substring(0, maxTitleLength) + '...' : filters;
+                document.title = `Signimus: ${displayTitle}`;
+                document.getElementById('main-heading').textContent = `Candidates filtered by "${displayTitle}"`;
+            } else {
+                document.title = 'Signimus Talent Bench';
+                document.getElementById('main-heading').textContent = 'Signimus Talent Bench';
+            }
+        }
+        
+        // Function to update the experience slider's appearance
+        function updateExperienceSlider() {
+            const min = parseInt(minExpSlider.value);
+            const max = parseInt(maxExpSlider.value);
+            const range = parseInt(maxExpSlider.max) - parseInt(maxExpSlider.min);
+
+            if (min > max) {
+                minExpSlider.value = max;
+                return;
+            }
+
+            const minPercent = ((min - minExpSlider.min) / range) * 100;
+            const maxPercent = ((max - minExpSlider.min) / range) * 100;
+
+            sliderRangeFill.style.left = `${minPercent}%`;
+            sliderRangeFill.style.width = `${maxPercent - minPercent}%`;
+
+            if (min === 0 && max === 15) {
+                experienceRangeLabel.textContent = 'All';
+            } else {
+                experienceRangeLabel.textContent = `${min} - ${max} years`;
+            }
+        }
+
+
+        // Event Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initial render of profiles for an instant UI load
+            renderProfiles();
+            renderFilters();
+            updateTitle();
+            updateExperienceSlider();
+            
+            // Start the data fetching and AI analysis in the background
+            fetchAndCacheResumes();
+        });
+
+        document.addEventListener('click', (e) => {
+            const filterBadge = e.target.closest('.interactive-filter-badge');
+            
+            if (filterBadge) {
+                const filter = filterBadge.dataset.filter;
+                toggleFilter(filter);
+            }
+            
+            const card = e.target.closest('.profile-card');
+            if (card) {
+                const profileId = card.dataset.profileId;
+                const isMatch = !card.classList.contains('not-a-fit-card');
+                toggleProfileSelection(profileId, isMatch);
+            }
+        });
+        
+        // Debounce the input listener to prevent excessive API calls while typing
+        jobDescriptionInput.addEventListener('input', debounce(() => {
+            triggerAnalysisForFilteredProfiles();
+            updateTitle();
+        }, 300));
+
+        moreFiltersButton.addEventListener('click', () => {
+            showModal('all-filters-modal');
+        });
+
+        closeFiltersModal.addEventListener('click', () => {
+            hideModal('all-filters-modal');
+        });
+        
+        allFiltersModal.addEventListener('click', (e) => {
+            if (e.target === allFiltersModal) {
+                hideModal('all-filters-modal');
+            }
+        });
+
+        // Event listeners for new experience slider
+        minExpSlider.addEventListener('input', () => {
+            updateExperienceSlider();
+            debounce(triggerAnalysisForFilteredProfiles, 300)();
+        });
+        maxExpSlider.addEventListener('input', () => {
+            updateExperienceSlider();
+            debounce(triggerAnalysisForFilteredProfiles, 300)();
+        });
+        
+        copyProfilesButton.addEventListener('click', copyProfilesToClipboard);
+        arrangeInterviewButton.addEventListener('click', arrangeInterviewSelected);
+        exportExcelButton.addEventListener('click', exportToExcel);
+
+        function exportToExcel() {
+            const worksheetData = profilesData.map(profile => ({
+                Name: profile.name,
+                Title: profile.title,
+                Experience: profile.experience,
+                Skills: profile.skills.join(', '),
+                'Monthly Rate': profile.monthlyRate,
+                'Resume Link': profile.resumeLink,
+                'Market Rate': profile.marketRate
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Profiles");
+            XLSX.writeFile(workbook, "Signimus_Developer_Profiles.xlsx");
+        }
+    </script>
+</body>
+</html>

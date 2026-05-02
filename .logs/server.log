@@ -1,0 +1,27 @@
+
+> signimus-bench-app@0.1.0 predev
+> next telemetry disable
+
+Next.js' telemetry collection is already disabled.
+
+Status: Disabled
+
+You have opted-out of Next.js' anonymous telemetry program.
+No data will be collected from your machine.
+
+Learn more: https://nextjs.org/telemetry
+
+> signimus-bench-app@0.1.0 dev
+> next dev -p 3000
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use :::3000)
+    at new Promise (<anonymous>) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+[?25h

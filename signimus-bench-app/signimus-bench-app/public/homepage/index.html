@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signimus: Hire Vetted Developers & Access Hiring Guides</title>
+    <meta name="description" content="Find and hire top-tier, pre-vetted developers in Python, React, Java, and more. Access expert guides on technical hiring, interview questions, and salary benchmarks.">
+    
+    <!-- Favicon for branding -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234F46E5'%3E%3Cpath d='M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z'/%3E%3Cpath d='M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z' fill='%23FFFFFF'/%3E%3C/svg%3E" type="image/svg+xml">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .article-body { font-family: 'Lora', serif; }
+        .article-body h2 { @apply text-3xl font-bold text-slate-900 mt-12 mb-4 border-b pb-3 border-slate-200; }
+        .article-body h3 { @apply text-2xl font-bold text-slate-800 mt-8 mb-3; }
+        .article-body p, .article-body li { @apply text-slate-700 leading-loose text-lg; }
+        .article-body a { @apply text-indigo-600 font-medium hover:underline; }
+        .article-body blockquote { @apply border-l-4 border-slate-300 pl-6 italic text-slate-600 my-8 text-xl; }
+        .article-body code { @apply bg-slate-200 text-slate-800 rounded px-1.5 py-1 text-sm font-mono; }
+        .article-body pre { @apply bg-slate-800 text-white p-4 rounded-lg text-sm overflow-x-auto; }
+        .cta-section { background-image: linear-gradient(45deg, #4f46e5, #7c3aed); }
+        .toc-link { @apply flex items-center p-3 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors; }
+        .toc-link i { @apply w-6 text-center text-indigo-500 mr-3; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="flex items-center space-x-2" onclick="router()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L12 19.25L14.25 17L12 14.75L9.75 17Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L18.75 5.5V18.5L12 22L5.25 18.5V5.5L12 2Z" />
+                </svg>
+                <span class="text-xl font-bold text-slate-800">Signimus</span>
+            </a>
+            <a href="/bench" target="_top" class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                View Talent Bench
+            </a>
+            <a href="#salary-calculator" class="ml-3 px-4 py-2 border border-indigo-600 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 transition-colors" onclick="router()">
+                Salary Calculator
+            </a>
+        </nav>
+    </header>
+
+    <main id="main-content" class="container mx-auto px-6 py-12">
+        <!-- Dynamic content will be loaded here -->
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center text-sm p-4 mt-8">
+        <div class="container mx-auto">
+            <p>&copy; 2024 Powered by Signimus. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- TEMPLATES FOR ALL PAGES -->
+
+    <!-- Homepage Template -->
+    <template id="page-home">
+        <div class="max-w-7xl mx-auto">
+            <section id="hiring-resources" class="mb-16">
+                <h1 class="text-3xl font-extrabold text-slate-900 mb-3 text-center tracking-tight sm:text-4xl">Hiring Resources & Developer Guides</h1>
+                <p class="text-lg text-slate-600 mb-10 text-center max-w-3xl mx-auto">Actionable insights, salary data, and best practices to help you build a world-class technical team.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <a href="#react-guide" class="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out overflow-hidden group border-2 border-transparent hover:border-indigo-500">
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">Ultimate Guide to Hiring React Developers</h2>
+                            <p class="text-slate-600 mb-4 text-sm">Learn how to identify top React talent, what skills to look for, and which questions to ask to find the perfect fit for your team.</p>
+                            <span class="font-semibold text-indigo-600 group-hover:underline text-sm">Read Full Guide &rarr;</span>
+                        </div>
+                    </a>
+                    <a href="#python-guide" class="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out overflow-hidden group border-2 border-transparent hover:border-indigo-500">
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">How to Hire Python Developers: The 2025 Guide</h2>
+                            <p class="text-slate-600 mb-4 text-sm">A complete walkthrough covering job descriptions, interview questions, and salary benchmarks for Python roles.</p>
+                            <span class="font-semibold text-indigo-600 group-hover:underline text-sm">Read Full Guide &rarr;</span>
+                        </div>
+                    </a>
+                    <a href="#wordpress-guide" class="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out overflow-hidden group border-2 border-transparent hover:border-indigo-500">
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">Hiring WordPress Developers: What to Look For</h2>
+                            <p class="text-slate-600 mb-4 text-sm">From custom themes to performance optimization, this guide covers the essential skills your next WordPress hire needs.</p>
+                            <span class="font-semibold text-indigo-600 group-hover:underline text-sm">Read Full Guide &rarr;</span>
+                        </div>
+                    </a>
+                     <a href="#kotlin-vs-java-guide" class="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out overflow-hidden group border-2 border-transparent hover:border-indigo-500">
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">Kotlin vs. Java for Android: The Definitive Guide</h2>
+                            <p class="text-slate-600 mb-4 text-sm">An in-depth technical comparison to help developers and managers choose the right tool for the job.</p>
+                            <span class="font-semibold text-indigo-600 group-hover:underline text-sm">Read Full Guide &rarr;</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </template>
+
+    <!-- React Guide Template -->
+    <template id="page-react-guide">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                <div class="lg:col-span-8">
+                    <article class="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
+                        <div class="mb-12">
+                            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">The Ultimate Guide to Hiring React Developers</h1>
+                            <p class="text-xl text-slate-600 mt-4">A complete framework for sourcing, vetting, and hiring elite React talent.</p>
+                            <div class="flex items-center mt-6">
+                                <img src="https://placehold.co/48x48/E0E7FF/4F46E5?text=S" alt="Signimus Author" class="w-12 h-12 rounded-full mr-4">
+                                <div>
+                                    <p class="font-bold text-slate-800">Signimus Vetting Team</p>
+                                    <p class="text-sm text-slate-500">August 9, 2025 • 8 min read</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="article-body">
+                            <p class="text-xl leading-8">A great React developer is an architect of the user experience, deeply understanding state management, performance optimization, and the modern JavaScript ecosystem. They make critical decisions that determine if an application is scalable and maintainable or brittle and slow.</p>
+                            <blockquote><strong>Industry Finding:</strong> The cost of a bad technical hire can exceed $250,000 in lost time, salary, and recruitment fees. Vetting for the right skills upfront is paramount.</blockquote>
+                            <h2 id="vetting-framework">Phase 1: The Vetting Framework</h2>
+                            <h3>1.1 Portfolio & GitHub Analysis</h3>
+                            <p>A candidate's code is their resume. Before an interview, a thorough review of their public work can reveal more than any conversation.</p>
+                            <ul>
+                                <li><strong>Project Structure:</strong> Is the code organized logically? Look for a clear separation of components, services, hooks, and utilities. A messy codebase is a major red flag.</li>
+                                <li><strong>Commit History:</strong> Review their commit messages on GitHub. Are they clear and descriptive? Frequent, small commits show a methodical and professional workflow.</li>
+                                <li><strong>Custom Hooks:</strong> Have they created their own custom hooks (`useSomething`)? This demonstrates a deeper understanding of React's composition model and code reusability.</li>
+                            </ul>
+                            <h2 id="interview-questions">Phase 2: The Technical Interview</h2>
+                            <p>Go beyond basic definitions and ask questions that probe their problem-solving process.</p>
+                            <h3>2.1 Core Concepts: React Hooks & Lifecycle</h3>
+                            <ul>
+                                <li>Explain the purpose of the dependency array in `useEffect`. What happens if you omit it? What happens if it's empty?</li>
+                                <li>You have a component that re-renders frequently, causing a child component to re-render as well, even though its props haven't changed. How would you prevent this? (Tests knowledge of `React.memo`).</li>
+                            </ul>
+                            <h3>2.2 Application State & Data Flow</h3>
+                            <ul>
+                                <li>Describe a situation where you had to manage complex, shared state. What solution (Context, Zustand, Redux) did you choose and why?</li>
+                                <li>What is "prop drilling" and how can you avoid it?</li>
+                            </ul>
+                            <h2 id="technical-challenge">Phase 3: The Coding Challenge</h2>
+                            <p>A good take-home or live coding challenge should mirror a real-world task, not an abstract algorithm.</p>
+                            <blockquote><strong>Challenge Prompt:</strong> "Using a public API of your choice, build a simple React application that allows a user to search for something and display a list of results. The application should handle loading and error states. Focus on clean code, component structure, and state management."</blockquote>
+                            <p>This single task allows you to assess their ability to handle API calls, manage state, structure components, and create a good user experience—all core skills for a React developer.</p>
+                        </div>
+                    </article>
+                </div>
+                <aside class="lg:col-span-4">
+                    <div class="sticky top-28 space-y-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h3 class="text-xl font-bold text-slate-800 mb-4">Key Takeaways</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span class="text-slate-600">Prioritize deep JavaScript skills.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span class="text-slate-600">Assess state management strategy.</span></li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span class="text-slate-600">Use real-world coding challenges.</span></li>
+                            </ul>
+                        </div>
+                        <div class="bg-indigo-600 text-white p-8 rounded-2xl shadow-lg text-center">
+                            <h3 class="text-2xl font-bold">Ready to Hire?</h3>
+                            <p class="mt-2 mb-4 text-indigo-200">Skip the vetting process. We've already done it for you.</p>
+                            <a href="#matching-profiles-react" class="block w-full py-3 px-4 bg-white text-indigo-600 font-bold rounded-lg shadow-md hover:bg-slate-100 transition-colors">See Available Developers</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <section id="matching-profiles-react" class="mt-16">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-6 text-center tracking-tight">Find Your Expert React Developer Today</h2>
+                <div id="matching-profiles-container-react" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"></div>
+            </section>
+        </div>
+    </template>
+    
+    <!-- Python Guide Template -->
+    <template id="page-python-guide">
+         <div class="max-w-3xl mx-auto">
+            <article>
+                <div class="mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">The Ultimate Guide to Hiring Python Developers</h1>
+                    <p class="text-xl text-slate-600 mt-4">From web apps to AI, Python is everywhere. This guide provides a framework for identifying and hiring the right type of Python expert for your project.</p>
+                    <div class="flex items-center mt-6">
+                        <img src="https://placehold.co/48x48/E0E7FF/4F46E5?text=S" alt="Signimus Author" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <p class="font-bold text-slate-800">Signimus Vetting Team</p>
+                            <p class="text-sm text-slate-500">August 9, 2025 • 9 min read</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-body">
+                    <p class="text-xl leading-8">Python's versatility is its greatest strength and its biggest hiring challenge. A "Python Developer" could be a web specialist, a data scientist, or an automation engineer. Identifying the *right* kind of Python developer is the most critical step in the hiring process.</p>
+                    <blockquote><strong>Expert Insight:</strong> We see more hiring mismatches with Python than any other language. Companies often hire a web developer for a data role, or vice-versa, leading to project delays. A clear understanding of the Python ecosystems is essential.</blockquote>
+                    <h2 id="vetting-framework-python">Phase 1: Defining the Role</h2>
+                    <h3>1.1 Web Development vs. Data Science: Two Different Worlds</h3>
+                    <p>First, determine the primary application. While there's overlap, the core skills are distinct.</p>
+                    <ul>
+                        <li><strong>Python for Web Development:</strong> Focuses on building server-side logic for web applications. Key skills include deep knowledge of frameworks like Django or Flask, building REST APIs, and database integration.</li>
+                        <li><strong>Python for Data Science/AI/ML:</strong> Focuses on data analysis, statistical modeling, and building machine learning pipelines. Key skills include libraries like Pandas, NumPy, Scikit-learn, and TensorFlow/PyTorch.</li>
+                    </ul>
+                    <h2 id="interview-questions-python">Phase 2: The Technical Interview</h2>
+                    <p>Tailor your questions to the role you defined in Phase 1.</p>
+                    <h3>2.1 Questions for a Python Web Developer</h3>
+                    <ul>
+                        <li>Explain the difference between Django's ORM and SQLAlchemy.</li>
+                        <li>Describe how you would implement caching in a Flask or Django application to improve performance.</li>
+                        <li>What are Python decorators and can you provide a practical example of how you've used one in a web application (e.g., for authentication)?</li>
+                    </ul>
+                    <h3>2.2 Questions for a Python Data Scientist</h3>
+                    <ul>
+                        <li>What is the difference between a `Series` and a `DataFrame` in Pandas?</li>
+                        <li>Explain the concept of vectorization in NumPy and why it's important for performance.</li>
+                        <li>You have a dataset with missing values. What are the different strategies you could use to handle them?</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+        <section id="matching-profiles-python" class="mt-16">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6 text-center tracking-tight">Find Your Expert Python Developer Today</h2>
+            <div id="matching-profiles-container-python" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"></div>
+        </section>
+    </template>
+
+    <!-- WordPress Guide Template -->
+    <template id="page-wordpress-guide">
+        <div class="max-w-3xl mx-auto">
+             <article>
+                <div class="mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Hiring WordPress Developers: The Ultimate Guide</h1>
+                    <p class="text-xl text-slate-600 mt-4">Powering over 40% of the web, WordPress is a dominant force. But hiring a true expert requires looking beyond the basics. Here’s what you need to know.</p>
+                    <div class="flex items-center mt-6">
+                        <img src="https://placehold.co/48x48/E0E7FF/4F46E5?text=S" alt="Signimus Author" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <p class="font-bold text-slate-800">Signimus Vetting Team</p>
+                            <p class="text-sm text-slate-500">August 9, 2025 • 6 min read</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-body">
+                    <p class="text-xl leading-8">Anyone can install a WordPress theme. A true WordPress developer, however, is a skilled PHP programmer who understands the platform's core architecture, database structure, and API ecosystem. They don't just use plugins; they build them. They don't just customize themes; they create them from scratch. Hiring an expert means you're investing in performance, security, and scalability—not just a pretty design.</p>
+                    <h2>Key Skills That Separate Professionals from Amateurs</h2>
+                    <blockquote>A great WordPress developer is a backend PHP developer first, and a WordPress specialist second. Their value is in custom solutions, not just configuring off-the-shelf plugins.</blockquote>
+                    <h3>Core Technical Competencies</h3>
+                    <ul>
+                        <li><strong>Expert PHP & MySQL:</strong> They must be able to write clean, efficient, and secure PHP code and design complex database queries.</li>
+                        <li><strong>Custom Theme & Plugin Development:</strong> The ability to build a custom theme from a design (e.g., Figma) and develop bespoke plugins to meet specific business needs is non-negotiable.</li>
+                        <li><strong>Gutenberg & Block Editor:</strong> Deep knowledge of creating custom blocks for the Gutenberg editor is essential for modern WordPress development.</li>
+                    </ul>
+                    <h2>Interview Questions to Identify Top Talent</h2>
+                    <p>Go beyond simple trivia. Ask questions that reveal their problem-solving process and depth of knowledge.</p>
+                    <ul>
+                        <li>Describe the WordPress "loop." How would you modify it to run a secondary, custom query on a page?</li>
+                        <li>What are action hooks and filter hooks? Provide an example of when you would use each.</li>
+                        <li>You need to add a custom field to a post type without using a plugin like ACF. How would you do it? (This tests their knowledge of custom meta boxes).</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+        <section class="mt-16">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6 text-center tracking-tight">Find Your Expert WordPress Developer Today</h2>
+            <div id="matching-profiles-container-wordpress" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"></div>
+        </section>
+    </template>
+
+    <!-- Kotlin vs Java Guide Template -->
+    <template id="page-kotlin-vs-java-guide">
+        <div class="max-w-3xl mx-auto">
+            <article>
+                <div class="mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Kotlin vs. Java for Android: The Definitive 2025 Comparison</h1>
+                    <p class="text-xl text-slate-600 mt-4">Since Google declared Kotlin its preferred language for Android, the debate has intensified. We break down the technical differences to help you decide.</p>
+                     <div class="flex items-center mt-6">
+                        <img src="https://placehold.co/48x48/E0E7FF/4F46E5?text=S" alt="Signimus Author" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <p class="font-bold text-slate-800">Signimus Vetting Team</p>
+                            <p class="text-sm text-slate-500">August 9, 2025 • 7 min read</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-body">
+                     <p class="text-xl leading-8">For years, Java was the undisputed king of Android development. Today, Kotlin, a modern language from JetBrains, is Google's officially preferred language. For engineering leaders, the choice is a strategic decision that impacts productivity, code quality, and long-term maintainability.</p>
+                    <h2>At a Glance: Feature Comparison</h2>
+                    <div class="not-prose my-8 overflow-x-auto">
+                        <table class="w-full text-sm comparison-table">
+                            <thead>
+                                <tr>
+                                    <th class="rounded-tl-lg">Feature</th>
+                                    <th>Java</th>
+                                    <th class="rounded-tr-lg">Kotlin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr> <td class="font-medium">Null Safety</td> <td>Handled via annotations (`@Nullable`), prone to `NullPointerException`.</td> <td class="text-green-600 font-semibold">Built into the type system, eliminating `NullPointerException` at compile time.</td> </tr>
+                                <tr> <td class="font-medium">Verbosity</td> <td>Often requires boilerplate code for data classes (getters, setters, `equals()`).</td> <td class="text-green-600 font-semibold">Extremely concise with data classes, type inference, and extension functions.</td> </tr>
+                                <tr> <td class="font-medium">Concurrency</td> <td>Relies on traditional threading, `AsyncTask`, or libraries like RxJava.</td> <td class="text-green-600 font-semibold">Native support for lightweight Coroutines, simplifying asynchronous code.</td> </tr>
+                                <tr> <td class="font-medium">Interoperability</td> <td class="text-blue-600 font-semibold">Can call Kotlin code, but with less seamless integration.</td> <td class="text-green-600 font-semibold">100% interoperable with Java. Can call Java code and be called from Java seamlessly.</td> </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h2>Deep Dive: Null Safety - Kotlin's Killer Feature</h2>
+                    <p>The most significant advantage Kotlin offers is its built-in null safety. Java's infamous `NullPointerException` is the source of countless bugs. Kotlin addresses this at the compiler level.</p>
+                    <blockquote>In Kotlin, the type system distinguishes between references that can hold null (nullable) and those that cannot (non-null). This simple guarantee eliminates an entire class of runtime errors.</blockquote>
+                    <h2>The Verdict: Why Kotlin is the Future (and Present)</h2>
+                    <p>While Java remains a viable language, Kotlin's advantages for Android development are undeniable. Its focus on safety and conciseness directly translates to faster development cycles and fewer bugs.</p>
+                </div>
+            </article>
+        </div>
+        <section class="mt-16">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-6 text-center tracking-tight">Find Your Expert Android Developer Today</h2>
+            <div id="matching-profiles-container-android" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"></div>
+        </section>
+    </template>
+
+    <!-- Salary Calculator Template -->
+    <template id="page-salary-calculator">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Developer Salary Calculator</h1>
+                <p class="text-lg text-slate-600 mt-4 max-w-2xl mx-auto">Get an instant salary estimate and see available developers who match your budget and technical needs.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Enter Role Details</h2>
+                    <form id="salary-form" class="space-y-6"></form>
+                </div>
+                <div id="results-container" class="space-y-8"></div>
+            </div>
+        </div>
+    </template>
+
+
+    <script>
+        const allProfiles = [
+            { id: 'bhavesh-mistry', name: 'Bhavesh Mistry', title: 'Full Stack Designer', experience: '4 years', skills: ['React.js', 'Design', 'Bootstrap', 'Tailwind CSS', 'Angular'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '75000' },
+            { id: 'chirag-tiwari', name: 'Chirag Tiwari', title: 'MERN Stack Developer', experience: '2 years', skills: ['React.js', 'MERN Stack', 'Node.js', 'MongoDB'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1si7zK0nSTtKVKr-yEog85_bF-7ufSbDl/edit', marketRate: '80000' },
+            { id: 'tushar-talmale', name: 'Tushar Talmale', title: 'Full Stack Java/React Developer', experience: '2 years', skills: ['React.js', 'Java', 'Spring Boot', 'Next.js'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1ytiJox862gSAIK2mrm73VT3-tFeu_sv6ZrNd_XeMXRk/edit', marketRate: '85000' },
+            { id: 'atif-2', name: 'Atif', title: 'Python/React Full Stack Developer', experience: '7 years', skills: ['React.js', 'Python', 'Flask', 'Django'], monthlyRate: '180000', resumeLink: 'https://docs.google.com/document/d/1g3IVKjbPd7wRKkIfYHJBFBryNyoPxvye3NhhSywTYPU/edit', marketRate: '190000' },
+            { id: 'hemant-2', name: 'Hemant', title: 'React/Node Full Stack Developer', experience: '6+ years', skills: ['React.js', 'Node.js', 'TypeScript', 'AWS'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1lbdqZMUSaTnE2lyHvWWDKtN3ITQdfkqM8INpx-mfEXI/edit', marketRate: '210000' },
+            { id: 'yasir-2', name: 'Yasir', title: 'Frontend ReactJS Developer', experience: '3 years', skills: ['React', 'Next.js', 'TypeScript', 'Node.js'], monthlyRate: '140000', resumeLink: 'https://docs.google.com/document/d/1g1_kJYbDe_d_AHC54BnjCSVDGLt1f0tf4MyNq8VKS7c/edit', marketRate: '150000' },
+            { id: 'ankit-react-2', name: 'Ankit', title: 'React Developer', experience: '2 years', skills: ['React', 'JavaScript', 'HTML', 'CSS'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1tkjTteVMCQiAOfD_47E8ELkx2AN3xcbUbH8csulFONc/edit', marketRate: '60000' },
+            { id: 'kevadiya-2', name: 'Kevadiya', title: 'React/Next.js Developer', experience: '4 years', skills: ['React.js', 'Next.js', 'Redux', 'TypeScript'], monthlyRate: '160000', resumeLink: 'Profile on Request', marketRate: '160000' },
+            { id: 'abhishek-parihar', name: 'Abhishek Parihar', title: 'Full Stack Java/Python Developer', experience: '6 years', skills: ['Python', 'Django', 'Java', 'Spring Boot', 'AWS'], monthlyRate: 'On Request', resumeLink: 'https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit', marketRate: '120000' },
+            { id: 'bablu-kumar', name: 'Bablu Kumar', title: 'Python Django Developer', experience: '4 years', skills: ['Python', 'Django Developer', 'REST API'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '90000' },
+            { id: 'ankur-2', name: 'Ankur', title: 'Python/AWS DevOps Developer', experience: '6 years', skills: ['Python', 'Django', 'AWS', 'Docker', 'DevOps'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1YXAO0VrfQO5-UJLibgh9psra8wDGTpgw5H9VxjDDJ1c/edit', marketRate: '210000' },
+            { id: 'rounit-agrawal-2', name: 'Rounit Agrawal', title: 'AI/ML Engineer', experience: '4 years', skills: ['Python', 'TensorFlow', 'PyTorch', 'Scikit-Learn'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1qV_uFa-FVBmsLa2vRWY75oG6A53BIcUr/edit', marketRate: '200000'},
+            { id: 'akash-2', name: 'Akash', title: 'Python/AI Developer', experience: '3 years', skills: ['Python', 'Power BI', 'Pytest', 'AI Development'], monthlyRate: '60000', resumeLink: 'https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit', marketRate: '65000' },
+            { id: 'ayan-2', name: 'Ayan', title: 'Python/Data Developer', experience: '1.6 years', skills: ['Python', 'Selenium', 'Power BI', 'Django', 'SQL'], monthlyRate: '30000', resumeLink: 'Profile on Request', marketRate: '40000' },
+            { id: 'ashish-wordpress-2', name: 'Ashish', title: 'WordPress Developer', experience: '3 years', skills: ['WordPress Website Developer', 'PHP', 'MySQL', 'WooCommerce'], monthlyRate: '55000', resumeLink: 'Profile on Request', marketRate: '60000' },
+            { id: 'vijay-2', name: 'Vijay', title: 'PHP/Laravel Developer', experience: '9 years', skills: ['Laravel', 'Next.js', 'CodeIgniter', 'PHP', 'MySQL', 'WordPress'], monthlyRate: '180000', resumeLink: 'https://docs.google.com/document/d/1U0Uh7tEe9RqyVaNDrLGf3tyHIHf_KX-8JQ7Qzv32u-Y/edit', marketRate: '200000' },
+            { id: 'umang-2', name: 'Umang', title: 'Mobile App Developer', experience: '7 years', skills: ['Flutter', 'Dart', 'Android', 'Kotlin', 'Java', 'Firebase'], monthlyRate: '160000', resumeLink: 'https://docs.google.com/document/d/1gknrLi8pbmPwEkfWbLNpWk_wLXlxrf1VcV5u_9JSXeM/edit', marketRate: '170000' },
+            { id: 'sagar-shinde', name: 'Sagar Shinde', title: 'Senior Java Developer', experience: '3 years', skills: ['Core Java', 'Spring', 'Spring Boot', 'Android', 'Java'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '70000' },
+        ];
+
+        const mainContent = document.getElementById('main-content');
+
+        function renderProfileCard(profile) {
+            let resumeActionHtml = '';
+            if (profile.resumeLink && profile.resumeLink !== 'Profile on Request') {
+                resumeActionHtml = `<a href="${profile.resumeLink}" target="_blank" class="text-sm font-medium text-indigo-600 hover:underline">View Resume</a>`;
+            } else {
+                resumeActionHtml = `<a href="mailto:contact@signimus.com?subject=Profile Request: ${profile.name}" class="text-sm font-medium text-indigo-600 hover:underline">Profile on Request</a>`;
+            }
+
+            const monthlyRateNum = parseInt(String(profile.monthlyRate).replace(/,/g, ''));
+            let rateHtml = isNaN(monthlyRateNum) ? 'On Request' : `₹${monthlyRateNum.toLocaleString('en-IN')} INR`;
+
+            return `
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 transition-all duration-200 ease-in-out">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                            <i class="fas fa-user-circle text-2xl text-gray-400"></i>
+                            <span>${profile.name}</span>
+                        </h3>
+                    </div>
+                    <p class="text-lg font-semibold text-gray-800 -mt-2 mb-4">${profile.title}</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2 text-sm text-gray-500">
+                            <i class="fas fa-briefcase"></i>
+                            <span>${profile.experience} Experience</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm font-semibold text-green-600">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span>Available Immediately</span>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3 text-center mb-4">
+                        <p class="text-sm text-indigo-800 font-semibold">Monthly Rate</p>
+                        <p class="text-xl font-bold text-indigo-600">${rateHtml}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${profile.skills.slice(0, 4).map(skill => `<span class="bg-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1 rounded-full">${skill}</span>`).join('')}
+                    </div>
+                    <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                        ${resumeActionHtml}
+                        <a href="#" class="py-2 px-4 bg-indigo-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-indigo-700 transition">Contact to Hire</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        const pages = {
+            home: {
+                templateId: 'page-home',
+                onRender: () => {}
+            },
+            'react-guide': {
+                templateId: 'page-react-guide',
+                onRender: () => {
+                    const container = document.getElementById('matching-profiles-container-react');
+                    const reactDevelopers = allProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('react')));
+                    container.innerHTML = reactDevelopers.map(renderProfileCard).join('');
+                }
+            },
+            'python-guide': {
+                templateId: 'page-python-guide',
+                onRender: () => {
+                    const container = document.getElementById('matching-profiles-container-python');
+                    const pythonDevelopers = allProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('python')));
+                    container.innerHTML = pythonDevelopers.map(renderProfileCard).join('');
+                }
+            },
+            'wordpress-guide': {
+                templateId: 'page-wordpress-guide',
+                onRender: () => {
+                    const container = document.getElementById('matching-profiles-container-wordpress');
+                    const wordpressDevelopers = allProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('wordpress')));
+                    container.innerHTML = wordpressDevelopers.map(renderProfileCard).join('');
+                }
+            },
+             'kotlin-vs-java-guide': {
+                templateId: 'page-kotlin-vs-java-guide',
+                onRender: () => {
+                    const container = document.getElementById('matching-profiles-container-android');
+                    const androidDevelopers = allProfiles.filter(p => p.skills.some(s => ['android', 'kotlin', 'java'].includes(s.toLowerCase())));
+                    container.innerHTML = androidDevelopers.map(renderProfileCard).join('');
+                }
+            },
+            'salary-calculator': {
+                templateId: 'page-salary-calculator',
+                onRender: () => {
+                    buildSalaryForm();
+                }
+            }
+        };
+
+        function uniqueTechnologies() {
+            const techs = new Set();
+            (allProfiles || []).forEach(p => (p.skills || []).forEach(s => techs.add(String(s))));
+            // Provide a concise, curated set if too many
+            const arr = Array.from(techs).sort((a,b) => a.localeCompare(b));
+            const common = [
+                'React.js','React','Next.js','Node.js','Python','Django','Flask','Java','Spring Boot','WordPress','Android','Kotlin','TypeScript'
+            ];
+            // Merge with arr but keep common first
+            const seen = new Set();
+            const out = [];
+            for (const c of common) { if (!seen.has(c)) { out.push(c); seen.add(c); } }
+            for (const a of arr) { if (!seen.has(a)) { out.push(a); seen.add(a); } }
+            return out.slice(0, 30);
+        }
+
+        function buildSalaryForm() {
+            const form = document.getElementById('salary-form');
+            const resultsContainer = document.getElementById('results-container');
+            if (!form) return;
+            const techOptions = uniqueTechnologies();
+            form.innerHTML = `
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Technology</label>
+                    <select id="technology" class="w-full border border-slate-300 rounded-lg p-2">
+                        ${techOptions.map(t => `<option value="${t}">${t}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Experience: <span id="experience-label">3</span> years</label>
+                    <input id="experience" type="range" min="0" max="15" step="1" value="3" class="w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Location</label>
+                    <select id="location" class="w-full border border-slate-300 rounded-lg p-2">
+                        <option value="IN_T1">India – Tier 1 City</option>
+                        <option value="IN_T23">India – Tier 2/3</option>
+                        <option value="US_EU">Remote US/EU</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="calc-btn" type="submit" class="px-5 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Calculate</button>
+                    <a id="open-bench-btn" href="#" target="_top" class="px-5 py-3 rounded-full border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50">Open in Bench</a>
+                </div>
+            `;
+
+            const experienceSlider = document.getElementById('experience');
+            const experienceLabel = document.getElementById('experience-label');
+            const technologySelect = document.getElementById('technology');
+            const locationSelect = document.getElementById('location');
+            const openBenchBtn = document.getElementById('open-bench-btn');
+
+            const updateBenchLink = () => {
+                const tech = technologySelect.value;
+                openBenchBtn.href = `/bench?skills=${encodeURIComponent(tech)}`;
+            };
+            updateBenchLink();
+
+            experienceSlider.addEventListener('input', (e) => {
+                experienceLabel.textContent = e.target.value;
+            });
+            technologySelect.addEventListener('change', updateBenchLink);
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const technology = technologySelect.value;
+                const experience = parseInt(experienceSlider.value);
+                const location = locationSelect.value;
+                renderCalculatorResults(technology, experience, location, resultsContainer);
+                updateBenchLink();
+            });
+        }
+
+        function renderCalculatorResults(technology, experience, location, resultsContainer) {
+            // Derive a base from sample profiles
+            const matches = (allProfiles || []).filter(p => (p.skills||[]).some(s => String(s).toLowerCase().includes(String(technology).toLowerCase())));
+            const rates = matches.map(p => parseInt(String(p.marketRate).replace(/,/g,''))).filter(n => !isNaN(n));
+            const base = (rates.length ? Math.round(rates.reduce((a,b)=>a+b,0)/rates.length) : 80000);
+            // Adjust by experience
+            const expFactor = 1 + Math.min(Math.max((experience - 3) * 0.05, -0.25), 0.75); // -25% .. +75%
+            // Location multiplier
+            const locFactor = location === 'US_EU' ? 2.2 : (location === 'IN_T23' ? 0.85 : 1.0);
+            const estimate = Math.round(base * expFactor * locFactor);
+            const low = Math.round(estimate * 0.9);
+            const high = Math.round(estimate * 1.1);
+
+            // Matching profiles preview
+            const preview = matches.slice(0, 6).map(p => `
+                <div class="bg-white p-4 rounded-xl border">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="font-bold text-slate-800">${p.name}</div>
+                        <div class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">${p.title}</div>
+                    </div>
+                    <div class="text-sm text-slate-600">Rate: ₹${parseInt(String(p.marketRate).replace(/,/g,'')).toLocaleString('en-IN')}</div>
+                    <div class="mt-2 flex flex-wrap gap-1">
+                        ${(p.skills||[]).slice(0,4).map(s=>`<span class=\"text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full\">${s}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            resultsContainer.innerHTML = `
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Estimated Monthly Salary</h3>
+                    <p class="text-2xl font-extrabold text-indigo-600">₹${low.toLocaleString('en-IN')} — ₹${high.toLocaleString('en-IN')}</p>
+                    <p class="text-sm text-slate-600 mt-2">Role: <strong>${technology}</strong> • Experience: <strong>${experience} yrs</strong></p>
+                    <div class="mt-4 flex gap-3">
+                        <a href="/bench?skills=${encodeURIComponent(technology)}" target="_top" class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Open in Bench</a>
+                        <a href="#home" class="px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 text-slate-700 hover:bg-slate-50" onclick="router()">Back to Home</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3">Matching Profiles</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${preview || '<p class="text-slate-500 text-sm">No direct matches found in sample data.</p>'}</div>
+                </div>
+            `;
+        }
+
+        function router() {
+            const path = window.location.hash.substring(1) || 'home';
+            const page = pages[path] || pages.home;
+            const template = document.getElementById(page.templateId);
+            if (template) {
+                mainContent.innerHTML = '';
+                mainContent.appendChild(template.content.cloneNode(true));
+                page.onRender();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        window.addEventListener('hashchange', router);
+        window.addEventListener('DOMContentLoaded', router);
+
+    </script>
+
+</body>
+</html>

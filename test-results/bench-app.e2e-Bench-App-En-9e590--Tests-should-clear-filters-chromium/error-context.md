@@ -1,0 +1,157 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e4]
+      - generic [ref=e7]: Signimus
+    - navigation [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - heading "Main" [level=2] [ref=e11]
+          - list [ref=e12]:
+            - listitem [ref=e13]:
+              - link "Home" [ref=e14] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e15]:
+              - link "Talent Bench" [ref=e16] [cursor=pointer]:
+                - /url: /talent-bench
+        - listitem [ref=e17]:
+          - heading "Tools" [level=2] [ref=e18]
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - link "Salary Calculator" [ref=e21] [cursor=pointer]:
+                - /url: /tools/salary-calculator
+            - listitem [ref=e22]:
+              - link "React Guide" [ref=e23] [cursor=pointer]:
+                - /url: /tools/react-guide
+            - listitem [ref=e24]:
+              - link "Python Guide" [ref=e25] [cursor=pointer]:
+                - /url: /tools/python-guide
+            - listitem [ref=e26]:
+              - link "WordPress Guide" [ref=e27] [cursor=pointer]:
+                - /url: /tools/wordpress-guide
+            - listitem [ref=e28]:
+              - link "Kotlin vs Java" [ref=e29] [cursor=pointer]:
+                - /url: /tools/kotlin-vs-java
+        - listitem [ref=e30]:
+          - heading "Resources" [level=2] [ref=e31]
+          - list [ref=e32]:
+            - listitem [ref=e33]:
+              - link "Help Center" [ref=e34] [cursor=pointer]:
+                - /url: /resources/help-center
+            - listitem [ref=e35]:
+              - link "Community" [ref=e36] [cursor=pointer]:
+                - /url: /resources/community
+            - listitem [ref=e37]:
+              - link "Blog" [ref=e38] [cursor=pointer]:
+                - /url: /resources/blog
+            - listitem [ref=e39]:
+              - link "New Feature" [ref=e40] [cursor=pointer]:
+                - /url: /resources/new-feature
+        - listitem [ref=e41]:
+          - generic [ref=e42]:
+            - heading "Check out our latest tools" [level=3] [ref=e43]
+            - paragraph [ref=e44]: Explore our newest features designed to boost your productivity.
+  - main [ref=e46]:
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - heading "Signimus Talent Bench" [level=1] [ref=e49]
+        - textbox "Paste a job description here..." [ref=e51]
+        - generic [ref=e52]:
+          - button "React.js" [ref=e53]
+          - button "Python" [ref=e54]
+          - button "Java" [ref=e55]
+          - button "AI/ML Engineer" [ref=e56]
+          - button ".NET" [ref=e57]
+      - generic [ref=e58]:
+        - generic [ref=e59] [cursor=pointer]:
+          - heading "Pranay Singhal" [level=3] [ref=e61] [cursor=pointer]
+          - paragraph [ref=e62] [cursor=pointer]: Salesforce Developer
+          - generic [ref=e63] [cursor=pointer]:
+            - generic [ref=e64] [cursor=pointer]: 5 years Experience
+            - generic [ref=e65] [cursor=pointer]: ₹On Request/month
+          - generic [ref=e67] [cursor=pointer]: Salesforce Developer
+          - generic [ref=e68] [cursor=pointer]:
+            - button "Profile on Request" [ref=e69]
+            - generic [ref=e70] [cursor=pointer]: "Market: ₹80,000/month"
+        - generic [ref=e71] [cursor=pointer]:
+          - heading "Bhavesh Mistry" [level=3] [ref=e73] [cursor=pointer]
+          - paragraph [ref=e74] [cursor=pointer]: Full Stack Designer
+          - generic [ref=e75] [cursor=pointer]:
+            - generic [ref=e76] [cursor=pointer]: 4 years Experience
+            - generic [ref=e77] [cursor=pointer]: ₹On Request/month
+          - generic [ref=e78] [cursor=pointer]:
+            - generic [ref=e79] [cursor=pointer]: Design
+            - generic [ref=e80] [cursor=pointer]: Bootstrap
+            - generic [ref=e81] [cursor=pointer]: Tailwind CSS
+            - generic [ref=e82] [cursor=pointer]: Material UI
+            - generic [ref=e83] [cursor=pointer]: Responsive Design
+            - generic [ref=e84] [cursor=pointer]: +8 more
+          - generic [ref=e85] [cursor=pointer]:
+            - button "Profile on Request" [ref=e86]
+            - generic [ref=e87] [cursor=pointer]: "Market: ₹75,000/month"
+        - generic [ref=e88] [cursor=pointer]:
+          - heading "Sagar Shinde" [level=3] [ref=e90] [cursor=pointer]
+          - paragraph [ref=e91] [cursor=pointer]: Senior Java Developer
+          - generic [ref=e92] [cursor=pointer]:
+            - generic [ref=e93] [cursor=pointer]: 3 years Experience
+            - generic [ref=e94] [cursor=pointer]: ₹On Request/month
+          - generic [ref=e95] [cursor=pointer]:
+            - generic [ref=e96] [cursor=pointer]: Core Java
+            - generic [ref=e97] [cursor=pointer]: Spring
+            - generic [ref=e98] [cursor=pointer]: Spring Boot
+            - generic [ref=e99] [cursor=pointer]: REST API
+            - generic [ref=e100] [cursor=pointer]: Spring Data JPA
+            - generic [ref=e101] [cursor=pointer]: +7 more
+          - generic [ref=e102] [cursor=pointer]:
+            - button "Profile on Request" [ref=e103]
+            - generic [ref=e104] [cursor=pointer]: "Market: ₹70,000/month"
+        - generic [ref=e105] [cursor=pointer]:
+          - heading "Abhishek Parihar" [level=3] [ref=e107] [cursor=pointer]
+          - paragraph [ref=e108] [cursor=pointer]: Full Stack Java/Python Developer
+          - generic [ref=e109] [cursor=pointer]:
+            - generic [ref=e110] [cursor=pointer]: 6 years Experience
+            - generic [ref=e111] [cursor=pointer]: ₹On Request/month
+          - generic [ref=e112] [cursor=pointer]:
+            - generic [ref=e113] [cursor=pointer]: Java
+            - generic [ref=e114] [cursor=pointer]: Spring
+            - generic [ref=e115] [cursor=pointer]: Spring Boot
+            - generic [ref=e116] [cursor=pointer]: REST API
+            - generic [ref=e117] [cursor=pointer]: Spring Data JPA
+            - generic [ref=e118] [cursor=pointer]: +17 more
+          - generic [ref=e119] [cursor=pointer]:
+            - link "View Resume" [ref=e120] [cursor=pointer]:
+              - /url: https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit
+            - generic [ref=e121] [cursor=pointer]: "Market: ₹120,000/month"
+        - generic [ref=e122] [cursor=pointer]:
+          - heading "Shikha Gupta" [level=3] [ref=e124] [cursor=pointer]
+          - paragraph [ref=e125] [cursor=pointer]: Marketing Specialist
+          - generic [ref=e126] [cursor=pointer]:
+            - generic [ref=e127] [cursor=pointer]: 2 years Experience
+            - generic [ref=e128] [cursor=pointer]: ₹On Request/month
+          - generic [ref=e130] [cursor=pointer]: Marketing
+          - generic [ref=e131] [cursor=pointer]:
+            - button "Profile on Request" [ref=e132]
+            - generic [ref=e133] [cursor=pointer]: "Market: ₹50,000/month"
+        - generic [ref=e134] [cursor=pointer]:
+          - heading "Aishwarya Kulkarni" [level=3] [ref=e136] [cursor=pointer]
+          - paragraph [ref=e137] [cursor=pointer]: UI/UX Designer
+          - generic [ref=e138] [cursor=pointer]:
+            - generic [ref=e139] [cursor=pointer]: 5 years Experience
+            - generic [ref=e140] [cursor=pointer]: ₹On Request/month
+          - generic [ref=e141] [cursor=pointer]:
+            - generic [ref=e142] [cursor=pointer]: Product Designer
+            - generic [ref=e143] [cursor=pointer]: UI/UX
+            - generic [ref=e144] [cursor=pointer]: Graphics Design
+            - generic [ref=e145] [cursor=pointer]: Figma
+            - generic [ref=e146] [cursor=pointer]: XD
+            - generic [ref=e147] [cursor=pointer]: +6 more
+          - generic [ref=e148] [cursor=pointer]:
+            - button "Profile on Request" [ref=e149]
+            - generic [ref=e150] [cursor=pointer]: "Market: ₹90,000/month"
+  - button "Open Next.js Dev Tools" [ref=e156] [cursor=pointer]:
+    - img [ref=e157] [cursor=pointer]
+  - alert [ref=e160]
+```

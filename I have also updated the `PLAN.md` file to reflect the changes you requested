@@ -1,0 +1,47 @@
+# PLAN.md
+
+## Project Analysis & Growth Hypothesis
+
+* Determine if a project is New or Existing automatically.
+* Check for .git, package.json, framework config files (next.config.js, vercel.json, etc.).
+* For empty directories, classify as "New Project"; for existing code, classify as "Existing Project".
+
+## Detailed Action Plan
+
+* Devise a full strategy to acquire first 1,000 users.
+* Integrate application features with at least one primary growth flywheel (Programmatic SEO, Viral Loop, Content Syndication).
+
+## Credential Ingestion & Final Confirmation
+
+* Never ask for secrets directly.
+* Required credentials: SUPABASE keys, DOPPLER tokens, etc.
+* If Doppler exists, fetch secrets from Doppler automatically.
+* If credentials are missing, log the missing keys in output, but do not interrupt execution unnecessarily.
+
+## Phased Autonomous Execution (Infrastructure, DB schema, Core Features, Growth Flywheel, Deployment)
+
+* Execute all low-level technical decisions.
+* Present high-level plans for my review before proceeding to multi-stage implementation.
+* Follow workflow stages:
+  * Stage 1: Project Analysis & Growth Hypothesis
+  * Stage 2: Detailed Action Plan
+  * Stage 3: Credential Ingestion & Final Confirmation
+  * Stage 4: Phased Autonomous Execution (Infrastructure, DB schema, Core Features, Growth Flywheel, Deployment)
+
+## Logging & Monitoring
+
+* Report what was executed, what was skipped, and why.
+* Log all environment, credential, and execution issues.
+* Each phase output must include "Next Recommended Action" and wait for my explicit "next" command.
+
+## Parallel Project Handling
+
+* Multiple projects may run in parallel.
+* Track each project's progress independently.
+* Always maintain session state per project.
+
+## Output
+
+* Generate PLAN.md for action plans.
+* Generate project brief and growth hypothesis per project.
+* Log missing credentials, skipped steps, and errors.

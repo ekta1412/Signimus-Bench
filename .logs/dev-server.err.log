@@ -1,0 +1,264 @@
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:101:1]
+ [2m 98[0m | 
+ [2m 99[0m |     setFilteredProfiles(filtered);
+ [2m100[0m |     setCurrentPage(1);
+ [2m101[0m |   }, [activeFilters, jobDescription, searchText]);
+     : [35;1m   ^[0m
+ [2m102[0m | 
+ [2m103[0m |   const toggleFilter = (filter: string) => {
+ [2m104[0m |     setActiveFilters((prev) =>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:133:1]
+ [2m130[0m | 
+ [2m131[0m |     setFilteredProfiles(filtered);
+ [2m132[0m |     setCurrentPage(1);
+ [2m133[0m |   }, [activeFilters, jobDescription, searchText]);
+     : [35;1m   ^[0m
+ [2m134[0m | 
+ [2m135[0m |   const toggleFilter = (filter: string) => {
+ [2m136[0m |     setActiveFilters((prev) =>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:133:1]
+ [2m130[0m | 
+ [2m131[0m |     setFilteredProfiles(filtered);
+ [2m132[0m |     setCurrentPage(1);
+ [2m133[0m |   }, [activeFilters, jobDescription, searchText]);
+     : [35;1m   ^[0m
+ [2m134[0m | 
+ [2m135[0m |   const toggleFilter = (filter: string) => {
+ [2m136[0m |     setActiveFilters((prev) =>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:133:1]
+ [2m130[0m | 
+ [2m131[0m |     setFilteredProfiles(filtered);
+ [2m132[0m |     setCurrentPage(1);
+ [2m133[0m |   }, [activeFilters, jobDescription, searchText]);
+     : [35;1m   ^[0m
+ [2m134[0m | 
+ [2m135[0m |   const toggleFilter = (filter: string) => {
+ [2m136[0m |     setActiveFilters((prev) =>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:133:1]
+ [2m130[0m | 
+ [2m131[0m |     setFilteredProfiles(filtered);
+ [2m132[0m |     setCurrentPage(1);
+ [2m133[0m |   }, [activeFilters, jobDescription, searchText]);
+     : [35;1m   ^[0m
+ [2m134[0m | 
+ [2m135[0m |   const toggleFilter = (filter: string) => {
+ [2m136[0m |     setActiveFilters((prev) =>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:99:1]
+ [2m 96[0m |         : true;
+ [2m 97[0m | 
+ [2m 98[0m |       return matchesFilters && matchesJobDescription && matchesSearch;
+ [2m 99[0m |     });
+     : [35;1m     ^[0m
+ [2m100[0m | 
+ [2m101[0m |     setFilteredProfiles(filtered);
+ [2m102[0m |     setCurrentPage(1);
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:99:1]
+ [2m 96[0m |         : true;
+ [2m 97[0m | 
+ [2m 98[0m |       return matchesFilters && matchesJobDescription && matchesSearch;
+ [2m 99[0m |     });
+     : [35;1m     ^[0m
+ [2m100[0m | 
+ [2m101[0m |     setFilteredProfiles(filtered);
+ [2m102[0m |     setCurrentPage(1);
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:99:1]
+ [2m 96[0m |         : true;
+ [2m 97[0m | 
+ [2m 98[0m |       return matchesFilters && matchesJobDescription && matchesSearch;
+ [2m 99[0m |     });
+     : [35;1m     ^[0m
+ [2m100[0m | 
+ [2m101[0m |     setFilteredProfiles(filtered);
+ [2m102[0m |     setCurrentPage(1);
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:100:1]
+ [2m 97[0m |         : true;
+ [2m 98[0m | 
+ [2m 99[0m |       return matchesFilters && matchesJobDescription && matchesSearch;
+ [2m100[0m |     });
+     : [35;1m     ^[0m
+ [2m101[0m | 
+ [2m102[0m |     setFilteredProfiles(filtered);
+ [2m103[0m |     setCurrentPage(1);
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:144:1]
+ [2m141[0m |         : true;
+ [2m142[0m | 
+ [2m143[0m |       return matchesFilters && matchesJobDescription && matchesSearch;
+ [2m144[0m |     });
+     : [35;1m     ^[0m
+ [2m145[0m | 
+ [2m146[0m |     setFilteredProfiles(filtered);
+ [2m147[0m |     setCurrentPage(1);
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\signimusbench-main\.next\cache\webpack\client-development\4.pack.gz_' -> 'D:\signimusbench-main\.next\cache\webpack\client-development\4.pack.gz'
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Expected ';', '}' or <eof>
+     ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:320:1]
+ [2m317[0m |       )}
+ [2m318[0m |     </div>
+ [2m319[0m |   );
+ [2m320[0m | }    kha hai dikh nhi rah
+     : [35;1m     ^|^[0m[33;1m ^^^[0m
+     :       [35;1m`-- [35;1mThis is the expression part of an expression statement[0m[0m
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Unexpected character '👈'
+    ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:77:1]
+ [2m74[0m |   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
+ [2m75[0m |   const [jobDescription, setJobDescription] = useState('');
+ [2m76[0m |   const [filteredProfiles, setFilteredProfiles] = useState(profilesData);
+ [2m77[0m |   const [profiles, setProfiles] = useState([]);   👈 HERE (NEW LINE)
+    : [35;1m                                                  ^[0m
+ [2m78[0m |   const [pageSize, setPageSize] = useState(6);
+ [2m79[0m |   const [currentPage, setCurrentPage] = useState(1);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Unexpected character '👈'
+    ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:77:1]
+ [2m74[0m |   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
+ [2m75[0m |   const [jobDescription, setJobDescription] = useState('');
+ [2m76[0m |   const [filteredProfiles, setFilteredProfiles] = useState(profilesData);
+ [2m77[0m |   const [profiles, setProfiles] = useState([]);   👈 HERE (NEW LINE)
+    : [35;1m                                                  ^[0m
+ [2m78[0m |   const [pageSize, setPageSize] = useState(6);
+ [2m79[0m |   const [currentPage, setCurrentPage] = useState(1);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
+ ⨯ ./app/bench/page.tsx
+Error:   [31mx[0m Unexpected character '👈'
+    ,-[[36;1;4mD:\signimusbench-main\app\bench\page.tsx[0m:77:1]
+ [2m74[0m |   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
+ [2m75[0m |   const [jobDescription, setJobDescription] = useState('');
+ [2m76[0m |   const [filteredProfiles, setFilteredProfiles] = useState(profilesData);
+ [2m77[0m |   const [profiles, setProfiles] = useState([]);   👈 HERE (NEW LINE)
+    : [35;1m                                                  ^[0m
+ [2m78[0m |   const [pageSize, setPageSize] = useState(6);
+ [2m79[0m |   const [currentPage, setCurrentPage] = useState(1);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/bench/page.tsx
