@@ -6,6 +6,12 @@
 [functions]
   node_bundler = "esbuild"
 
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [[redirects]]
   from = "/api/job-posting"
   to = "/.netlify/functions/get-jobs"
