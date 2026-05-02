@@ -1,4 +1,4 @@
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -19,7 +19,7 @@ export async function GET(request: Request): Promise<Response> {
       );
     }
     return new Response(
-      JSON.stringify({ ok: true, message: "Edge health OK - Supabase Connected", timestamp: now, userAgent: ua || null }),
+      JSON.stringify({ ok: true, message: "Health OK - Supabase Connected", timestamp: now, userAgent: ua || null }),
       { status: 200, headers: { "content-type": "application/json" } }
     );
   } catch (err) {

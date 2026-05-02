@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar"; // Import the new Sidebar component
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Bench App",
@@ -46,9 +35,9 @@ export default function RootLayout({
                 })(window, document, "clarity", "script", "XXXXXXXXX");
               `,
             }} />
-          </head>
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex`} // Added flex to body
+        className="font-sans antialiased flex" // Added flex to body
       >
         {/* Sidebar */}
         <Sidebar /> {/* Use the Sidebar component */}

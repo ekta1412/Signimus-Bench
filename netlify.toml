@@ -1,10 +1,11 @@
 [build]
-  command = "npm install"
-  publish = "."
+  command = "npm run build"
+  publish = ".next"
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["staging.env"]
 
 [[redirects]]
   from = "/api/job-posting"

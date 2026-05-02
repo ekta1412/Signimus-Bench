@@ -1,12 +1,13 @@
 [build]
   command = "npm run build"
-  publish = ".next/standalone"
+  publish = ".next"
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["staging.env"]
 
 [[redirects]]
   from = "/api/job-posting"
-  to = "/.netlify/functions/get-jobs"
+  to = "/.netlify/functions/job-posting"
   status = 200

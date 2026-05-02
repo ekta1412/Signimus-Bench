@@ -1,4 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
+const { existsSync, readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
 const jsonHeaders = {
   'Content-Type': 'application/json',
@@ -15,13 +17,50 @@ function json(statusCode, body) {
   };
 }
 
+function readStagingEnv() {
+  try {
+    const envPath = join(process.cwd(), 'staging.env');
+    if (!existsSync(envPath)) return {};
+
+    return readFileSync(envPath, 'utf8')
+      .split(/\r?\n/)
+      .reduce((acc, line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) return acc;
+        const separatorIndex = trimmed.indexOf('=');
+        if (separatorIndex === -1) return acc;
+        const key = trimmed.slice(0, separatorIndex).trim();
+        const value = trimmed.slice(separatorIndex + 1).trim();
+        if (key) acc[key] = value;
+        return acc;
+      }, {});
+  } catch (error) {
+    console.warn('Unable to read staging.env fallback.', error);
+    return {};
+  }
+}
+
+function isLocalSupabaseUrl(url) {
+  return Boolean(url && /127\.0\.0\.1|localhost/.test(url));
+}
+
 function getSupabaseClient() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key =
+  const stagingEnv = readStagingEnv();
+  let url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  let key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
     process.env.SUPABASE_ANON_KEY ||
     process.env.SUPABASE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || isLocalSupabaseUrl(url)) {
+    url = stagingEnv.SUPABASE_URL || stagingEnv.NEXT_PUBLIC_SUPABASE_URL || url;
+    key =
+      stagingEnv.SUPABASE_SERVICE_ROLE_KEY ||
+      stagingEnv.SUPABASE_ANON_KEY ||
+      stagingEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      key;
+  }
 
   if (!url || !key) {
     throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY');

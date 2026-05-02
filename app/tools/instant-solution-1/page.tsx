@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { supabase } from '../../../lib/supabase';
+import { createBrowserSupabaseClient } from '@/lib/supabaseBrowser';
 
 interface BenchmarkResults {
   id?: string;
@@ -34,6 +34,14 @@ const InstantSolutionPage: React.FC = () => {
 
     const timeA = await runSnippetInWorker(codeA);
     const timeB = await runSnippetInWorker(codeB);
+
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) {
+      console.error('Missing Supabase browser environment variables.');
+      setResults({ timeA, timeB });
+      setIsRunning(false);
+      return;
+    }
 
     const { data, error } = await supabase
       .from('results')
