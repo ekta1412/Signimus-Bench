@@ -214,6 +214,7 @@
         let remoteJobs = [];
         let jobsLoaded = false;
         let jobsLoadError = '';
+        const SHARED_JOBS_ENDPOINTS = ['/api/job-posting', '/.netlify/functions/job-posting'];
 
         function escapeHtml(value) {
             return String(value || '').replace(/[&<>"']/g, ch => ({
@@ -263,17 +264,33 @@
         async function loadRemoteJobs(force = false) {
             if (jobsLoaded && !force) return;
             try {
-                const response = await fetch('/api/job-posting', { cache: 'no-store' });
-                if (!response.ok) throw new Error(`API returned ${response.status}`);
-                const data = await response.json();
+                const data = await requestSharedJobsApi({ method: 'GET' });
                 remoteJobs = Array.isArray(data.jobs) ? data.jobs : [];
                 jobsLoadError = '';
             } catch (error) {
                 console.warn('Unable to load shared jobs.', error);
-                jobsLoadError = 'Shared jobs API unavailable. New jobs will only show publicly after the API/Supabase setup is running.';
+                jobsLoadError = 'Shared jobs API unavailable. New jobs will only show publicly after Netlify/Supabase is configured.';
             } finally {
                 jobsLoaded = true;
             }
+        }
+
+        async function requestSharedJobsApi(options) {
+            let lastError;
+            for (const endpoint of SHARED_JOBS_ENDPOINTS) {
+                try {
+                    const response = await fetch(endpoint, {
+                        cache: 'no-store',
+                        ...options,
+                    });
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok) throw new Error(data.error || `${endpoint} returned ${response.status}`);
+                    return data;
+                } catch (error) {
+                    lastError = error;
+                }
+            }
+            throw lastError || new Error('Shared jobs API unavailable');
         }
 
         function showToast(message) {
@@ -539,7 +556,7 @@
             submitButton.classList.add('opacity-70', 'cursor-not-allowed');
 
             try {
-                const response = await fetch('/api/job-posting', {
+                const result = await requestSharedJobsApi({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -557,9 +574,6 @@
                         jobDescription: job.summary,
                     }),
                 });
-
-                const result = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(result.error || `API returned ${response.status}`);
 
                 showToast('New job saved to shared database.');
                 form.reset();

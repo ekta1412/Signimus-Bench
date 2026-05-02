@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Signimus Developer Profiles</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='8' fill='%234F46E5'/%3E%3Cpath d='M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5' stroke='white' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .hidden { display: none !important; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .filter-badge.active { background-color: #4f46e5; color: #ffffff; }
+        .interactive-filter-badge { cursor: pointer; }
+        .active-filter-badge .clear-btn { margin-left: 0.5rem; color: rgba(255,255,255,0.8); }
+        .active-filter-badge .clear-btn:hover { color: #ffffff; }
+        .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background-color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; }
+        .modal-close-btn { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; cursor: pointer; color: #64748b; }
+        .copy-toast { position: fixed; bottom: 6rem; left: 50%; transform: translateX(-50%); background-color: rgba(30,41,59,0.9); color: white; padding: 0.75rem 1.5rem; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: opacity 0.3s ease-in-out; opacity: 0; z-index: 100; }
+        .copy-toast.show { opacity: 1; }
+        .profile-card.selected-card { background-color: #eff6ff; border-color: #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.5); transform: scale(1.02); }
+        .profile-card.not-a-fit-card { opacity: 0.5; cursor: not-allowed; border-color: #e5e7eb; }
+        .loading-spinner-small { border: 3px solid rgba(0,0,0,0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: #4f46e5; animation: spin 1s ease infinite; }
+        #main-loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(248,250,252,0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.3s ease-in-out; opacity: 0; pointer-events: none; }
+        #main-loading-overlay.show { opacity: 1; pointer-events: auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .range-slider { position: relative; height: 2rem; display: flex; align-items: center; }
+        .range-slider input[type=range] { position: absolute; width: 100%; -webkit-appearance: none; background: transparent; pointer-events: none; }
+        .range-slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: #4f46e5; cursor: pointer; box-shadow: 0 0 0 2px white, 0 1px 4px rgba(0,0,0,0.2); }
+        .range-slider input[type=range]::-moz-range-thumb { pointer-events: auto; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: #4f46e5; cursor: pointer; border: none; box-shadow: 0 0 0 2px white, 0 1px 4px rgba(0,0,0,0.2); }
+        .slider-track { position: absolute; width: 100%; height: 5px; background-color: #e2e8f0; border-radius: 3px; }
+        #slider-range-fill { position: absolute; height: 5px; background-color: #6366f1; border-radius: 3px; }
+
+        /* ===== HOMEPAGE MODAL STYLES ===== */
+        #homepage-modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.65);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 500;
+            backdrop-filter: blur(4px);
+            animation: fadeInBackdrop 0.25s ease;
+        }
+        @keyframes fadeInBackdrop { from { opacity: 0; } to { opacity: 1; } }
+        #homepage-modal {
+            background-color: #f8fafc;
+            border-radius: 1.25rem;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            width: 95%;
+            max-width: 960px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes slideUpModal { from { opacity: 0; transform: translateY(40px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        #homepage-modal-close {
+            position: sticky; top: 0; float: right;
+            margin: 1rem 1rem 0 0;
+            width: 2.25rem; height: 2.25rem;
+            background: white; border: 1px solid #e2e8f0;
+            border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #64748b; font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            transition: background 0.15s, color 0.15s;
+        }
+        #homepage-modal-close:hover { background: #fee2e2; color: #ef4444; }
+        
+        /* Article styles inside modal */
+        .article-body { font-family: 'Lora', serif; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .article-body h3 { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+        .article-body p, .article-body li { color: #475569; line-height: 1.85; font-size: 1rem; }
+        .article-body ul { list-style: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 1rem; }
+        .article-body blockquote { border-left: 4px solid #c7d2fe; padding-left: 1.25rem; font-style: italic; color: #64748b; margin: 1.5rem 0; font-size: 1.05rem; }
+        .comparison-table th { background-color: #f1f5f9; padding: 0.75rem; text-align: left; font-weight: 600; color: #475569; }
+        .comparison-table td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; }
+
+        /* Heading clickable style */
+        #main-heading {
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        #main-heading:hover { color: #4f46e5; }
+        #main-heading-hint {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white text-slate-800 shadow-lg sticky top-0 z-50 p-4">
+        <div class="container mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-start md:items-center space-x-4 w-full md:w-1/3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;" class="cursor-pointer" id="logo-btn" title="Signimus Home">
+                    <rect width="36" height="36" rx="8" fill="#4F46E5"/>
+                    <path d="M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </svg>
+                <div class="flex flex-col flex-grow">
+                    <div>
+                        <button id="main-heading" class="text-xl font-extrabold tracking-tight text-left leading-tight" title="Click to explore Signimus resources">Signimus Talent Bench</button>
+                        <div id="main-heading-hint"><i class="fas fa-external-link-alt" style="font-size:0.6rem;"></i> Click to explore guides &amp; resources</div>
+                    </div>
+                    <div class="relative mt-1">
+                        <textarea id="job-description-input" class="w-full h-12 p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 resize-none" placeholder="Paste a job description here..."></textarea>
+                    </div>
+                    <div class="mt-2 flex flex-col sm:flex-row gap-2">
+                        <button id="export-excel-button" class="flex-1 text-sm font-semibold text-green-600 hover:text-green-800 transition duration-150 ease-in-out flex items-center justify-center space-x-2 bg-green-100 p-2 rounded-lg">
+                           <i class="fas fa-file-excel"></i>
+                           <span>Export Bench List</span>
+                        </button>
+                        <label id="import-csv-label" class="flex-1 text-sm font-semibold text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out flex items-center justify-center space-x-2 bg-blue-100 p-2 rounded-lg cursor-pointer">
+                           <i class="fas fa-file-upload"></i>
+                           <span>Import CSV</span>
+                           <input type="file" id="import-csv-input" accept=".csv" class="hidden" />
+                        </label>
+                        <button id="joint-bench-button" class="flex-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out flex items-center justify-center space-x-2 bg-indigo-100 p-2 rounded-lg">
+                           <i class="fas fa-user-plus"></i>
+                           <span>Joint Bench</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-2/3 flex flex-col">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold text-gray-700">Filters:</span>
+                    <div class="flex items-center space-x-4">
+                        <a href="https://wa.me/918225998112?text=Hello%20Signimus" target="_blank" class="text-gray-600 hover:text-green-500 transition-colors duration-150"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="mailto:contact@signimus.com" class="text-gray-600 hover:text-blue-500 transition-colors duration-150"><i class="fas fa-envelope text-lg"></i></a>
+                        <a href="tel:+918225998112" class="text-gray-600 hover:text-indigo-500 transition-colors duration-150"><i class="fas fa-phone text-lg"></i></a>
+                    </div>
+                </div>
+                <div id="filter-bar" class="flex items-center flex-wrap md:flex-nowrap gap-2 overflow-x-auto pb-2 -mr-4 md:mr-0">
+                    <div id="active-filters" class="flex flex-wrap md:flex-nowrap gap-2"></div>
+                    <div id="popular-filters" class="flex flex-wrap md:flex-nowrap gap-2"></div>
+                    <button id="more-filters-button" class="filter-badge text-xs font-semibold px-3 py-1 rounded-full cursor-pointer transition-colors duration-150 bg-gray-200 text-gray-800 hover:bg-gray-300 flex-shrink-0">More...</button>
+                    <button id="jobs-button" class="text-xs font-semibold px-3 py-1 rounded-full cursor-pointer transition-colors duration-150 bg-purple-100 text-purple-700 hover:bg-purple-200 flex-shrink-0 flex items-center gap-1"><i class="fas fa-briefcase"></i> Jobs</button>
+                </div>
+                <div id="experience-filter-container" class="w-full mt-2">
+                    <label class="text-sm font-semibold text-gray-700">Experience Range: <span id="experience-range-label" class="font-bold text-indigo-600">All</span></label>
+                    <div class="range-slider mt-2">
+                        <div class="slider-track"></div>
+                        <div id="slider-range-fill"></div>
+                        <input type="range" id="min-exp-slider" min="0" max="15" value="0" class="z-10">
+                        <input type="range" id="max-exp-slider" min="0" max="15" value="15">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="status-bar" class="container mx-auto mt-4 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg flex items-center justify-center space-x-2 font-medium text-sm transition-all duration-200 ease-in-out">
+            <i id="status-icon" class="fas fa-info-circle"></i>
+            <span id="status-message">Waiting for your input...</span>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="profiles-container" class="w-full grid gap-6 grid-cols-1 lg:grid-cols-2"></div>
+        <div id="pagination" class="mt-6 flex items-center justify-center flex-wrap gap-2"></div>
+    </main>
+
+    <!-- All Filters Modal -->
+    <div id="all-filters-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button id="close-filters-modal" class="modal-close-btn">&times;</button>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">All Skills</h3>
+            <div id="all-filters-container" class="flex flex-wrap gap-2 transition-all duration-300 ease-in-out"></div>
+        </div>
+    </div>
+
+    <!-- Joint Bench Modal -->
+    <div id="joint-bench-modal" class="modal-backdrop hidden" style="z-index:220;">
+        <div class="modal-content" style="max-width:720px;">
+            <button id="joint-bench-close" class="modal-close-btn">&times;</button>
+            <div class="flex items-center gap-3 mb-5 pr-8">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0"><i class="fas fa-user-plus text-indigo-600"></i></div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Joint Bench Developer Form</h3>
+                    <p class="text-xs text-gray-400">Form submit karte hi developer bench list me add ho jayega.</p>
+                </div>
+            </div>
+            <form id="joint-bench-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="text-sm font-semibold text-gray-700">
+                    Developer Name <span class="text-red-500">*</span>
+                    <input id="joint-name" type="text" required class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Rahul Sharma">
+                </label>
+                <label class="text-sm font-semibold text-gray-700">
+                    Role / Title <span class="text-red-500">*</span>
+                    <input id="joint-title" type="text" required class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. React Developer">
+                </label>
+                <label class="text-sm font-semibold text-gray-700">
+                    Experience
+                    <input id="joint-experience" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 3 years">
+                </label>
+                <label class="text-sm font-semibold text-gray-700">
+                    Monthly Rate
+                    <input id="joint-monthly-rate" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 90000">
+                </label>
+                <label class="text-sm font-semibold text-gray-700 sm:col-span-2">
+                    Skills <span class="text-red-500">*</span>
+                    <input id="joint-skills" type="text" required class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="React.js, Node.js, MongoDB">
+                </label>
+                <label class="text-sm font-semibold text-gray-700">
+                    Resume Link
+                    <input id="joint-resume-link" type="url" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://...">
+                </label>
+                <label class="text-sm font-semibold text-gray-700">
+                    Market Rate
+                    <input id="joint-market-rate" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 100,000">
+                </label>
+                <label class="text-sm font-semibold text-gray-700 sm:col-span-2">
+                    Professional Summary
+                    <textarea id="joint-summary" rows="3" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="Short developer summary"></textarea>
+                </label>
+                <label class="text-sm font-semibold text-gray-700 sm:col-span-2">
+                    Experience Details
+                    <textarea id="joint-full-experience" rows="4" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="Project / company / responsibility details"></textarea>
+                </label>
+                <div class="sm:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100">
+                    <button type="button" id="joint-bench-cancel" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center gap-2"><i class="fas fa-plus"></i> Add to Bench</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== JOBS MODAL ===== -->
+    <div id="jobs-modal-backdrop" class="modal-backdrop hidden" style="z-index:200;">
+        <div class="modal-content" style="max-width:700px;">
+            <button id="jobs-modal-close" class="modal-close-btn">&times;</button>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0"><i class="fas fa-briefcase text-purple-600"></i></div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Open Positions at Signimus</h3>
+                    <p class="text-xs text-gray-400">Click on any job to view full details &amp; apply</p>
+                </div>
+            </div>
+            <div id="jobs-list" class="flex flex-col gap-3"></div>
+            <div class="mt-6 bg-purple-50 border border-purple-100 rounded-xl p-4 text-center">
+                <p class="text-sm font-semibold text-purple-800 mb-1">Don't see a fit? Send an open application.</p>
+                <a href="mailto:contact@signimus.com?subject=Open Application" class="inline-flex items-center gap-2 text-sm font-bold text-purple-700 hover:underline"><i class="fas fa-paper-plane"></i> contact@signimus.com</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div id="job-detail-modal-backdrop" class="modal-backdrop hidden" style="z-index:300;">
+        <div class="modal-content" style="max-width:660px;">
+            <button id="job-detail-close" class="modal-close-btn">&times;</button>
+            <div id="job-detail-body"></div>
+        </div>
+    </div>
+
+    <!-- ===== HOMEPAGE MODAL ===== -->
+    <div id="homepage-modal-backdrop" class="hidden">
+        <div id="homepage-modal">
+            <button id="homepage-modal-close" title="Close"><i class="fas fa-times"></i></button>
+
+            <!-- Modal inner content rendered by JS -->
+            <div id="homepage-modal-body" class="px-6 pb-8 pt-2"></div>
+        </div>
+    </div>
+
+    <!-- Page Templates (hidden, used by homepage modal router) -->
+    <template id="tpl-home">
+        <div class="max-w-full">
+            <!-- Mini nav bar inside modal -->
+            <div class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between rounded-t-xl">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 36 36">
+                        <rect width="36" height="36" rx="8" fill="#4F46E5"/>
+                        <path d="M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                    </svg>
+                    <span class="font-bold text-slate-800 text-lg">Signimus</span>
+                </div>
+                <a href="https://signimus.com" target="_blank" class="text-xs text-indigo-600 font-semibold hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> signimus.com</a>
+            </div>
+
+            <div class="p-6">
+                <!-- Hero -->
+                <div class="text-center py-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl mb-8">
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hire Vetted Developers</h1>
+                    <p class="text-slate-600 mt-2 max-w-lg mx-auto">Access expert guides on technical hiring, interview questions, and salary benchmarks.</p>
+                    <div class="mt-4 flex justify-center gap-3 flex-wrap">
+                        <a href="https://wa.me/918225998112?text=Hello%20Signimus" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white font-semibold rounded-lg text-sm hover:bg-green-600 transition"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+                        <a href="mailto:contact@signimus.com" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg text-sm hover:bg-indigo-700 transition"><i class="fas fa-envelope"></i> Email Us</a>
+                    </div>
+                </div>
+
+                <!-- Guides grid -->
+                <h2 class="text-xl font-bold text-slate-800 mb-4">📚 Hiring Resources & Guides</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <button onclick="homepageRoute('react-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">⚛️</span>
+                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring React Developers</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">Vetting framework, interview questions & coding challenge guide.</p>
+                        <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
+                    </button>
+                    <button onclick="homepageRoute('python-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">🐍</span>
+                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring Python Developers</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">Web dev vs. data science roles, salary benchmarks, 2025 guide.</p>
+                        <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
+                    </button>
+                    <button onclick="homepageRoute('wordpress-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">🌐</span>
+                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring WordPress Developers</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">Essential skills, PHP depth, interview questions for WP experts.</p>
+                        <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
+                    </button>
+                    <button onclick="homepageRoute('kotlin-vs-java-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">📱</span>
+                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Kotlin vs Java for Android</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">Definitive technical comparison for managers and developers.</p>
+                        <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
+                    </button>
+                    <button onclick="homepageRoute('salary-calculator')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group sm:col-span-2">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">💰</span>
+                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Developer Salary Calculator</h3>
+                        </div>
+                        <p class="text-sm text-slate-500">Instant salary estimates based on real market data to make competitive offers.</p>
+                        <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Use the Tool →</span>
+                    </button>
+                </div>
+
+                <!-- Contact footer -->
+                <div class="bg-indigo-600 rounded-xl p-6 text-white text-center">
+                    <p class="font-bold text-lg mb-1">Need to hire fast?</p>
+                    <p class="text-indigo-200 text-sm mb-4">All candidates are pre-vetted and available immediately.</p>
+                    <div class="flex justify-center gap-3 flex-wrap">
+                        <a href="https://wa.me/918225998112?text=Hello%20Signimus%2C%20I%20want%20to%20hire" target="_blank" class="px-4 py-2 bg-white text-indigo-600 font-bold rounded-lg text-sm hover:bg-indigo-50 transition flex items-center gap-2"><i class="fab fa-whatsapp"></i> +91 82259 98112</a>
+                        <a href="mailto:contact@signimus.com" class="px-4 py-2 bg-indigo-500 text-white font-semibold rounded-lg text-sm hover:bg-indigo-400 transition flex items-center gap-2"><i class="fas fa-envelope"></i> contact@signimus.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-react-guide">
+        <div class="p-6">
+            <button onclick="homepageRoute('home')" class="mb-4 inline-flex items-center gap-2 text-sm text-indigo-600 font-semibold hover:underline"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">The Ultimate Guide to Hiring React Developers</h1>
+            <p class="text-slate-500 text-sm mb-6">By Signimus Vetting Team • 8 min read</p>
+            <div class="article-body">
+                <p class="text-base leading-7">A great React developer is an architect of the user experience—deeply understanding state management, performance optimization, and the modern JavaScript ecosystem.</p>
+                <blockquote>Industry Finding: The cost of a bad technical hire can exceed $250,000 in lost time, salary, and recruitment fees. Vetting for the right skills upfront is paramount.</blockquote>
+                <h2>Phase 1: The Vetting Framework</h2>
+                <h3>1.1 Portfolio & GitHub Analysis</h3>
+                <p>A candidate's code is their resume. Before an interview, a thorough review of their public work reveals more than any conversation.</p>
+                <ul>
+                    <li><strong>Project Structure:</strong> Is the code organized logically? Look for a clear separation of components, services, hooks, and utilities.</li>
+                    <li><strong>Commit History:</strong> Review their commit messages on GitHub. Frequent, small commits show a methodical and professional workflow.</li>
+                    <li><strong>Custom Hooks:</strong> Have they created their own custom hooks? This demonstrates deeper understanding of React's composition model.</li>
+                </ul>
+                <h2>Phase 2: The Technical Interview</h2>
+                <h3>2.1 Core Concepts: React Hooks & Lifecycle</h3>
+                <ul>
+                    <li>Explain the purpose of the dependency array in <code>useEffect</code>. What happens if you omit it?</li>
+                    <li>A component re-renders frequently, causing a child to re-render even when props haven't changed. How would you prevent this? (Tests <code>React.memo</code>.)</li>
+                </ul>
+                <h3>2.2 Application State & Data Flow</h3>
+                <ul>
+                    <li>Describe a situation where you managed complex, shared state. What solution (Context, Zustand, Redux) did you choose and why?</li>
+                    <li>What is "prop drilling" and how can you avoid it?</li>
+                </ul>
+                <h2>Phase 3: The Coding Challenge</h2>
+                <blockquote>Challenge: "Using a public API of your choice, build a React app that allows a user to search for something and display results. Handle loading and error states. Focus on clean code, component structure, and state management."</blockquote>
+            </div>
+            <div class="mt-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Available React Developers</h2>
+                <div id="hp-react-profiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-python-guide">
+        <div class="p-6">
+            <button onclick="homepageRoute('home')" class="mb-4 inline-flex items-center gap-2 text-sm text-indigo-600 font-semibold hover:underline"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">How to Hire Python Developers: The 2025 Guide</h1>
+            <p class="text-slate-500 text-sm mb-6">By Signimus Vetting Team • 9 min read</p>
+            <div class="article-body">
+                <p class="text-base leading-7">Python's versatility is its greatest strength and its biggest hiring challenge. A "Python Developer" could be a web specialist, a data scientist, or an automation engineer. Identifying the <em>right</em> kind is critical.</p>
+                <blockquote>Expert Insight: We see more hiring mismatches with Python than any other language—companies often hire a web developer for a data role, or vice-versa.</blockquote>
+                <h2>Phase 1: Defining the Role</h2>
+                <h3>1.1 Web Development vs. Data Science</h3>
+                <ul>
+                    <li><strong>Python for Web:</strong> Django, Flask, REST APIs, database integration.</li>
+                    <li><strong>Python for Data Science/AI/ML:</strong> Pandas, NumPy, Scikit-learn, TensorFlow/PyTorch.</li>
+                </ul>
+                <h2>Phase 2: The Technical Interview</h2>
+                <h3>2.1 For Python Web Developers</h3>
+                <ul>
+                    <li>Explain the difference between Django's ORM and SQLAlchemy.</li>
+                    <li>How would you implement caching in a Flask or Django application?</li>
+                    <li>What are Python decorators? Give a practical example (e.g., authentication).</li>
+                </ul>
+                <h3>2.2 For Python Data Scientists</h3>
+                <ul>
+                    <li>What is the difference between a <code>Series</code> and a <code>DataFrame</code> in Pandas?</li>
+                    <li>Explain vectorization in NumPy and why it matters for performance.</li>
+                    <li>You have a dataset with missing values. What strategies would you use?</li>
+                </ul>
+            </div>
+            <div class="mt-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Available Python Developers</h2>
+                <div id="hp-python-profiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-wordpress-guide">
+        <div class="p-6">
+            <button onclick="homepageRoute('home')" class="mb-4 inline-flex items-center gap-2 text-sm text-indigo-600 font-semibold hover:underline"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Hiring WordPress Developers: What to Look For</h1>
+            <p class="text-slate-500 text-sm mb-6">By Signimus Vetting Team • 6 min read</p>
+            <div class="article-body">
+                <p class="text-base leading-7">Anyone can install a WordPress theme. A true WordPress developer is a skilled PHP programmer who understands the platform's core architecture, database structure, and API ecosystem.</p>
+                <blockquote>A great WordPress developer is a backend PHP developer first, and a WordPress specialist second. Their value is in custom solutions, not just configuring off-the-shelf plugins.</blockquote>
+                <h2>Key Skills: Professionals vs. Amateurs</h2>
+                <ul>
+                    <li><strong>Expert PHP & MySQL:</strong> Clean, efficient, and secure PHP code and complex database queries.</li>
+                    <li><strong>Custom Theme & Plugin Development:</strong> Build from design (Figma) and develop bespoke plugins.</li>
+                    <li><strong>Gutenberg & Block Editor:</strong> Creating custom blocks for modern WordPress development.</li>
+                </ul>
+                <h2>Interview Questions</h2>
+                <ul>
+                    <li>Describe the WordPress "loop." How would you modify it to run a secondary custom query?</li>
+                    <li>What are action hooks and filter hooks? Provide an example of each.</li>
+                    <li>How would you add a custom field to a post type <em>without</em> using ACF? (Tests knowledge of custom meta boxes.)</li>
+                </ul>
+            </div>
+            <div class="mt-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Available WordPress Developers</h2>
+                <div id="hp-wordpress-profiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-kotlin-vs-java-guide">
+        <div class="p-6">
+            <button onclick="homepageRoute('home')" class="mb-4 inline-flex items-center gap-2 text-sm text-indigo-600 font-semibold hover:underline"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Kotlin vs. Java for Android: The Definitive Guide</h1>
+            <p class="text-slate-500 text-sm mb-6">By Signimus Vetting Team • 7 min read</p>
+            <div class="article-body">
+                <p class="text-base leading-7">For engineering leaders, the choice between Kotlin and Java is a strategic decision impacting productivity, code quality, and long-term maintainability.</p>
+                <h2>At a Glance: Feature Comparison</h2>
+                <div style="overflow-x:auto; margin: 1.5rem 0;">
+                    <table class="w-full text-sm comparison-table border border-slate-200 rounded-lg overflow-hidden">
+                        <thead>
+                            <tr>
+                                <th>Feature</th><th>Java</th><th>Kotlin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="font-medium">Null Safety</td><td>Prone to NullPointerException.</td><td class="text-green-600 font-semibold">Built into the type system—eliminates NPE at compile time.</td></tr>
+                            <tr><td class="font-medium">Verbosity</td><td>Boilerplate for data classes (getters, setters, equals).</td><td class="text-green-600 font-semibold">Concise with data classes, type inference, extension functions.</td></tr>
+                            <tr><td class="font-medium">Concurrency</td><td>Traditional threading, RxJava.</td><td class="text-green-600 font-semibold">Native Coroutines for lightweight async code.</td></tr>
+                            <tr><td class="font-medium">Interoperability</td><td>Can call Kotlin code.</td><td class="text-green-600 font-semibold">100% interoperable with Java, both ways.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h2>Verdict: Kotlin is the Future</h2>
+                <p>Google's official preference for Kotlin is backed by real-world advantages. Kotlin's focus on safety and conciseness directly translates to faster development and fewer bugs.</p>
+                <blockquote>In Kotlin, the type system distinguishes between nullable and non-null references at compile time—eliminating an entire class of runtime errors.</blockquote>
+            </div>
+            <div class="mt-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Available Android Developers</h2>
+                <div id="hp-android-profiles" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-salary-calculator">
+        <div class="p-6">
+            <button onclick="homepageRoute('home')" class="mb-4 inline-flex items-center gap-2 text-sm text-indigo-600 font-semibold hover:underline"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Developer Salary Calculator</h1>
+            <p class="text-slate-500 text-sm mb-6">Get an instant estimate based on real-world market data from our active bench.</p>
+            <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Technology / Role</label>
+                        <select id="sc-tech" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                            <option value="react">React.js / Frontend</option>
+                            <option value="java">Java / Spring Boot</option>
+                            <option value="python">Python / Django</option>
+                            <option value="flutter">Flutter / Mobile</option>
+                            <option value="devops">DevOps / AWS / Kubernetes</option>
+                            <option value="ai">AI / ML Engineer</option>
+                            <option value="wordpress">WordPress / PHP</option>
+                            <option value="fullstack">Full Stack (MERN/Java)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Experience: <span id="sc-exp-label" class="text-indigo-600">3 years</span></label>
+                        <input type="range" id="sc-exp" min="1" max="12" value="3" class="w-full accent-indigo-600 mt-2">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="calcSalary()" class="w-full py-2 px-4 bg-indigo-600 text-white font-bold rounded-lg text-sm hover:bg-indigo-700 transition">Calculate →</button>
+                    </div>
+                </div>
+            </div>
+            <div id="sc-result" class="hidden bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-6 text-center mb-6">
+                <p class="text-sm text-slate-500 mb-1">Estimated Monthly Rate (India, Remote)</p>
+                <p id="sc-range" class="text-3xl font-extrabold text-indigo-700"></p>
+                <p id="sc-note" class="text-sm text-slate-500 mt-2"></p>
+                <a href="https://wa.me/918225998112?text=Hello%20Signimus%2C%20I%20want%20to%20discuss%20hiring" target="_blank" class="mt-4 inline-flex items-center gap-2 px-5 py-2 bg-green-500 text-white font-bold rounded-lg text-sm hover:bg-green-600 transition"><i class="fab fa-whatsapp"></i> Discuss with Signimus</a>
+            </div>
+        </div>
+    </template>
+
+    <!-- Footer Actions -->
+    <div id="footer-actions" class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-2xl transition-transform duration-300 ease-in-out transform translate-y-full flex items-center justify-center space-x-4 z-50">
+        <button id="copy-profiles-button" class="py-3 px-6 bg-green-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 transition duration-150 ease-in-out flex items-center space-x-2">
+            <i class="fas fa-copy"></i><span>Copy Selected Profiles</span>
+        </button>
+        <button id="arrange-interview-button" class="py-3 px-6 bg-blue-500 text-white font-bold rounded-full shadow-lg hover:bg-blue-600 transition duration-150 ease-in-out flex items-center space-x-2">
+            <i class="fab fa-whatsapp"></i><span>Arrange Interview for Selected</span>
+        </button>
+    </div>
+    
+    <footer class="bg-gray-800 text-white text-center text-sm p-4 mt-8">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-4">
+                <p>&copy; 2024 Powered by Signimus.</p>
+                <div class="flex items-center space-x-4 mt-2 md:mt-0">
+                    <a href="https://wa.me/918225998112?text=Hello%20Signimus" target="_blank" class="text-white hover:text-green-400 transition-colors duration-150 flex items-center"><i class="fab fa-whatsapp mr-1"></i><span>WhatsApp</span></a>
+                    <a href="mailto:contact@signimus.com" class="text-white hover:text-blue-400 transition-colors duration-150 flex items-center"><i class="fas fa-envelope mr-1"></i><span>Email</span></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="copy-toast" class="copy-toast"></div>
+    <div id="analysis-toast" class="copy-toast"></div>
+    <div id="main-loading-overlay" class="hidden">
+        <div class="loading-spinner-small w-12 h-12 border-4"></div>
+        <p class="mt-4 text-indigo-700 font-semibold">Loading data...</p>
+    </div>
+
+    <script>
+        // ==================== PROFILE DATA ====================
+        const profilesData = [
+            { id: 'pranay-singhal', name: 'Pranay Singhal', title: 'Salesforce Developer', experience: '5 years', skills: ['Salesforce Developer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '80,000' },
+            { id: 'bhavesh-mistry', name: 'Bhavesh Mistry', title: 'Full Stack Designer', experience: '4 years', skills: ['Design', 'Bootstrap', 'Tailwind CSS', 'Material UI', 'Responsive Design', 'Animations', 'Figma', 'Photoshop', 'Adobe XD', 'React.js', 'Ruby on Rails', '.NET', 'Angular'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '75,000' },
+            { id: 'sagar-shinde', name: 'Sagar Shinde', title: 'Senior Java Developer', experience: '3 years', skills: ['Core Java', 'Spring', 'Spring Boot', 'REST API', 'Spring Data JPA', 'Hibernate', 'JPA', 'MySQL', 'Kafka', 'Redis', 'AWS', 'Spring Security'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '70,000' },
+            { id: 'abhishek-parihar', name: 'Abhishek Parihar', title: 'Full Stack Java/Python Developer', experience: '6 years', skills: ['Java', 'Spring', 'Spring Boot', 'REST API', 'Spring Data JPA', 'Hibernate', 'JPA', 'MySQL', 'Kafka', 'Redis', 'AWS', 'Spring Security', 'Python3', 'Django', 'Rest Framework', 'Git', 'Bit-bucket', 'SQLite', 'Slack', 'JIRA', 'Scrum', 'Kan-ban'], monthlyRate: 'On Request', resumeLink: 'https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit', marketRate: '120,000' },
+            { id: 'shikha-gupta', name: 'Shikha Gupta', title: 'Marketing Specialist', experience: '2 years', skills: ['Marketing'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '50,000' },
+            { id: 'aishwarya-kulkarni', name: 'Aishwarya Kulkarni', title: 'UI/UX Designer', experience: '5 years', skills: ['Product Designer', 'UI/UX', 'Graphics Design', 'Figma', 'XD', 'Davanci Resolve', 'UIZARD', 'Zeplin', 'Photoshop', 'Illustrator', 'Canva'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '90,000' },
+            { id: 'anshul-arnav', name: 'Anshul Arnav', title: 'Ethical Hacker / Penetration Tester', experience: '3 years', skills: ['Ethical Hacking', 'Penetration Tester', 'WAPT', 'Python', 'Scapy', 'Reverse Engineering', 'Automation'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '85,000' },
+            { id: 'kumar-gaurav', name: 'Kumar Gaurav', title: 'Senior iOS Developer', experience: '7 years', skills: ['iOS', 'Swift', 'Objective-C', 'SwiftUI'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '150,000' },
+            { id: 'bablu-kumar', name: 'Bablu Kumar', title: 'Python Django Developer', experience: '4 years', skills: ['Python', 'Django Developer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '90,000' },
+            { id: 'sayed-mohammad-hanzala', name: 'Sayed Mohammad Hanzala', title: 'Data Scientist / AI/ML Engineer', experience: '1 year', skills: ['Scikit-learn', 'Basic Data Science', 'Data Scientist / AI/ML Engineer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '45,000' },
+            { id: 'shagufta-naaz', name: 'Shagufta Naaz', title: 'Data Engineer', experience: '2 years', skills: ['TensorFlow', 'PyTorch', 'Scikit-learn', 'Data Engineer'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '60,000' },
+            { id: 'shahzaib-alam', name: 'Shahzaib Alam', title: 'Java Spring Boot Developer', experience: '3 years', skills: ['Java', 'Spring Boot'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '65,000' },
+            { id: 'shiva-paul', name: 'Shiva Paul', title: 'Frontend Developer', experience: '2 years', skills: ['Frontend', 'JavaScript', 'HTML', 'CSS'], monthlyRate: 'On Request', resumeLink: 'Profile on Request', marketRate: '55,000' },
+            { id: 'ankit', name: 'Ankit', title: 'Java Spring Boot Developer', experience: '2 years', skills: ['Java Developer', 'Spring Boot'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1tkjTteVMCQiAOfD_47E8ELkx2AN3xcbUbH8csulFONc/edit', marketRate: '70,000' },
+            { id: 'chirag-tiwari', name: 'Chirag Tiwari', title: 'MERN Stack Developer', experience: '2 years', skills: ['MERN Stack', 'React.js', 'Node.js', 'MongoDB', 'Express.js'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1si7zK0nSTtKVKr-yEog85_bF-7ufSbDl/edit', marketRate: '80,000' },
+            { id: 'ashish-verma', name: 'Ashish Verma', title: 'Java Microservices Developer', experience: '2 years', skills: ['Java', 'Spring Boot', 'Microservices', 'AWS'], monthlyRate: '60000', resumeLink: 'https://docs.google.com/document/d/1kTtxgOKLsc40QDTGbpZeSffyaG-7e0vcdZ3pGOe3eMY/edit', marketRate: '75,000' },
+            { id: 'tushar-talmale', name: 'Tushar Talmale', title: 'Full Stack Java/React Developer', experience: '2 years', skills: ['Java', 'Spring Boot', 'J2EE', 'Hibernate', 'Microservices', 'Docker', 'React.js', 'Next.js'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1ytiJox862gSAIK2mrm73VT3-tFeu_sv6ZrNd_XeMXRk/edit', marketRate: '85,000' },
+            { id: 'kamna-daulat-rohida-2', name: 'Kamna Daulat Rohida', title: 'Java Developer', experience: '3.5 years', skills: ['Java', 'Python'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1raOGldsXgid0FuLDaXQ9B3ftE9os9wXp/edit', marketRate: '85,000' },
+            { id: 'atif-2', name: 'Atif', title: 'Python/React Full Stack Developer', experience: '7 years', skills: ['Python', 'Flask', 'FastAPI', 'Pytest', 'Django', 'Express.js', 'React.js'], monthlyRate: '180000', resumeLink: 'https://docs.google.com/document/d/1g3IVKjbPd7wRKkIfYHJBFBryNyoPxvye3NhhSywTYPU/edit', marketRate: '190,000' },
+            { id: 'sunny-2', name: 'Sunny', title: 'Full Stack Developer', experience: '4.5 years', skills: ['Django', 'Flask', 'FastAPI', 'Express.js', 'TypeScript', 'Node.js'], monthlyRate: '100000', resumeLink: 'https://docs.google.com/document/d/1Rc84WXE_PQKpA999VZ8JgKN0xAE9Fsgw/edit', marketRate: '120,000' },
+            { id: 'ankur-2', name: 'Ankur', title: 'Python/AWS DevOps Developer', experience: '6 years', skills: ['Python', 'Django', 'DRF', 'FastAPI', 'Pytest', 'Flask', 'AWS', 'Docker'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1YXAO0VrfQO5-UJLibgh9psra8wDGTpgw5H9VxjDDJ1c/edit', marketRate: '210,000' },
+            { id: 'rounit-agrawal-2', name: 'Rounit Agrawal', title: 'AI/ML Engineer', experience: '4 years', skills: ['Python', 'C', 'SQL', 'PyTorch', 'TensorFlow', 'Scikit-Learn', 'Hugging Face Transformers', 'OpenCV', 'FAISS', 'LlamaIndex', 'OpenAI API', 'Open Lama', 'Speech-to-Text (ASR)', 'Machine Translation (MT)', 'Text-to-Speech (TTS)', 'Intent Classification', 'Pandas', 'NumPy', 'SciPy', 'Matplotlib', 'Jupyter Notebook', 'MySQL', 'Git', 'Docker', 'Azure OpenAI', 'Azure Speech Services', 'RAG systems', 'voice assistants', 'vision AI', 'LLM integration'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1qV_uFa-FVBmsLa2vRWY75oG6A53BIcUr/edit', marketRate: '200,000', professionalSummary: "AI & Machine Learning Engineer with 4+ years of experience delivering end-to-end AI solutions—from data collection and model training to production-grade deployment. Proven track record in RAG systems, voice assistants, vision AI, and LLM integration.", fullExperience: "Machine Learning & AI Engineer\nSignimus Technologies Pvt. Ltd. (Remote) • Nov 2024 – Present\n- PUCHHO (RAG Query System): Built vector store using FAISS for document similarity search in Hindi, Tamil, and Marathi. Integrated OpenAI LLMs to generate context-aware responses from corporate documents.\n- VERA (Voice Railway Assistant): Added ASR (Azure Speech-to-Text) + Intent Classification to PUCHHO for voice queries. Queried live train data via REST APIs; returned spoken answers via Azure TTS.\n\nProject Associate\nCEET, IIT Madras Research Park • Aug 2021 – Nov 2024\n- Sign Language Recognition: Reproduced AI4Bharat LSTM model; mapped sign-video embeddings to text via GPT.\n- Automated Wheelchair Control (AWCV): Merged ASR, sign-recognition, and motor-control algorithms for hands-free navigation.\n- Multilingual Voice-Web Assistant: Developed web frontend with live speech / translation / TTS using Flask + JavaScript.\n- ASR-MT-TTS API Suite: Packaged speech pipelines into Dockerized microservices for enterprise use." },
+            { id: 'suranjan-bhattacharjee-2', name: 'Suranjan Bhattacharjee', title: 'Flutter Developer', experience: '3 years', skills: ['Flutter', 'PHP', 'Dart', 'Firebase'], monthlyRate: '70000', resumeLink: 'https://docs.google.com/document/d/1qsLFEYe0qTE42Em_3XhSV14RtUmQ2_s2hOKajhxG22Y/edit', marketRate: '75,000' },
+            { id: 'hemant-2', name: 'Hemant', title: 'React/Node Full Stack Developer', experience: '6+ years', skills: ['React.js', 'Node.js', 'TypeScript', 'AWS', 'Docker', 'Microservices'], monthlyRate: '200000', resumeLink: 'https://docs.google.com/document/d/1lbdqZMUSaTnE2lyHvWWDKtN3ITQdfkqM8INpx-mfEXI/edit', marketRate: '210,000' },
+            { id: 'potti-amarendra-2', name: 'Potti Amarendra', title: 'Technical Lead', experience: '7 years', skills: ['Java', 'Microservices', 'Spring'], monthlyRate: '180000', resumeLink: 'Profile on Request', marketRate: '200,000' },
+            { id: 'umang-2', name: 'Umang', title: 'Mobile App Developer', experience: '7 years', skills: ['Flutter', 'Dart', 'Android', 'Kotlin', 'Java', 'Firebase'], monthlyRate: '160000', resumeLink: 'https://docs.google.com/document/d/1gknrLi8pbmPwEkfWbLNpWk_wLXlxrf1VcV5u_9JSXeM/edit', marketRate: '170,000' },
+            { id: 'gauri-2', name: 'Gauri', title: 'Full Stack Software Engineer', experience: '8 years', skills: ['Node.js', 'AWS services', 'Angular', 'React.js', 'Kubernetes', 'Docker'], monthlyRate: '500000', resumeLink: 'https://docs.google.com/document/d/1Niw2MCfBgBuvU1l3l2G5VsTqG9balYE-/edit', marketRate: '450,000' },
+            { id: 'vijay-2', name: 'Vijay', title: 'PHP/Laravel Developer', experience: '9 years', skills: ['Laravel', 'Next.js', 'CodeIgniter', 'PHP', 'MySQL'], monthlyRate: '180000', resumeLink: 'https://docs.google.com/document/d/1U0Uh7tEe9RqyVaNDrLGf3tyHIHf_KX-8JQ7Qzv32u-Y/edit', marketRate: '200,000' },
+            { id: 'vaibhav-pathak-2', name: 'Vaibhav Pathak', title: 'DevOps/SRE Engineer', experience: '11 years', skills: ['DevOps', 'SRE', 'AWS', 'Kubernetes', 'Terraform', 'CI/CD'], monthlyRate: '400000', resumeLink: 'Profile on Request', marketRate: '450,000' },
+            { id: 'amarendra-dell-2', name: 'Amarendra', title: 'Dell Boomi Developer', experience: '7 years', skills: ['Dell Boomi Developer', 'Integration', 'API Development'], monthlyRate: '1500000', resumeLink: 'Profile on Request', marketRate: '1,400,000' },
+            { id: 'nikunj-node-react-2', name: 'Nikunj', title: 'Full Stack Developer', experience: '3 years', skills: ['Node.js', 'React', 'App Script', 'Core PHP', 'MySQL', 'MongoDB', 'GoDaddy', 'AWS', 'Digital Ocean', 'Razorpay Payment Gateway', 'Git', 'Firebase'], monthlyRate: '60000', resumeLink: 'Profile on Request', marketRate: '70,000' },
+            { id: 'sadab-shaikh-2', name: 'Sadab Shaikh', title: 'Senior iOS Developer', experience: '7 years', skills: ['Sr iOS Developer', 'Swift', 'Objective-C', 'iOS SDK'], monthlyRate: '2400000', resumeLink: 'Profile on Request', marketRate: '250,000' },
+            { id: 'akash-2', name: 'Akash', title: 'Python/AI Developer', experience: '3 years', skills: ['Python', 'Power BI', 'Pytest', 'AI Development'], monthlyRate: '60000', resumeLink: 'https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit', marketRate: '65,000' },
+            { id: 'pratibha-nallapaneni-2', name: 'Pratibha Nallapaneni', title: 'ETL Data Stage Developer', experience: '3 years', skills: ['Oracle & Data Warehousing', 'ETL Data Stage Developer', 'SQL'], monthlyRate: '140000', resumeLink: 'Profile on Request', marketRate: '140,000' },
+            { id: 'hema-2', name: 'Hema', title: 'Data Analytics/Front-End Developer', experience: '3 years', skills: ['Power BI', 'Data Analytics', 'Adobe DTM', 'Adobe Launch', 'Google Tag Manager', 'Adobe Analytics', 'Front-End Technologies'], monthlyRate: '120000', resumeLink: 'https://docs.google.com/document/d/1vtNS8ObZPkSX-deXxiPDfO6Qcqs8xR4hlhpda8a2yeo/edit', marketRate: '120,000' },
+            { id: 'ayan-2', name: 'Ayan', title: 'Python/Data Developer', experience: '1.6 years', skills: ['Python', 'Selenium', 'Power BI', 'Django', 'SQL'], monthlyRate: '30000', resumeLink: 'Profile on Request', marketRate: '40,000' },
+            { id: 'ishika-s-dabare-2', name: 'Ishika S Dabare', title: 'Gen AI Assistant', experience: '1.8 years', skills: ['Python', 'C++', 'SQL', 'DBMS', 'Prompt Engineering', 'RAG', 'AutoGen', 'Gen AI on Azure', 'MS Excel', 'Machine Learning', 'Gen AI Assistant', 'Junior Developer', 'Project Manager'], monthlyRate: 'On Request', resumeLink: 'https://docs.google.com/document/d/19odqw3zP8Ya6W7NwTdQnw0B0VNF-4ySro6H8vXVkQIc/edit', marketRate: '60,000' },
+            { id: 'bhavik-2', name: 'Bhavik', title: 'MERN Stack Developer', experience: '3 years', skills: ['React.js', 'Node.js', 'Express.js', 'MongoDB'], monthlyRate: '110000', resumeLink: 'https://docs.google.com/document/d/1fJDuun2-0c26Do5Kkvj-ndyHIJB-yb1V/edit', marketRate: '110,000' },
+            { id: 'yasir-2', name: 'Yasir', title: 'Frontend ReactJS Developer', experience: '3 years', skills: ['JavaScript (ES6+)', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'Node.js', 'Express', 'MongoDB', 'REST APIs'], monthlyRate: '140000', resumeLink: 'https://docs.google.com/document/d/1g1_kJYbDe_d_AHC54BnjCSVDGLt1f0tf4MyNq8VKS7c/edit', marketRate: '150,000' },
+            { id: 'ankit-react-2', name: 'Ankit', title: 'React Developer', experience: '2 years', skills: ['React', 'JavaScript', 'HTML', 'CSS'], monthlyRate: '55000', resumeLink: 'https://docs.google.com/document/d/1tkjTteVMCQiAOfD_47E8ELkx2AN3xcbUbH8csulFONc/edit', marketRate: '60,000' },
+            { id: 'kevadiya-2', name: 'Kevadiya', title: 'React/Next.js Developer', experience: '4 years', skills: ['React.js', 'Next.js', 'Redux', 'TypeScript'], monthlyRate: '160000', resumeLink: 'Profile on Request', marketRate: '160,000' },
+            { id: 'ashish-wordpress-2', name: 'Ashish', title: 'WordPress Developer', experience: '3 years', skills: ['WordPress Website Developer'], monthlyRate: '55000', resumeLink: 'Profile on Request', marketRate: '60,000' },
+            { id: 'sujit-frontend-2', name: 'Sujit', title: 'Frontend Developer', experience: '2 years', skills: ['Frontend Developer', 'JavaScript', 'HTML', 'CSS'], monthlyRate: '55000', resumeLink: 'Profile on Request', marketRate: '60,000' }
+        ];
+
+        // ==================== HOMEPAGE PROFILES (for modal) ====================
+        const homepageProfiles = profilesData; // reuse same data
+
+        // ==================== CONFIG ====================
+        const SIGNIMUS_WHASSAPP_NUMBER = '918225998112';
+        const JOINED_BENCH_STORAGE_KEY = 'signimus_joined_bench_profiles';
+        let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
+        const allSkillsAndRoles = ['Salesforce Developer','Design','Bootstrap','Tailwind CSS','Material UI','Responsive Websites','Animations','Figma','Photoshop','Adobe XD','React.js','Ruby on Rails','.NET','Angular','Java','Core Java','Spring','Spring Boot','REST API','Spring Data JPA','Hibernate','JPA','MySQL','Kafka','Redis','AWS','Spring Security','Marketing','Product Designer','UI/UX','Graphics Design','XD','DaVinci Resolve','UIZARD','Zeplin','Illustrator','Canva','Ethical Hacking','Penetration Tester','WAPT','Python','Scapy','Reverse Engineering','Automation','iOS','Swift','Objective-C','SwiftUI','Python Django Developer','Scikit-learn','Basic Data Science','Data Scientist','AI/ML Engineer','TensorFlow','PyTorch','Data Engineer','Frontend','Java Developer','MERN Stack','Node.js','Microservices','Docker','Next.js','J2EE','Django','DRF','FastAPI','Pytest','Flask','TypeScript','NodeJs','Technical Lead','Flutter','Dart','Android','Kotlin','Laravel','CodeIgniter','PHP','DevOps','SRE','Kubernetes','Terraform','CI/CD','Dell Boomi Developer','Integration','API Development','App Script','Core PHP','MongoDB','GoDaddy','Digital Ocean','Razorpay Payment Gateway','Git','Firebase','Sr iOS Developer','Power BI','AI Development','Oracle','Data Warehousing','ETL','DataStage','SQL','Data Analytics','Adobe DTM','Adobe Launch','Google Tag Manager','Adobe Analytics','Front-End Technologies','Selenium','AutoGen','Gen AI (Azure)','MS Excel','Machine Learning','Gen AI Assistant','Junior Developer','Project Manager','WordPress Website Developer','Frontend Development'];
+        let allSkills = [...new Set(allSkillsAndRoles)].sort();
+
+        let activeFilters = [];
+        let selectedProfiles = [];
+        let analysisResults = {};
+        let isAnalysisInProgress = false;
+        let hasShownApiError = false;
+        const RESUME_PREFETCH_ENABLED = false;
+        const GEMINI_MODEL = 'gemini-2.5-flash';
+        const GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
+        const GEMINI_API_URL = GEMINI_API_KEY
+            ? `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`
+            : '';
+
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPagesGlobal = 1;
+
+        const profilesContainer = document.getElementById('profiles-container');
+        const paginationContainer = document.getElementById('pagination');
+        const popularFiltersContainer = document.getElementById('popular-filters');
+        const allFiltersContainer = document.getElementById('all-filters-container');
+        const activeFiltersContainer = document.getElementById('active-filters');
+        const moreFiltersButton = document.getElementById('more-filters-button');
+        const allFiltersModal = document.getElementById('all-filters-modal');
+        const closeFiltersModal = document.getElementById('close-filters-modal');
+        const jobDescriptionInput = document.getElementById('job-description-input');
+        const footerActions = document.getElementById('footer-actions');
+        const copyProfilesButton = document.getElementById('copy-profiles-button');
+        const arrangeInterviewButton = document.getElementById('arrange-interview-button');
+        const copyToast = document.getElementById('copy-toast');
+        const analysisToast = document.getElementById('analysis-toast');
+        const statusBar = document.getElementById('status-bar');
+        const statusIcon = document.getElementById('status-icon');
+        const statusMessage = document.getElementById('status-message');
+        const minExpSlider = document.getElementById('min-exp-slider');
+        const maxExpSlider = document.getElementById('max-exp-slider');
+        const experienceRangeLabel = document.getElementById('experience-range-label');
+        const sliderRangeFill = document.getElementById('slider-range-fill');
+        const exportExcelButton = document.getElementById('export-excel-button');
+        const jointBenchButton = document.getElementById('joint-bench-button');
+        const jointBenchModal = document.getElementById('joint-bench-modal');
+        const jointBenchClose = document.getElementById('joint-bench-close');
+        const jointBenchCancel = document.getElementById('joint-bench-cancel');
+        const jointBenchForm = document.getElementById('joint-bench-form');
+
+        // ==================== HOMEPAGE MODAL LOGIC ====================
+        const homepageModalBackdrop = document.getElementById('homepage-modal-backdrop');
+        const homepageModalBody = document.getElementById('homepage-modal-body');
+        const homepageModalClose = document.getElementById('homepage-modal-close');
+
+        function openHomepageModal() {
+            homepageModalBackdrop.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            homepageRoute('home');
+        }
+
+        function closeHomepageModal() {
+            homepageModalBackdrop.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function homepageRoute(page) {
+            const tplId = 'tpl-' + page;
+            const tpl = document.getElementById(tplId);
+            if (!tpl) return;
+            homepageModalBody.innerHTML = '';
+            homepageModalBody.appendChild(tpl.content.cloneNode(true));
+            // scroll modal to top
+            document.getElementById('homepage-modal').scrollTop = 0;
+
+            // Post-render: inject matching profiles
+            if (page === 'react-guide') {
+                const c = document.getElementById('hp-react-profiles');
+                if (c) c.innerHTML = homepageProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('react'))).slice(0,4).map(renderHpCard).join('');
+            } else if (page === 'python-guide') {
+                const c = document.getElementById('hp-python-profiles');
+                if (c) c.innerHTML = homepageProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('python'))).slice(0,4).map(renderHpCard).join('');
+            } else if (page === 'wordpress-guide') {
+                const c = document.getElementById('hp-wordpress-profiles');
+                if (c) c.innerHTML = homepageProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('wordpress') || s.toLowerCase().includes('php'))).slice(0,4).map(renderHpCard).join('');
+            } else if (page === 'kotlin-vs-java-guide') {
+                const c = document.getElementById('hp-android-profiles');
+                if (c) c.innerHTML = homepageProfiles.filter(p => p.skills.some(s => ['android','kotlin','java','flutter'].includes(s.toLowerCase()))).slice(0,4).map(renderHpCard).join('');
+            } else if (page === 'salary-calculator') {
+                // wire up slider
+                const scExp = document.getElementById('sc-exp');
+                const scLabel = document.getElementById('sc-exp-label');
+                if (scExp) {
+                    scExp.addEventListener('input', () => { scLabel.textContent = scExp.value + ' years'; });
+                }
+            }
+        }
+
+        function renderHpCard(profile) {
+            const rateNum = parseInt(String(profile.monthlyRate).replace(/,/g,''));
+            const rateHtml = isNaN(rateNum) ? 'On Request' : '₹' + rateNum.toLocaleString('en-IN') + ' /mo';
+            const resumeHtml = profile.resumeLink && profile.resumeLink !== 'Profile on Request'
+                ? `<a href="${profile.resumeLink}" target="_blank" class="text-xs text-indigo-600 font-semibold hover:underline">View Resume</a>`
+                : `<span class="text-xs text-slate-400">Resume on Request</span>`;
+            return `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                    <div class="flex items-start justify-between mb-1">
+                        <p class="font-bold text-slate-800 text-sm">${profile.name}</p>
+                        <span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Available</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-2">${profile.title} • ${profile.experience}</p>
+                    <div class="flex flex-wrap gap-1 mb-3">
+                        ${profile.skills.slice(0,3).map(s=>`<span class="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">${s}</span>`).join('')}
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-700">${rateHtml}</span>
+                        ${resumeHtml}
+                    </div>
+                </div>`;
+        }
+
+        // Salary calculator logic (called from template button)
+        window.calcSalary = function() {
+            const tech = document.getElementById('sc-tech').value;
+            const exp = parseInt(document.getElementById('sc-exp').value);
+            const salaryMap = {
+                react:      [55000, 80000, 120000, 160000, 200000, 250000],
+                java:       [50000, 70000, 110000, 150000, 180000, 220000],
+                python:     [45000, 65000, 100000, 140000, 180000, 210000],
+                flutter:    [50000, 70000, 100000, 140000, 170000, 200000],
+                devops:     [80000, 120000, 180000, 250000, 350000, 450000],
+                ai:         [60000, 90000, 150000, 200000, 250000, 300000],
+                wordpress:  [30000, 45000, 60000, 80000, 100000, 130000],
+                fullstack:  [55000, 80000, 120000, 160000, 200000, 260000],
+            };
+            const rates = salaryMap[tech] || salaryMap.react;
+            const idx = Math.min(Math.floor((exp - 1) / 2), rates.length - 1);
+            const base = rates[idx];
+            const low = Math.round(base * 0.85 / 1000) * 1000;
+            const high = Math.round(base * 1.15 / 1000) * 1000;
+
+            const result = document.getElementById('sc-result');
+            document.getElementById('sc-range').textContent = `₹${low.toLocaleString('en-IN')} – ₹${high.toLocaleString('en-IN')} /month`;
+            document.getElementById('sc-note').textContent = `Based on ${exp} year${exp > 1 ? 's' : ''} of experience in ${document.getElementById('sc-tech').options[document.getElementById('sc-tech').selectedIndex].text}`;
+            result.classList.remove('hidden');
+        };
+
+        function openHomepagePage() {
+            window.location.href = 'homepage.html';
+        }
+
+        function openJobsPage() {
+            window.location.href = 'jobs.html';
+        }
+
+        // wire up heading & logo click
+        document.getElementById('main-heading').addEventListener('click', openHomepagePage);
+        document.getElementById('logo-btn').addEventListener('click', openHomepagePage);
+        homepageModalClose.addEventListener('click', closeHomepageModal);
+        homepageModalBackdrop.addEventListener('click', (e) => { if (e.target === homepageModalBackdrop) closeHomepageModal(); });
+        // expose for template onclick
+        window.homepageRoute = homepageRoute;
+
+        // ==================== MAIN APP LOGIC ====================
+
+        function syncUrlWithState() {
+            const params = new URLSearchParams();
+            if (activeFilters.length > 0) params.set('filters', activeFilters.join(','));
+            const jd = jobDescriptionInput.value.trim();
+            if (jd) params.set('jd', jd);
+            const minExp = parseInt(minExpSlider.value);
+            const maxExp = parseInt(maxExpSlider.value);
+            if (minExp > 0 || maxExp < 15) { params.set('minExp', minExp); params.set('maxExp', maxExp); }
+            const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.history.pushState({}, '', newUrl);
+        }
+
+        function loadStateFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const urlFilters = params.get('filters');
+            if (urlFilters) activeFilters = urlFilters.split(',').map(f => decodeURIComponent(f.trim())).filter(Boolean);
+            const urlJd = params.get('jd');
+            if (urlJd) jobDescriptionInput.value = decodeURIComponent(urlJd);
+            const urlMinExp = params.get('minExp');
+            const urlMaxExp = params.get('maxExp');
+            if (urlMinExp !== null) minExpSlider.value = urlMinExp;
+            if (urlMaxExp !== null) maxExpSlider.value = urlMaxExp;
+        }
+
+        function updateStatusBar(message, isLoading = false) {
+            if (!statusBar) return;
+            statusMessage.textContent = message;
+            if (isLoading) {
+                statusIcon.className = 'fas fa-spinner animate-spin';
+                statusBar.classList.remove('bg-green-100', 'text-green-700');
+                statusBar.classList.add('bg-indigo-50', 'text-indigo-700');
+            } else {
+                statusIcon.className = 'fas fa-check-circle';
+                statusBar.classList.remove('bg-indigo-50', 'text-indigo-700');
+                statusBar.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
+
+        async function exponentialBackoffFetch(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    const error = new Error(`HTTP error! status: ${response.status}`);
+                    error.status = response.status;
+                    throw error;
+                }
+                return response.json();
+            } catch (error) {
+                if (retries > 0 && (!error.status || error.status >= 500 || error.status === 429)) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return exponentialBackoffFetch(url, options, retries - 1, delay * 2);
+                }
+                throw error;
+            }
+        }
+
+        function getRankingBadge(ranking) {
+            if (ranking >= 9) return { text: 'Ideal Match', color: 'bg-green-600' };
+            if (ranking >= 7) return { text: 'Strong Match', color: 'bg-blue-600' };
+            if (ranking >= 4) return { text: 'Strong Potential', color: 'bg-yellow-500' };
+            if (ranking >= 1) return { text: 'Low Match', color: 'bg-orange-500' };
+            return { text: 'Low Match', color: 'bg-red-600' };
+        }
+
+        function debounce(func, timeout = 500) {
+            let timer;
+            return (...args) => { clearTimeout(timer); timer = setTimeout(() => { func.apply(this, args); }, timeout); };
+        }
+
+        async function fetchAndCacheResumes() {
+            if (!RESUME_PREFETCH_ENABLED) {
+                allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
+                renderFilters();
+                triggerAnalysisForFilteredProfiles();
+                return;
+            }
+        }
+
+        async function analyzeSingleProfile(profile) {
+            const jobDescription = jobDescriptionInput.value.trim();
+            if (!jobDescription) { analysisResults[profile.id] = {}; renderProfiles(); return; }
+            const isFullResumeAvailable = profile.resumeContent && profile.resumeContent !== 'Failed to fetch resume content.';
+            let prompt;
+            if (isFullResumeAvailable) {
+                prompt = `You are an expert talent recruiter. Analyze the candidate's full resume against the job description.\n- Provide a ranking from 0-10.\n- Write a compelling 'matchSummary'.\n- List 'keyStrengths' as bullet points.\n- List 'opportunityAreas' positively.\n\nJob Description:\n${jobDescription}\n\nFull Resume:\n${profile.resumeContent}`;
+            } else {
+                prompt = `You are an expert talent recruiter. Analyze this limited profile against the job description.\n- Provide a ranking from 0-10.\n- Write a compelling 'matchSummary'.\n- List 'keyStrengths' as bullet points.\n- List 'opportunityAreas' positively. State this is based on limited data.\n\nJob Description:\n${jobDescription}\n\nProfile:\nName: ${profile.name}, Title: ${profile.title}, Skills: ${profile.skills.join(', ')}, Experience: ${profile.experience}`;
+            }
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { name: { type: "STRING" }, ranking: { type: "NUMBER" }, matchSummary: { type: "STRING" }, keyStrengths: { type: "ARRAY", items: { type: "STRING" } }, opportunityAreas: { type: "ARRAY", items: { type: "STRING" } } }, propertyOrdering: ["name","ranking","matchSummary","keyStrengths","opportunityAreas"] } }
+            };
+            if (!GEMINI_API_URL) {
+                performSimpleKeywordAnalysis(profile, jobDescription);
+                renderSingleProfileCard(profile);
+                return;
+            }
+            try {
+                const response = await exponentialBackoffFetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const resultJson = response.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (resultJson) { analysisResults[profile.id] = JSON.parse(resultJson); } else { performSimpleKeywordAnalysis(profile, jobDescription); }
+            } catch (error) {
+                console.warn(`AI analysis failed for ${profile.name}; using keyword analysis.`, error);
+                if ((error.status === 400 || error.status === 401 || error.status === 403 || error.status === 404) && !hasShownApiError) {
+                    showToast(`AI analysis unavailable. Using keyword matching.`, true);
+                    hasShownApiError = true;
+                }
+                performSimpleKeywordAnalysis(profile, jobDescription);
+            }
+            renderSingleProfileCard(profile);
+        }
+
+        function performSimpleKeywordAnalysis(profile, jobDescription, minExp, maxExp) {
+            const jdWords = jobDescription.split(/\s+/).map(w => w.toLowerCase().trim()).filter(w => w.length > 0);
+            let matchScore = 0; let matchSummaryParts = []; let mismatchedCriteria = [];
+            const normalizedTitle = profile.title.toLowerCase();
+            const normalizedSkills = profile.skills.map(s => s.toLowerCase());
+            const titleMatches = jdWords.filter(w => normalizedTitle.includes(w));
+            if (titleMatches.length > 0) { matchScore += titleMatches.length * 4; matchSummaryParts.push(`Title keywords: ${titleMatches.join(', ')}.`); } else { mismatchedCriteria.push("Title keywords could be stronger."); }
+            const skillsMatched = jdWords.filter(w => normalizedSkills.some(s => s.includes(w)));
+            if (skillsMatched.length > 0) { matchScore += skillsMatched.length * 2; matchSummaryParts.push(`Key skills: ${skillsMatched.join(', ')}.`); } else { mismatchedCriteria.push("Additional skills would enhance fit."); }
+            if (minExp !== null || maxExp !== null) {
+                if (checkExperienceMatch(profile.experience, minExp, maxExp)) { matchScore += 2; } else { matchScore -= 3; mismatchedCriteria.push(`Experience may not meet the range.`); }
+            }
+            const finalRanking = Math.min(Math.max(matchScore, 0), 10);
+            let finalSummary = finalRanking >= 9 ? "Excellent alignment." : finalRanking >= 7 ? "Good overall match." : finalRanking >= 4 ? "Promising candidate." : "Further review recommended.";
+            analysisResults[profile.id] = { name: profile.name, ranking: finalRanking, matchSummary: finalSummary, mismatchedCriteria };
+        }
+
+        function parseExperience(expString) {
+            if (!expString) return 0;
+            const match = String(expString).match(/(\d+(\.\d+)?)/);
+            return match ? parseFloat(match[1]) : 0;
+        }
+
+        function parseExperienceFromJd(jdText) {
+            let min = null, max = null;
+            const plusMatch = jdText.match(/(\d+)\s*\+\s*years?/i);
+            if (plusMatch) min = parseInt(plusMatch[1], 10);
+            const rangeMatch = jdText.match(/(\d+)\s*-\s*(\d+)\s*years?/i);
+            if (rangeMatch) { min = parseInt(rangeMatch[1], 10); max = parseInt(rangeMatch[2], 10); }
+            const singleMatch = jdText.match(/(?<!\d[+-])(\d+)\s*years?/i);
+            if (!plusMatch && !rangeMatch && singleMatch) { min = max = parseInt(singleMatch[1], 10); }
+            return { min, max };
+        }
+
+        function checkExperienceMatch(profileExperience, minExp, maxExp) {
+            const years = parseExperience(profileExperience);
+            if (minExp !== null && years < minExp) return false;
+            if (maxExp !== null && years > maxExp) return false;
+            return true;
+        }
+
+        function isProfileMatch(profile, filters) {
+            if (filters.length === 0) return { isExactMatch: true, isPartialMatch: false };
+            const normalizedSkills = profile.skills.map(s => s.toLowerCase());
+            const normalizedTitle = profile.title.toLowerCase();
+            let matchedCount = 0;
+            filters.forEach(filter => { if (normalizedSkills.includes(filter.toLowerCase()) || normalizedTitle.includes(filter.toLowerCase())) matchedCount++; });
+            return { isExactMatch: matchedCount === filters.length, isPartialMatch: matchedCount > 0 && matchedCount < filters.length };
+        }
+
+        function renderSingleProfileCard(profile, isMatch) {
+            let card = document.querySelector(`[data-profile-id="${profile.id}"]`);
+            if (!card) { card = document.createElement('div'); card.dataset.profileId = profile.id; profilesContainer.appendChild(card); }
+            const analysis = analysisResults[profile.id] || {};
+            const isSelected = selectedProfiles.includes(profile.id);
+            const jobDescription = jobDescriptionInput.value.trim();
+            const filtersActive = activeFilters.length > 0;
+            const hasAnalysis = analysis.ranking !== undefined;
+            const isAnalysisLoading = isAnalysisInProgress && !hasAnalysis;
+            const showAiAnalysis = jobDescription && hasAnalysis;
+            const filterMatchStatus = isProfileMatch(profile, activeFilters);
+
+            card.className = `profile-card relative p-6 bg-white rounded-xl shadow-lg border-2 transition-all duration-200 ease-in-out cursor-pointer flex flex-col`;
+            if (isMatch) { if (isSelected) card.classList.add('selected-card'); else card.classList.remove('selected-card'); card.classList.remove('not-a-fit-card'); }
+            else { card.classList.add('not-a-fit-card'); card.classList.remove('selected-card'); }
+
+            let analysisHtml = '', aiBadge = '';
+            if (!isMatch) {
+                aiBadge = `<div class="text-sm font-semibold px-3 py-1 rounded-full bg-red-500 text-white flex items-center"><i class="fas fa-times-circle mr-2"></i><span>Not a Fit</span></div>`;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 italic">This profile does not match your current criteria.</p>`;
+            } else if (isAnalysisLoading) {
+                aiBadge = `<div class="text-sm font-semibold px-3 py-1 rounded-full bg-indigo-500 text-white flex items-center"><i class="fas fa-spinner animate-spin mr-2"></i><span>Analyzing...</span></div>`;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 italic">Performing AI analysis...</p>`;
+            } else if (showAiAnalysis) {
+                const badge = getRankingBadge(analysis.ranking);
+                const fullSummary = analysis.matchSummary || 'Analysis unavailable.';
+                const summaryTruncated = fullSummary.length > 150 ? fullSummary.substring(0, 150) + '...' : fullSummary;
+                aiBadge = `<div class="text-sm font-bold px-3 py-1 rounded-full text-white ${badge.color} flex items-center"><i class="fas fa-microchip mr-1"></i><span>${badge.text}</span></div>`;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 font-medium">Review: <span class="font-normal italic">${summaryTruncated}</span></p>`;
+                if (analysis.keyStrengths?.length > 0) {
+                    analysisHtml += `<div class="mt-2"><p class="text-sm font-medium text-gray-700">Key Strengths:</p><ul class="list-none space-y-1 mt-1">${analysis.keyStrengths.slice(0,3).map(i => `<li class="text-sm text-green-600"><i class="fas fa-check-circle mr-2"></i>${i}</li>`).join('')}</ul></div>`;
+                }
+                if (analysis.opportunityAreas?.length > 0) {
+                    analysisHtml += `<div class="mt-2"><p class="text-sm font-medium text-gray-700">Opportunity Areas:</p><ul class="list-none space-y-1 mt-1">${analysis.opportunityAreas.slice(0,2).map(i => `<li class="text-sm text-gray-600 italic"><i class="fas fa-info-circle mr-2"></i>${i}</li>`).join('')}</ul></div>`;
+                }
+                if (fullSummary.length > 150 || (analysis.keyStrengths?.length > 3) || (analysis.opportunityAreas?.length > 2)) {
+                    analysisHtml += `<div class="mt-2"><button onclick="toggleDetails(this)" class="text-xs text-indigo-600 font-semibold hover:underline">Show More</button></div>`;
+                    analysisHtml += `<div class="full-details hidden"><p class="text-sm text-gray-600 mt-2 italic">${fullSummary}</p>${analysis.keyStrengths?.length > 0 ? `<ul class="mt-2 list-none">${analysis.keyStrengths.map(i=>`<li class="text-sm text-green-600"><i class="fas fa-check-circle mr-2"></i>${i}</li>`).join('')}</ul>` : ''}${analysis.opportunityAreas?.length > 0 ? `<ul class="mt-2 list-none">${analysis.opportunityAreas.map(i=>`<li class="text-sm text-gray-600 italic"><i class="fas fa-info-circle mr-2"></i>${i}</li>`).join('')}</ul>` : ''}</div>`;
+                }
+            } else if (!jobDescription && filtersActive && filterMatchStatus.isExactMatch) {
+                aiBadge = `<div class="text-sm font-semibold px-3 py-1 rounded-full bg-blue-500 text-white flex items-center"><i class="fas fa-check-circle mr-2"></i><span>Suitable Match</span></div>`;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 italic">This profile meets your selected filter criteria.</p>`;
+            } else if (!jobDescription && filtersActive && filterMatchStatus.isPartialMatch) {
+                aiBadge = `<div class="text-sm font-semibold px-3 py-1 rounded-full bg-yellow-500 text-white flex items-center"><i class="fas fa-check-circle mr-2"></i><span>Potential Match</span></div>`;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 italic">This profile partially matches your filter criteria.</p>`;
+            } else {
+                aiBadge = `<div class="text-sm font-semibold px-3 py-1 rounded-full bg-gray-300 text-gray-700 flex items-center"><i class="fas fa-question-circle mr-2"></i><span>Analysis Unavailable</span></div>`;
+                analysisHtml = `<p class="text-sm text-gray-600 mb-2 italic">Choose a filter or enter a job description to get a match analysis.</p>`;
+            }
+
+            let resumeActionHtml = profile.resumeLink && profile.resumeLink !== 'Profile on Request'
+                ? `<a href="${profile.resumeLink}" target="_blank" class="text-sm font-medium text-indigo-600 hover:underline">View Resume</a>`
+                : `<button class="bg-indigo-100 text-indigo-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-200" onclick="event.stopPropagation(); requestProfile('${profile.id}')">Profile on Request</button>`;
+
+            let summaryDetailsHtml = profile.professionalSummary ? `<p class="text-sm text-gray-600 mb-2 italic">${profile.professionalSummary}</p>` : '';
+            let experienceDetailsHtml = profile.fullExperience ? `<div class="mt-4"><h4 class="text-md font-semibold text-gray-700 mb-2">Experience:</h4><div class="text-sm text-gray-600 whitespace-pre-wrap">${profile.fullExperience}</div></div>` : '';
+
+            const visibleSkills = profile.skills.slice(0, 8);
+            const hiddenSkills = profile.skills.slice(8);
+            let skillsHtml = visibleSkills.map(skill => createFilterBadge(skill, false)).join('');
+            if (hiddenSkills.length > 0) {
+                skillsHtml += `<div class="show-more-container"><div class="hidden-skills hidden">${hiddenSkills.map(s => createFilterBadge(s, false)).join('')}</div><button onclick="toggleSkills(this)" class="text-xs text-indigo-600 font-semibold hover:underline mt-2">Show More</button></div>`;
+            }
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2"><i class="fas fa-user-circle text-2xl text-gray-400"></i><span>${profile.name}</span></h3>
+                    ${aiBadge}
+                </div>
+                <p class="text-lg font-semibold text-gray-800 -mt-2 mb-4">${profile.title}</p>
+                ${summaryDetailsHtml}
+                ${analysisHtml}
+                <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4 mt-4">
+                    <i class="fas fa-briefcase"></i><span>${profile.experience} Experience</span>
+                    <span class="mx-2">•</span>
+                    <i class="fas fa-indian-rupee-sign"></i>
+                    <span class="font-medium">${profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request'}</span>
+                </div>
+                <p class="text-xs text-gray-400 italic mb-4">Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month</p>
+                <div class="flex flex-wrap gap-2 mb-6">${skillsHtml}</div>
+                ${experienceDetailsHtml}
+                <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">${resumeActionHtml}</div>
+            `;
+        }
+
+        function toggleSkills(button) {
+            const container = button.previousElementSibling;
+            if (container) { container.classList.toggle('hidden'); button.textContent = container.classList.contains('hidden') ? 'Show More' : 'Show Less'; }
+        }
+
+        function toggleDetails(button) {
+            const container = button.parentElement.nextElementSibling;
+            if (container) { container.classList.toggle('hidden'); button.textContent = container.classList.contains('hidden') ? 'Show More' : 'Show Less'; }
+        }
+
+        function getFilteredAndSortedProfiles() {
+            const jobDescription = jobDescriptionInput.value.trim().toLowerCase();
+            const isJdActive = jobDescription !== '';
+            const isFilterActive = activeFilters.length > 0;
+            const minExperience = parseFloat(minExpSlider.value);
+            const maxExperience = parseFloat(maxExpSlider.value);
+            const isExperienceFilterActive = minExperience > 0 || maxExperience < 15;
+
+            const profilesToRender = profilesData.filter(profile => {
+                const normalizedTitle = profile.title.toLowerCase();
+                const filterMatchStatus = isProfileMatch(profile, activeFilters);
+                const experienceMatches = checkExperienceMatch(profile.experience, minExperience, maxExperience);
+                const jdWords = isJdActive ? jobDescription.split(/\s+/).map(w => w.replace(/[.,'":;-]/g,'').toLowerCase()).filter(w => w.length > 0) : [];
+                const profileMatchesJd = isJdActive && (jdWords.some(w => profile.skills.some(s => s.toLowerCase().includes(w))) || jdWords.some(w => normalizedTitle.includes(w)));
+                let isOverallMatch = false;
+                if (isJdActive && isFilterActive && isExperienceFilterActive) isOverallMatch = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd && experienceMatches;
+                else if (isJdActive && isFilterActive) isOverallMatch = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd;
+                else if (isJdActive && isExperienceFilterActive) isOverallMatch = profileMatchesJd && experienceMatches;
+                else if (isFilterActive && isExperienceFilterActive) isOverallMatch = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && experienceMatches;
+                else if (isJdActive) isOverallMatch = profileMatchesJd;
+                else if (isFilterActive) isOverallMatch = filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch;
+                else if (isExperienceFilterActive) isOverallMatch = experienceMatches;
+                else isOverallMatch = true;
+                return isOverallMatch;
+            });
+
+            profilesToRender.sort((a, b) => {
+                const rankA = analysisResults[a.id]?.ranking || 0;
+                const rankB = analysisResults[b.id]?.ranking || 0;
+                if (rankA !== rankB) return rankB - rankA;
+                const joinedA = a.joinedAt || 0;
+                const joinedB = b.joinedAt || 0;
+                if (joinedA !== joinedB) return joinedB - joinedA;
+                return a.name.localeCompare(b.name);
+            });
+
+            const nonMatching = profilesData.filter(p => !profilesToRender.includes(p));
+            return { matching: profilesToRender, nonMatching };
+        }
+
+        function renderProfiles() {
+            const { matching, nonMatching } = getFilteredAndSortedProfiles();
+            const orderedProfiles = [...matching, ...nonMatching];
+
+            if (orderedProfiles.length === 0) {
+                profilesContainer.innerHTML = `<div class="col-span-1 lg:col-span-2 p-8 bg-white rounded-xl shadow-lg text-center text-gray-500"><i class="fas fa-exclamation-circle text-4xl mb-4 text-gray-400"></i><p class="text-xl font-semibold mb-2">No Profiles Found</p><p>Please adjust your filters.</p></div>`;
+                paginationContainer.innerHTML = '';
+                totalPagesGlobal = 1;
+                return;
+            }
+
+            const totalItems = orderedProfiles.length;
+            totalPagesGlobal = Math.max(1, Math.ceil(totalItems / pageSize));
+            if (currentPage > totalPagesGlobal) currentPage = totalPagesGlobal;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalItems);
+            const pageItems = orderedProfiles.slice(startIndex, endIndex);
+
+            profilesContainer.innerHTML = '';
+            pageItems.forEach(profile => renderSingleProfileCard(profile, matching.includes(profile)));
+            renderPagination(totalItems, startIndex, endIndex);
+        }
+
+        function renderPagination(totalItems, startIndex, endIndex) {
+            let pagesHtml = '';
+            for (let p = 1; p <= totalPagesGlobal; p++) {
+                const activeClasses = p === currentPage ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+                pagesHtml += `<button type="button" class="pagination-page-btn px-3 py-1 rounded-full text-xs font-semibold ${activeClasses}" data-page="${p}">${p}</button>`;
+            }
+            const isPrevDisabled = currentPage <= 1;
+            const isNextDisabled = currentPage >= totalPagesGlobal;
+            paginationContainer.innerHTML = `
+                <div class="flex items-center justify-center flex-wrap gap-2 w-full">
+                    <button type="button" class="pagination-prev-btn px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 ${isPrevDisabled ? 'opacity-50 cursor-not-allowed' : ''}" ${isPrevDisabled ? 'disabled' : ''}>Prev</button>
+                    ${pagesHtml}
+                    <button type="button" class="pagination-next-btn px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 ${isNextDisabled ? 'opacity-50 cursor-not-allowed' : ''}" ${isNextDisabled ? 'disabled' : ''}>Next</button>
+                    <div class="ml-4 flex items-center gap-2">
+                        <label class="text-xs text-gray-600">Per page</label>
+                        <select class="pagination-size-select text-xs border border-gray-300 rounded-md px-2 py-1">
+                            ${[6,8,10,12,16,20].map(size => `<option value="${size}" ${size === pageSize ? 'selected' : ''}>${size}</option>`).join('')}
+                        </select>
+                        <span class="text-xs text-gray-500 ml-2">${startIndex + 1}-${endIndex} of ${totalItems}</span>
+                    </div>
+                </div>
+            `;
+            paginationContainer.querySelector('.pagination-prev-btn').addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderProfiles(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+            paginationContainer.querySelector('.pagination-next-btn').addEventListener('click', () => { if (currentPage < totalPagesGlobal) { currentPage++; renderProfiles(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+            paginationContainer.querySelectorAll('.pagination-page-btn').forEach(btn => { btn.addEventListener('click', () => { const page = parseInt(btn.dataset.page, 10); if (page !== currentPage) { currentPage = page; renderProfiles(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }); });
+            paginationContainer.querySelector('.pagination-size-select').addEventListener('change', (e) => { pageSize = parseInt(e.target.value, 10); currentPage = 1; renderProfiles(); });
+        }
+
+        function renderFilters() {
+            popularFiltersContainer.innerHTML = popularSkills.filter(s => !activeFilters.includes(s)).map(s => createFilterBadge(s, true)).join('');
+            allFiltersContainer.innerHTML = allSkills.filter(s => !activeFilters.includes(s)).map(s => createFilterBadge(s, true)).join('');
+            renderActiveFilters();
+        }
+
+        function renderActiveFilters() {
+            activeFiltersContainer.innerHTML = activeFilters.map(filter => `
+                <span class="active-filter-badge text-xs font-semibold px-3 py-1 rounded-full bg-indigo-600 text-white flex items-center interactive-filter-badge" data-filter="${filter}">
+                    ${filter}<button class="clear-btn text-white/80 hover:text-white"><i class="fas fa-times text-xs ml-1"></i></button>
+                </span>`).join('');
+        }
+
+        function createFilterBadge(text, isInteractive) {
+            const interactiveClass = isInteractive ? 'cursor-pointer interactive-filter-badge' : '';
+            return `<button class="filter-badge text-xs font-semibold px-3 py-1 rounded-full ${interactiveClass} transition-colors duration-150 bg-gray-100 text-gray-700 hover:bg-gray-200" data-filter="${text}">${text}</button>`;
+        }
+
+        async function toggleFilter(filter) {
+            const index = activeFilters.indexOf(filter);
+            if (index > -1) activeFilters.splice(index, 1); else activeFilters.push(filter);
+            renderFilters();
+            updateTitle();
+            syncUrlWithState();
+            currentPage = 1;
+            await triggerAnalysisForFilteredProfiles();
+        }
+
+        async function triggerAnalysisForFilteredProfiles() {
+            const jobDescription = jobDescriptionInput.value.trim();
+            const isJdActive = jobDescription !== '';
+            const isFilterActive = activeFilters.length > 0;
+            let minExperience = parseFloat(minExpSlider.value);
+            let maxExperience = parseFloat(maxExpSlider.value);
+            if (isJdActive && minExperience === 0 && maxExperience === 15) {
+                const jdExp = parseExperienceFromJd(jobDescription);
+                minExperience = jdExp.min; maxExperience = jdExp.max;
+            }
+            const isExperienceFilterActive = minExperience > 0 || maxExperience < 15;
+            if (jobDescription === "" && activeFilters.length === 0 && !isExperienceFilterActive) {
+                analysisResults = {}; renderProfiles(); updateStatusBar("Waiting for a job description or filter..."); return;
+            }
+            const profilesToAnalyze = profilesData.filter(profile => {
+                const normalizedTitle = profile.title.toLowerCase();
+                const filterMatchStatus = isProfileMatch(profile, activeFilters);
+                const experienceMatches = checkExperienceMatch(profile.experience, minExperience, maxExperience);
+                const jdWords = isJdActive ? jobDescription.split(/\s+/).map(w => w.replace(/[.,'":;-]/g,'').toLowerCase()).filter(w => w.length > 0) : [];
+                const profileMatchesJd = isJdActive && (jdWords.some(w => profile.skills.some(s => s.toLowerCase().includes(w))) || jdWords.some(w => normalizedTitle.includes(w)));
+                let shouldAnalyze = false;
+                if (isJdActive && isFilterActive && isExperienceFilterActive) shouldAnalyze = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd && experienceMatches;
+                else if (isJdActive && isFilterActive) shouldAnalyze = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && profileMatchesJd;
+                else if (isJdActive && isExperienceFilterActive) shouldAnalyze = profileMatchesJd && experienceMatches;
+                else if (isFilterActive && isExperienceFilterActive) shouldAnalyze = (filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch) && experienceMatches;
+                else if (isJdActive) shouldAnalyze = profileMatchesJd;
+                else if (isFilterActive) shouldAnalyze = filterMatchStatus.isExactMatch || filterMatchStatus.isPartialMatch;
+                else if (isExperienceFilterActive) shouldAnalyze = experienceMatches;
+                else shouldAnalyze = true;
+                return shouldAnalyze;
+            });
+            isAnalysisInProgress = true; hasShownApiError = false;
+            updateStatusBar("Analyzing profiles...", true); renderProfiles();
+            await Promise.all(profilesToAnalyze.map(p => analyzeSingleProfile(p)));
+            isAnalysisInProgress = false; renderProfiles();
+            updateStatusBar(`Analysis complete. Found ${profilesToAnalyze.length} matching profiles.`);
+        }
+
+        function toggleProfileSelection(id, isMatch) {
+            if (!isMatch) return;
+            const index = selectedProfiles.indexOf(id);
+            const card = document.querySelector(`[data-profile-id="${id}"]`);
+            if (index > -1) { selectedProfiles.splice(index, 1); if(card) card.classList.remove('selected-card'); }
+            else { selectedProfiles.push(id); if(card) card.classList.add('selected-card'); }
+            updateFooterVisibility();
+        }
+
+        function updateFooterVisibility() {
+            if (selectedProfiles.length > 0) footerActions.classList.remove('translate-y-full');
+            else footerActions.classList.add('translate-y-full');
+        }
+
+        async function copyProfilesToClipboard() {
+            if (selectedProfiles.length === 0) return;
+            const profiles = profilesData.filter(p => selectedProfiles.includes(p.id));
+            const details = profiles.map((p, i) => {
+                const resumeInfo = p.resumeLink === 'Profile on Request' ? 'Resume: On Request' : `Resume Link: ${p.resumeLink}`;
+                const rateInfo = p.monthlyRate === 'On Request' ? 'Monthly Rate: On Request' : `Monthly Rate: ${p.monthlyRate} INR`;
+                return `\n${i+1}. Name: ${p.name}\nExperience: ${p.experience}\nSkills: ${p.skills.join(', ')}\n${rateInfo}\n${resumeInfo}`;
+            }).join('\n\n---\n\n');
+            const message = `Total Profiles Selected: ${selectedProfiles.length}\n\nThese are available profiles for an interview.\n\n${details}`;
+            try {
+                const ta = document.createElement("textarea");
+                ta.value = message; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.focus(); ta.select();
+                document.execCommand('copy'); document.body.removeChild(ta);
+                showToast('Profiles copied to clipboard!');
+            } catch (err) { console.error('Failed to copy:', err); }
+        }
+
+        function arrangeInterviewSelected() {
+            if (selectedProfiles.length === 0) return;
+            const profiles = profilesData.filter(p => selectedProfiles.includes(p.id));
+            const details = profiles.map((p, i) => {
+                const resumeInfo = p.resumeLink === 'Profile on Request' ? 'Resume: On Request' : `Resume: ${p.resumeLink}`;
+                const rateInfo = p.monthlyRate === 'On Request' ? 'Monthly Rate: On Request' : `Monthly Rate: ${p.monthlyRate} INR`;
+                return `${i+1}. *${p.name}*\n   Title: ${p.title}\n   Experience: ${p.experience}\n   Skills: ${p.skills.join(', ')}\n   ${rateInfo}\n   ${resumeInfo}`;
+            }).join('\n\n');
+            const message = `Hello Signimus, I would like to arrange an interview for ${profiles.length} candidate(s):\n\n${details}`;
+            window.open(`https://wa.me/${SIGNIMUS_WHASSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function requestProfile(profileId) {
+            const profile = profilesData.find(p => p.id === profileId);
+            if (!profile) return;
+            const message = `Hello Signimus, I am interested in the profile of ${profile.name}. Can you please provide their resume?`;
+            window.open(`https://wa.me/${SIGNIMUS_WHASSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            showToast(`Request sent for ${profile.name}!`);
+        }
+
+        function showToast(message, isError = false) {
+            const toast = isError ? analysisToast : copyToast;
+            if (!toast) return;
+            toast.innerHTML = isError ? `<i class="fas fa-exclamation-triangle mr-2"></i> ${message}` : `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function hideModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[ch]));
+        }
+
+        function getCleanText(value, fallback = '') {
+            const cleaned = String(value || '').trim();
+            return cleaned ? escapeHtml(cleaned) : fallback;
+        }
+
+        function createSlug(value) {
+            return String(value || 'developer')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '') || 'developer';
+        }
+
+        function createUniqueProfileId(name) {
+            const base = `joint-${createSlug(name)}`;
+            let id = `${base}-${Date.now().toString(36)}`;
+            let counter = 1;
+            while (profilesData.some(profile => profile.id === id)) {
+                id = `${base}-${Date.now().toString(36)}-${counter++}`;
+            }
+            return id;
+        }
+
+        function getValidResumeLink(value) {
+            const raw = String(value || '').trim();
+            if (!raw) return 'Profile on Request';
+            try {
+                const url = new URL(raw);
+                if (url.protocol === 'http:' || url.protocol === 'https:') return escapeHtml(url.href);
+            } catch (error) {
+                return 'Profile on Request';
+            }
+            return 'Profile on Request';
+        }
+
+        function getJoinedBenchProfiles() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(JOINED_BENCH_STORAGE_KEY) || '[]');
+                return Array.isArray(saved) ? saved : [];
+            } catch (error) {
+                console.warn('Unable to load joined bench profiles.', error);
+                return [];
+            }
+        }
+
+        function loadJoinedBenchProfiles() {
+            getJoinedBenchProfiles().forEach(profile => {
+                if (profile && profile.id && !profilesData.some(existing => existing.id === profile.id)) {
+                    profilesData.push(profile);
+                }
+            });
+        }
+
+        function saveJoinedBenchProfile(profile) {
+            const joinedProfiles = getJoinedBenchProfiles().filter(existing => existing.id !== profile.id);
+            joinedProfiles.push(profile);
+            try {
+                localStorage.setItem(JOINED_BENCH_STORAGE_KEY, JSON.stringify(joinedProfiles));
+            } catch (error) {
+                console.warn('Unable to save joined bench profile.', error);
+            }
+        }
+
+        function refreshBenchAfterMutation() {
+            allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
+            selectedProfiles = selectedProfiles.filter(id => profilesData.some(profile => profile.id === id));
+            currentPage = 1;
+            renderFilters();
+            triggerAnalysisForFilteredProfiles();
+        }
+
+        function openJointBenchModal() {
+            jointBenchModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('joint-name')?.focus(), 50);
+        }
+
+        function closeJointBenchModal(resetForm = false) {
+            jointBenchModal.classList.add('hidden');
+            document.body.style.overflow = '';
+            if (resetForm) jointBenchForm.reset();
+        }
+
+        function handleJointBenchSubmit(event) {
+            event.preventDefault();
+            const name = getCleanText(document.getElementById('joint-name').value);
+            const title = getCleanText(document.getElementById('joint-title').value);
+            const skills = String(document.getElementById('joint-skills').value || '')
+                .split(/[;,]/)
+                .map(skill => getCleanText(skill))
+                .filter(Boolean);
+
+            if (!name || !title || skills.length === 0) {
+                showToast('Name, Title aur Skills required hain.', true);
+                return;
+            }
+
+            const profile = {
+                id: createUniqueProfileId(name),
+                name,
+                title,
+                experience: getCleanText(document.getElementById('joint-experience').value, '0 years'),
+                skills,
+                monthlyRate: getCleanText(document.getElementById('joint-monthly-rate').value, 'On Request'),
+                resumeLink: getValidResumeLink(document.getElementById('joint-resume-link').value),
+                marketRate: getCleanText(document.getElementById('joint-market-rate').value, '80,000'),
+                professionalSummary: getCleanText(document.getElementById('joint-summary').value) || undefined,
+                fullExperience: getCleanText(document.getElementById('joint-full-experience').value) || undefined,
+                joinedAt: Date.now()
+            };
+
+            profilesData.push(profile);
+            saveJoinedBenchProfile(profile);
+            closeJointBenchModal(true);
+            refreshBenchAfterMutation();
+            showToast(`${profile.name} bench me add ho gaya!`);
+        }
+
+        function updateTitle() {
+            const jd = jobDescriptionInput.value.trim();
+            const maxLen = 40;
+            if (jd) {
+                const display = jd.length > maxLen ? jd.substring(0, maxLen) + '...' : jd;
+                document.title = `Signimus: Candidates for ${display}`;
+                document.getElementById('main-heading').textContent = `Candidates for "${display}"`;
+                document.getElementById('main-heading-hint').innerHTML = `<i class="fas fa-external-link-alt" style="font-size:0.6rem;"></i> Click to explore guides &amp; resources`;
+            } else if (activeFilters.length > 0) {
+                const filters = activeFilters.join(', ');
+                const display = filters.length > maxLen ? filters.substring(0, maxLen) + '...' : filters;
+                document.title = `Signimus: ${display}`;
+                document.getElementById('main-heading').textContent = `Candidates filtered by "${display}"`;
+                document.getElementById('main-heading-hint').innerHTML = `<i class="fas fa-external-link-alt" style="font-size:0.6rem;"></i> Click to explore guides &amp; resources`;
+            } else {
+                document.title = 'Signimus Talent Bench';
+                document.getElementById('main-heading').textContent = 'Signimus Talent Bench';
+                document.getElementById('main-heading-hint').innerHTML = `<i class="fas fa-external-link-alt" style="font-size:0.6rem;"></i> Click to explore guides &amp; resources`;
+            }
+        }
+
+        function updateExperienceSlider() {
+            const min = parseInt(minExpSlider.value), max = parseInt(maxExpSlider.value);
+            if (min > max) { minExpSlider.value = max; return; }
+            const range = parseInt(maxExpSlider.max) - parseInt(maxExpSlider.min);
+            const minPercent = ((min - minExpSlider.min) / range) * 100;
+            const maxPercent = ((max - minExpSlider.min) / range) * 100;
+            sliderRangeFill.style.left = `${minPercent}%`;
+            sliderRangeFill.style.width = `${maxPercent - minPercent}%`;
+            experienceRangeLabel.textContent = (min === 0 && max === 15) ? 'All' : `${min} - ${max} years`;
+        }
+
+        function exportToExcel() {
+            const worksheetData = profilesData.map(p => ({
+                'ID': p.id,
+                'Name': p.name,
+                'Title': p.title,
+                'Experience': p.experience,
+                'Skills': p.skills.join('; '),
+                'Monthly Rate': p.monthlyRate,
+                'Resume Link': p.resumeLink,
+                'Market Rate': p.marketRate,
+                'Professional Summary': p.professionalSummary || '',
+                'Full Experience': (p.fullExperience || '').replace(/\n/g, ' | ')
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+            worksheet['!cols'] = [
+                {wch:22},{wch:24},{wch:30},{wch:14},{wch:50},
+                {wch:16},{wch:50},{wch:16},{wch:40},{wch:60}
+            ];
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Bench List");
+            XLSX.writeFile(workbook, "Signimus_Bench.xlsx");
+            showToast('Excel file downloaded!');
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') {
+                    if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+                    else inQuotes = !inQuotes;
+                } else if (ch === ',' && !inQuotes) {
+                    result.push(current.trim()); current = '';
+                } else {
+                    current += ch;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        function importFromCSV(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim() !== '');
+                    if (lines.length < 2) { showToast('CSV file empty hai!', true); return; }
+                    const headers = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim());
+                    const nameIdx = headers.findIndex(h => h.toLowerCase() === 'name');
+                    const titleIdx = headers.findIndex(h => h.toLowerCase() === 'title');
+                    const idIdx = headers.findIndex(h => h.toLowerCase() === 'id');
+                    const expIdx = headers.findIndex(h => h.toLowerCase() === 'experience');
+                    const skillsIdx = headers.findIndex(h => h.toLowerCase() === 'skills');
+                    const rateIdx = headers.findIndex(h => h.toLowerCase() === 'monthly rate');
+                    const resumeIdx = headers.findIndex(h => h.toLowerCase() === 'resume link');
+                    const marketIdx = headers.findIndex(h => h.toLowerCase() === 'market rate');
+                    const summaryIdx = headers.findIndex(h => h.toLowerCase() === 'professional summary');
+                    const fullExpIdx = headers.findIndex(h => h.toLowerCase() === 'full experience');
+                    if (nameIdx === -1 || titleIdx === -1) { showToast('CSV mein "Name" aur "Title" columns hone chahiye!', true); return; }
+                    const newProfiles = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const cols = parseCSVLine(lines[i]);
+                        const name = (cols[nameIdx] || '').trim();
+                        if (!name) continue;
+                        const rawId = idIdx !== -1 ? (cols[idIdx] || '').trim() : '';
+                        const id = rawId || name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i;
+                        const skillsRaw = skillsIdx !== -1 ? (cols[skillsIdx] || '') : '';
+                        const skills = skillsRaw.split(/[;,]/).map(s => s.trim()).filter(Boolean);
+                        const fullExpRaw = fullExpIdx !== -1 ? (cols[fullExpIdx] || '').replace(/ \| /g, '\n') : '';
+                        newProfiles.push({ id, name, title: titleIdx !== -1 ? (cols[titleIdx] || '').trim() : '', experience: expIdx !== -1 ? (cols[expIdx] || '').trim() : '', skills: skills.length > 0 ? skills : ['—'], monthlyRate: rateIdx !== -1 ? (cols[rateIdx] || 'On Request').trim() : 'On Request', resumeLink: resumeIdx !== -1 ? (cols[resumeIdx] || 'Profile on Request').trim() : 'Profile on Request', marketRate: marketIdx !== -1 ? (cols[marketIdx] || '').trim() : '', professionalSummary: summaryIdx !== -1 ? (cols[summaryIdx] || '').trim() || undefined : undefined, fullExperience: fullExpRaw.trim() || undefined });
+                    }
+                    if (newProfiles.length === 0) { showToast('CSV mein koi valid data nahi mila!', true); return; }
+                    profilesData.length = 0;
+                    newProfiles.forEach(p => profilesData.push(p));
+                    allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
+                    analysisResults = {};
+                    selectedProfiles = [];
+                    currentPage = 1;
+                    renderFilters();
+                    triggerAnalysisForFilteredProfiles();
+                    showToast(`${profilesData.length} profiles import ho gaye CSV se!`);
+                } catch(err) {
+                    console.error('CSV Import error:', err);
+                    showToast('Import failed! Sahi CSV file use karo.', true);
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // ==================== JOBS DATA & LOGIC ====================
+        const jobsData = [
+            {
+                id: 'j1',
+                title: 'React.js Frontend Developer',
+                type: 'Full-Time / Remote',
+                experience: '2–5 years',
+                location: 'Remote (India)',
+                badge: 'Urgent',
+                badgeColor: 'bg-red-100 text-red-600',
+                icon: '⚛️',
+                summary: 'We are looking for a skilled React.js developer to build fast, scalable, and beautiful frontend applications for our clients.',
+                responsibilities: [
+                    'Build responsive UI components using React.js and Tailwind CSS',
+                    'Integrate REST APIs and manage state with Redux / Zustand / Context',
+                    'Write clean, maintainable, and well-tested code',
+                    'Collaborate with backend developers and designers',
+                    'Optimize app performance and debug production issues',
+                ],
+                requirements: [
+                    '2+ years of hands-on React.js experience',
+                    'Strong JavaScript (ES6+) and HTML/CSS fundamentals',
+                    'Experience with Next.js is a plus',
+                    'Familiarity with Git and Agile workflows',
+                    'Good communication skills',
+                ],
+                salary: '₹55,000 – ₹1,50,000 /month',
+                applyEmail: 'contact@signimus.com',
+            },
+            {
+                id: 'j2',
+                title: 'Python / Django Backend Developer',
+                type: 'Full-Time / Remote',
+                experience: '3–6 years',
+                location: 'Remote (India)',
+                badge: 'Hiring',
+                badgeColor: 'bg-green-100 text-green-600',
+                icon: '🐍',
+                summary: 'Join our team as a Python backend developer to build robust APIs and data pipelines for cutting-edge SaaS products.',
+                responsibilities: [
+                    'Design and develop REST APIs using Django / FastAPI / Flask',
+                    'Work with PostgreSQL, MySQL, and Redis',
+                    'Implement CI/CD pipelines and Docker-based deployments',
+                    'Write unit and integration tests (Pytest)',
+                    'Mentor junior developers and review pull requests',
+                ],
+                requirements: [
+                    '3+ years of Python backend development experience',
+                    'Deep knowledge of Django ORM, DRF, or FastAPI',
+                    'Experience with AWS / GCP / Azure cloud services',
+                    'Strong understanding of database design and optimization',
+                    'Docker and Linux proficiency',
+                ],
+                salary: '₹70,000 – ₹2,00,000 /month',
+                applyEmail: 'contact@signimus.com',
+            },
+            {
+                id: 'j3',
+                title: 'Java Spring Boot Developer',
+                type: 'Full-Time / Remote',
+                experience: '2–7 years',
+                location: 'Remote (India)',
+                badge: 'Open',
+                badgeColor: 'bg-blue-100 text-blue-600',
+                icon: '☕',
+                summary: 'We need an experienced Java developer to design and implement microservices-based backend systems for enterprise clients.',
+                responsibilities: [
+                    'Develop RESTful microservices using Spring Boot and Spring Cloud',
+                    'Design relational database schemas (MySQL / PostgreSQL)',
+                    'Integrate Kafka for event-driven architecture',
+                    'Ensure high availability, scalability, and security of services',
+                    'Write comprehensive unit and integration tests',
+                ],
+                requirements: [
+                    'Strong proficiency in Core Java and Spring Boot',
+                    'Hands-on with Hibernate / JPA and REST API development',
+                    'Experience with Docker, Kubernetes is a plus',
+                    'Familiarity with AWS services (EC2, S3, RDS)',
+                    'Good problem-solving and debugging skills',
+                ],
+                salary: '₹60,000 – ₹1,80,000 /month',
+                applyEmail: 'contact@signimus.com',
+            },
+            {
+                id: 'j4',
+                title: 'Flutter Mobile App Developer',
+                type: 'Full-Time / Remote',
+                experience: '2–5 years',
+                location: 'Remote (India)',
+                badge: 'Open',
+                badgeColor: 'bg-blue-100 text-blue-600',
+                icon: '📱',
+                summary: 'Build beautiful cross-platform mobile applications for iOS and Android using Flutter and Dart for our growing client base.',
+                responsibilities: [
+                    'Develop high-quality Flutter apps for iOS and Android',
+                    'Integrate Firebase for auth, database, and push notifications',
+                    'Consume REST APIs and manage state with Provider / Riverpod / Bloc',
+                    'Publish apps to Play Store and App Store',
+                    'Debug and performance-tune existing apps',
+                ],
+                requirements: [
+                    '2+ years of Flutter / Dart experience',
+                    'Published at least one app on Play Store or App Store',
+                    'Knowledge of native Android (Kotlin) or iOS (Swift) is a plus',
+                    'Experience with Firebase and REST API integration',
+                    'Strong UI/UX sensibility',
+                ],
+                salary: '₹55,000 – ₹1,60,000 /month',
+                applyEmail: 'contact@signimus.com',
+            },
+            {
+                id: 'j5',
+                title: 'AI / ML Engineer',
+                type: 'Full-Time / Remote',
+                experience: '2–5 years',
+                location: 'Remote (India)',
+                badge: 'Urgent',
+                badgeColor: 'bg-red-100 text-red-600',
+                icon: '🤖',
+                summary: 'Work on cutting-edge AI products — from RAG systems and LLM integrations to computer vision and voice assistants.',
+                responsibilities: [
+                    'Build and deploy ML models using PyTorch / TensorFlow / Scikit-learn',
+                    'Develop RAG pipelines using LlamaIndex / LangChain / FAISS',
+                    'Integrate OpenAI, Azure OpenAI, and HuggingFace APIs',
+                    'Build data pipelines with Pandas, NumPy, and SQL',
+                    'Collaborate with product teams to ship AI features',
+                ],
+                requirements: [
+                    '2+ years of hands-on ML / AI engineering experience',
+                    'Proficiency in Python and core ML libraries',
+                    'Experience with LLMs, embeddings, and vector databases',
+                    'Strong mathematical foundations (linear algebra, statistics)',
+                    'Ability to move fast from prototype to production',
+                ],
+                salary: '₹80,000 – ₹2,50,000 /month',
+                applyEmail: 'contact@signimus.com',
+            },
+            {
+                id: 'j6',
+                title: 'DevOps / AWS Cloud Engineer',
+                type: 'Full-Time / Remote',
+                experience: '4–10 years',
+                location: 'Remote (India)',
+                badge: 'Open',
+                badgeColor: 'bg-blue-100 text-blue-600',
+                icon: '☁️',
+                summary: 'Own the cloud infrastructure for multiple client projects — from CI/CD pipelines to Kubernetes orchestration and cost optimization.',
+                responsibilities: [
+                    'Design and manage AWS infrastructure (EC2, EKS, RDS, S3, CloudFront)',
+                    'Build CI/CD pipelines using GitHub Actions / Jenkins / GitLab CI',
+                    'Manage Kubernetes clusters and Docker-based deployments',
+                    'Write infrastructure-as-code using Terraform / CDK',
+                    'Monitor systems with CloudWatch, Datadog, or Prometheus',
+                ],
+                requirements: [
+                    '4+ years of DevOps / SRE experience',
+                    'AWS certified or strong hands-on AWS experience',
+                    'Proficiency in Kubernetes, Docker, and Terraform',
+                    'Scripting skills in Python or Bash',
+                    'Experience with Linux administration',
+                ],
+                salary: '₹1,50,000 – ₹4,50,000 /month',
+                applyEmail: 'contact@signimus.com',
+            },
+        ];
+        let remoteJobsData = [];
+        let remoteJobsLoaded = false;
+
+        function getAllJobsData() {
+            const allJobs = [...jobsData, ...remoteJobsData];
+            const seen = new Set();
+            return allJobs.filter(job => {
+                if (seen.has(job.id)) return false;
+                seen.add(job.id);
+                return true;
+            });
+        }
+
+        async function loadRemoteJobsData(force = false) {
+            if (remoteJobsLoaded && !force) return;
+            try {
+                const response = await fetch('/api/job-posting', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+                const data = await response.json();
+                remoteJobsData = Array.isArray(data.jobs)
+                    ? data.jobs.map(job => ({ ...job, icon: job.icon || '' }))
+                    : [];
+            } catch (error) {
+                console.warn('Unable to load shared jobs for index modal.', error);
+                remoteJobsData = [];
+            } finally {
+                remoteJobsLoaded = true;
+            }
+        }
+
+        async function openJobsModal() {
+            await loadRemoteJobsData(true);
+            const list = document.getElementById('jobs-list');
+            const jobs = getAllJobsData();
+            list.innerHTML = jobs.map(job => `
+                <div onclick="openJobDetail('${job.id}')" class="flex items-center justify-between p-4 bg-white border-2 border-slate-100 rounded-xl cursor-pointer hover:border-purple-400 hover:shadow-md transition-all group">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${job.iconClass ? `<i class="${job.iconClass}"></i>` : job.icon}</span>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <p class="font-bold text-slate-800 group-hover:text-purple-700 transition-colors">${escapeHtml(job.title)}</p>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${job.badgeColor}">${job.badge}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(job.type)} &bull; ${escapeHtml(job.experience)} &bull; ${escapeHtml(job.location)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+                        <span class="text-xs font-semibold text-slate-600 hidden sm:block">${escapeHtml(job.salary)}</span>
+                        <i class="fas fa-chevron-right text-purple-400 text-sm"></i>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('jobs-modal-backdrop').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openJobDetail(jobId) {
+            const job = getAllJobsData().find(j => j.id === jobId);
+            if (!job) return;
+            const body = document.getElementById('job-detail-body');
+            body.innerHTML = `
+                <div class="flex items-start gap-3 mb-5">
+                    <span class="text-4xl leading-none">${job.iconClass ? `<i class="${job.iconClass}"></i>` : job.icon}</span>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <h2 class="text-2xl font-extrabold text-slate-900">${escapeHtml(job.title)}</h2>
+                            <span class="text-xs font-semibold px-2 py-1 rounded-full ${job.badgeColor}">${job.badge}</span>
+                        </div>
+                        <p class="text-sm text-slate-500">${escapeHtml(job.type)} &bull; ${escapeHtml(job.experience)} &bull; ${escapeHtml(job.location)}</p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-5 flex items-center justify-between flex-wrap gap-3">
+                    <div>
+                        <p class="text-xs text-purple-600 font-semibold uppercase tracking-wide">Monthly Salary</p>
+                        <p class="text-xl font-extrabold text-purple-800">${escapeHtml(job.salary)}</p>
+                    </div>
+                    <a href="https://wa.me/918225998112?text=Hi%20Signimus%2C%20I%20want%20to%20apply%20for%20the%20${encodeURIComponent(job.title)}%20role." target="_blank"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white font-bold rounded-lg text-sm hover:bg-green-600 transition">
+                        <i class="fab fa-whatsapp"></i> Apply on WhatsApp
+                    </a>
+                </div>
+
+                <p class="text-slate-600 text-sm leading-7 mb-5">${escapeHtml(job.summary)}</p>
+
+                <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-list-check text-purple-500"></i> Responsibilities</h3>
+                <ul class="mb-5 space-y-1.5">
+                    ${job.responsibilities.map(r => `<li class="flex items-start gap-2 text-sm text-slate-600"><i class="fas fa-circle-check text-green-500 mt-0.5 flex-shrink-0"></i>${escapeHtml(r)}</li>`).join('')}
+                </ul>
+
+                <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-star text-purple-500"></i> Requirements</h3>
+                <ul class="mb-6 space-y-1.5">
+                    ${job.requirements.map(r => `<li class="flex items-start gap-2 text-sm text-slate-600"><i class="fas fa-check text-indigo-500 mt-0.5 flex-shrink-0"></i>${escapeHtml(r)}</li>`).join('')}
+                </ul>
+
+                <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-100">
+                    <a href="https://wa.me/918225998112?text=Hi%20Signimus%2C%20I%20want%20to%20apply%20for%20the%20${encodeURIComponent(job.title)}%20role." target="_blank"
+                        class="flex-1 py-3 px-4 bg-green-500 text-white font-bold rounded-xl text-sm hover:bg-green-600 transition flex items-center justify-center gap-2">
+                        <i class="fab fa-whatsapp"></i> Apply via WhatsApp
+                    </a>
+                    <a href="mailto:${job.applyEmail}?subject=Application for ${encodeURIComponent(job.title)}"
+                        class="flex-1 py-3 px-4 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-envelope"></i> Apply via Email
+                    </a>
+                </div>
+            `;
+            document.getElementById('job-detail-modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeJobsModal() {
+            document.getElementById('jobs-modal-backdrop').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function closeJobDetailModal() {
+            document.getElementById('job-detail-modal-backdrop').classList.add('hidden');
+        }
+
+        // ==================== INIT ====================
+        window.addEventListener('DOMContentLoaded', () => {
+            loadJoinedBenchProfiles();
+            loadStateFromUrl();
+            renderProfiles();
+            renderFilters();
+            updateTitle();
+            updateExperienceSlider();
+            fetchAndCacheResumes();
+        });
+
+        document.getElementById('filter-bar').addEventListener('click', (e) => {
+            const filterBadge = e.target.closest('.interactive-filter-badge');
+            if (filterBadge && filterBadge.dataset.filter) toggleFilter(filterBadge.dataset.filter);
+        });
+
+        document.getElementById('all-filters-container').addEventListener('click', (e) => {
+            const filterBadge = e.target.closest('.interactive-filter-badge');
+            if (filterBadge && filterBadge.dataset.filter) { toggleFilter(filterBadge.dataset.filter); hideModal('all-filters-modal'); }
+        });
+
+        profilesContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.profile-card');
+            if (card) toggleProfileSelection(card.dataset.profileId, !card.classList.contains('not-a-fit-card'));
+        });
+
+        jobDescriptionInput.addEventListener('input', debounce(() => {
+            currentPage = 1;
+            syncUrlWithState();
+            triggerAnalysisForFilteredProfiles();
+            updateTitle();
+        }, 300));
+
+        moreFiltersButton.addEventListener('click', () => showModal('all-filters-modal'));
+        closeFiltersModal.addEventListener('click', () => hideModal('all-filters-modal'));
+        allFiltersModal.addEventListener('click', (e) => { if (e.target === allFiltersModal) hideModal('all-filters-modal'); });
+
+        // Jobs modal
+        document.getElementById('jobs-button').addEventListener('click', openJobsPage);
+        document.getElementById('jobs-modal-close').addEventListener('click', closeJobsModal);
+        document.getElementById('jobs-modal-backdrop').addEventListener('click', (e) => { if (e.target === document.getElementById('jobs-modal-backdrop')) closeJobsModal(); });
+        document.getElementById('job-detail-close').addEventListener('click', closeJobDetailModal);
+        document.getElementById('job-detail-modal-backdrop').addEventListener('click', (e) => { if (e.target === document.getElementById('job-detail-modal-backdrop')) closeJobDetailModal(); });
+        window.openJobDetail = openJobDetail;
+
+        minExpSlider.addEventListener('input', () => { updateExperienceSlider(); syncUrlWithState(); currentPage = 1; debounce(() => { triggerAnalysisForFilteredProfiles(); }, 300)(); });
+        maxExpSlider.addEventListener('input', () => { updateExperienceSlider(); syncUrlWithState(); currentPage = 1; debounce(() => { triggerAnalysisForFilteredProfiles(); }, 300)(); });
+        copyProfilesButton.addEventListener('click', copyProfilesToClipboard);
+        arrangeInterviewButton.addEventListener('click', arrangeInterviewSelected);
+        exportExcelButton.addEventListener('click', exportToExcel);
+        jointBenchButton.addEventListener('click', openJointBenchModal);
+        jointBenchClose.addEventListener('click', () => closeJointBenchModal());
+        jointBenchCancel.addEventListener('click', () => closeJointBenchModal(true));
+        jointBenchForm.addEventListener('submit', handleJointBenchSubmit);
+        jointBenchModal.addEventListener('click', (e) => { if (e.target === jointBenchModal) closeJointBenchModal(); });
+        document.getElementById('import-csv-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) { importFromCSV(file); e.target.value = ''; }
+        });
+    </script>
+</body>
+</html>

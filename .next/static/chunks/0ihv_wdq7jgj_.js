@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,31713,e=>{"use strict";var c=e.i(71645),t=e.i(18566);e.s(["default",0,function(){let e=(0,t.useRouter)();return(0,c.useEffect)(()=>{try{let c=window.location.search||"";e.replace(`/bench${c}`)}catch{e.replace("/bench")}},[e]),null},"dynamic",0,"force-dynamic"])}]);

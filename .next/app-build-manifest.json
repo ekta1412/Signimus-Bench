@@ -1,9 +1,0 @@
-{
-  "pages": {
-    "/api/job-posting/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/job-posting/route.js"
-    ]
-  }
-}
