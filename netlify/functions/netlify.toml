@@ -1,20 +1,12 @@
 [build]
   command = "npm run build"
-  publish = "public"
+  publish = ".next/standalone"
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
 
-[build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
-
 [[redirects]]
   from = "/api/job-posting"
   to = "/.netlify/functions/get-jobs"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
   status = 200
