@@ -1,18 +1,17 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "public"
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
 
-[build.environment]
-  NEXT_TELEMETRY_DISABLED = "1"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
 [[redirects]]
   from = "/api/job-posting"
   to = "/.netlify/functions/get-jobs"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
