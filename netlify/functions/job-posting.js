@@ -1,6 +1,4 @@
-const { createClient } = require('@supabase/supabase-js');
-const { existsSync, readFileSync } = require('node:fs');
-const { join } = require('node:path');
+const mysql = require('mysql2/promise');
 
 const jsonHeaders = {
   'Content-Type': 'application/json',
@@ -17,56 +15,15 @@ function json(statusCode, body) {
   };
 }
 
-function readStagingEnv() {
-  try {
-    const envPath = join(process.cwd(), 'staging.env');
-    if (!existsSync(envPath)) return {};
-
-    return readFileSync(envPath, 'utf8')
-      .split(/\r?\n/)
-      .reduce((acc, line) => {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith('#')) return acc;
-        const separatorIndex = trimmed.indexOf('=');
-        if (separatorIndex === -1) return acc;
-        const key = trimmed.slice(0, separatorIndex).trim();
-        const value = trimmed.slice(separatorIndex + 1).trim();
-        if (key) acc[key] = value;
-        return acc;
-      }, {});
-  } catch (error) {
-    console.warn('Unable to read staging.env fallback.', error);
-    return {};
-  }
-}
-
-function isLocalSupabaseUrl(url) {
-  return Boolean(url && /127\.0\.0\.1|localhost/.test(url));
-}
-
-function getSupabaseClient() {
-  const stagingEnv = readStagingEnv();
-  let url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  let key =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.SUPABASE_ANON_KEY ||
-    process.env.SUPABASE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || isLocalSupabaseUrl(url)) {
-    url = stagingEnv.SUPABASE_URL || stagingEnv.NEXT_PUBLIC_SUPABASE_URL || url;
-    key =
-      stagingEnv.SUPABASE_SERVICE_ROLE_KEY ||
-      stagingEnv.SUPABASE_ANON_KEY ||
-      stagingEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      key;
-  }
-
-  if (!url || !key) {
-    throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY');
-  }
-
-  return createClient(url, key);
+async function getConnection() {
+  return mysql.createConnection({
+    host: process.env.TIDB_HOST,
+    port: parseInt(process.env.TIDB_PORT || '4000'),
+    user: process.env.TIDB_USER,
+    password: process.env.TIDB_PASSWORD,
+    database: process.env.TIDB_DATABASE,
+    ssl: { rejectUnauthorized: true },
+  });
 }
 
 function normalizeList(value) {
@@ -80,122 +37,85 @@ function getBadgeColor(badge) {
   return 'bg-blue-100 text-blue-600';
 }
 
-function parseJobDescription(value) {
-  try {
-    const parsed = JSON.parse(value);
-    if (parsed && typeof parsed === 'object' && parsed.kind === 'signimus-job-details') {
-      return parsed;
-    }
-  } catch {
-    // Older rows store a plain job description string.
-  }
-  return null;
-}
-
-function rowToJob(row) {
-  const details = parseJobDescription(row.job_description || '');
-  const badge = details?.badge || 'Open';
-  const responsibilities = normalizeList(details?.responsibilities);
-  const requirements = normalizeList(details?.requirements);
-
-  return {
-    id: row.id,
-    title: row.job_title,
-    companyName: row.company_name,
-    type: details?.type || 'Full-Time / Remote',
-    experience: details?.experience || 'Experience flexible',
-    location: row.location,
-    badge,
-    badgeColor: getBadgeColor(badge),
-    iconClass: 'fas fa-briefcase',
-    summary: details?.summary || row.job_description || 'New hiring requirement added by Signimus.',
-    responsibilities: responsibilities.length
-      ? responsibilities
-      : ['Role responsibilities will be discussed during screening.'],
-    requirements: requirements.length
-      ? requirements
-      : ['Relevant experience and strong communication skills.'],
-    salary: details?.salary || 'On Request',
-    applyEmail: details?.applyEmail || row.client_email || 'contact@signimus.com',
-    createdAt: row.created_at,
-    source: 'supabase',
-  };
-}
-
 async function listJobs() {
-  const supabase = getSupabaseClient();
-  const { data, error } = await supabase
-    .from('job_postings')
-    .select('id, job_title, company_name, location, job_description, client_email, created_at')
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-  return json(200, { jobs: (data || []).map(rowToJob) });
+  let conn;
+  try {
+    conn = await getConnection();
+    const [rows] = await conn.execute(
+      'SELECT * FROM jobs ORDER BY created_at DESC'
+    );
+    const jobs = rows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      type: row.type || 'Full-Time / Remote',
+      experience: row.experience || 'Experience flexible',
+      location: row.location || 'Remote (India)',
+      badge: row.badge || 'Open',
+      badgeColor: row.badge_color || getBadgeColor(row.badge),
+      iconClass: row.icon_class || 'fas fa-briefcase',
+      summary: row.summary || '',
+      responsibilities: JSON.parse(row.responsibilities || '[]'),
+      requirements: JSON.parse(row.requirements || '[]'),
+      salary: row.salary || 'On Request',
+      applyEmail: row.apply_email || 'contact@signimus.com',
+      createdAt: row.created_at,
+    }));
+    return json(200, { jobs });
+  } catch (error) {
+    console.error('listJobs error:', error);
+    return json(500, { error: error.message });
+  } finally {
+    if (conn) await conn.end();
+  }
 }
 
 async function createJob(event) {
-  const body = JSON.parse(event.body || '{}');
-  const jobTitle = typeof body.jobTitle === 'string' ? body.jobTitle.trim() : '';
-  const companyName = typeof body.companyName === 'string' ? body.companyName.trim() : 'Signimus';
-  const location = typeof body.location === 'string' ? body.location.trim() : '';
-  const rawJobDescription = typeof body.jobDescription === 'string' ? body.jobDescription.trim() : '';
-  const notifyOnResumeSubmission = Boolean(body.notifyOnResumeSubmission);
-  const jobType = typeof body.jobType === 'string' ? body.jobType.trim() : '';
-  const experience = typeof body.experience === 'string' ? body.experience.trim() : '';
-  const salary = typeof body.salary === 'string' ? body.salary.trim() : '';
-  const rawBadge = typeof body.badge === 'string' ? body.badge.trim() : 'Open';
-  const badge = ['Open', 'Urgent', 'Hiring'].includes(rawBadge) ? rawBadge : 'Open';
-  const summary = typeof body.summary === 'string' ? body.summary.trim() : '';
-  const responsibilities = normalizeList(body.responsibilities);
-  const requirements = normalizeList(body.requirements);
-  const applyEmail = typeof body.applyEmail === 'string' ? body.applyEmail.trim() : '';
+  let conn;
+  try {
+    const body = JSON.parse(event.body || '{}');
+    const title = String(body.title || body.jobTitle || '').trim();
+    const type = String(body.type || body.jobType || 'Full-Time / Remote').trim();
+    const experience = String(body.experience || 'Experience flexible').trim();
+    const location = String(body.location || 'Remote (India)').trim();
+    const rawBadge = String(body.badge || 'Open').trim();
+    const badge = ['Open', 'Urgent', 'Hiring'].includes(rawBadge) ? rawBadge : 'Open';
+    const summary = String(body.summary || '').trim();
+    const responsibilities = normalizeList(body.responsibilities);
+    const requirements = normalizeList(body.requirements);
+    const salary = String(body.salary || 'On Request').trim();
+    const applyEmail = String(body.applyEmail || 'contact@signimus.com').trim();
+    const iconClass = String(body.iconClass || 'fas fa-briefcase').trim();
+    const badgeColor = getBadgeColor(badge);
 
-  const hasStructuredJobDetails = Boolean(
-    jobType ||
-      experience ||
-      salary ||
-      badge !== 'Open' ||
-      summary ||
-      responsibilities.length ||
-      requirements.length ||
-      applyEmail
-  );
+    if (!title) {
+      return json(400, { error: 'Job title is required' });
+    }
 
-  const jobDescription = hasStructuredJobDetails
-    ? JSON.stringify({
-        kind: 'signimus-job-details',
-        type: jobType || 'Full-Time / Remote',
-        experience: experience || 'Experience flexible',
-        salary: salary || 'On Request',
-        badge,
-        summary: summary || rawJobDescription || 'New hiring requirement added by Signimus.',
-        responsibilities,
-        requirements,
-        applyEmail: applyEmail || 'contact@signimus.com',
-      })
-    : rawJobDescription;
+    const { v4: uuidv4 } = require('uuid');
+    const id = uuidv4();
 
-  if (!jobTitle || !companyName || !location || !jobDescription) {
-    return json(400, { error: 'Missing required job posting fields' });
+    conn = await getConnection();
+    await conn.execute(
+      `INSERT INTO jobs 
+        (id, title, type, experience, location, badge, badge_color,
+         icon_class, summary, responsibilities, requirements, salary, apply_email)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id, title, type, experience, location, badge, badgeColor,
+        iconClass, summary,
+        JSON.stringify(responsibilities.length ? responsibilities : ['Role responsibilities will be discussed during screening.']),
+        JSON.stringify(requirements.length ? requirements : ['Relevant experience and strong communication skills.']),
+        salary, applyEmail,
+      ]
+    );
+
+    return json(200, { message: 'Job saved successfully', id });
+  } catch (error) {
+    console.error('createJob error:', error);
+    return json(500, { error: error.message });
+  } finally {
+    if (conn) await conn.end();
   }
-
-  const supabase = getSupabaseClient();
-  const { data, error } = await supabase
-    .from('job_postings')
-    .insert([
-      {
-        job_title: jobTitle,
-        company_name: companyName,
-        location,
-        job_description: jobDescription,
-        notify_client: notifyOnResumeSubmission,
-        client_email: applyEmail || null,
-      },
-    ])
-    .select();
-
-  if (error) throw error;
-  return json(200, { message: 'Job posting created successfully', data });
 }
 
 exports.handler = async (event) => {
@@ -207,8 +127,6 @@ exports.handler = async (event) => {
     return json(405, { error: 'Method Not Allowed' });
   } catch (error) {
     console.error('Job posting function error:', error);
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    const statusCode = /missing supabase/i.test(message) ? 500 : 503;
-    return json(statusCode, { error: message });
+    return json(503, { error: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
