@@ -37,6 +37,15 @@ function getBadgeColor(badge) {
   return 'bg-blue-100 text-blue-600';
 }
 
+function safeParseList(value) {
+  try {
+    const parsed = JSON.parse(value || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+
 async function listJobs() {
   let conn;
   try {
@@ -54,8 +63,8 @@ async function listJobs() {
       badgeColor: row.badge_color || getBadgeColor(row.badge),
       iconClass: row.icon_class || 'fas fa-briefcase',
       summary: row.summary || '',
-      responsibilities: JSON.parse(row.responsibilities || '[]'),
-      requirements: JSON.parse(row.requirements || '[]'),
+      responsibilities: safeParseList(row.responsibilities),
+      requirements: safeParseList(row.requirements),
       salary: row.salary || 'On Request',
       applyEmail: row.apply_email || 'contact@signimus.com',
       createdAt: row.created_at,
