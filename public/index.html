@@ -190,7 +190,7 @@
                 <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0"><i class="fas fa-user-plus text-indigo-600"></i></div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Joint Bench Developer Form</h3>
-                    <p class="text-xs text-gray-400">Form submit karte hi developer bench list me add ho jayega.</p>
+                    <p class="text-xs text-gray-400">Once the form is submitted, the developer will be added to the bench list.</p>
                 </div>
             </div>
             <form id="joint-bench-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -269,8 +269,6 @@
     <div id="homepage-modal-backdrop" class="hidden">
         <div id="homepage-modal">
             <button id="homepage-modal-close" title="Close"><i class="fas fa-times"></i></button>
-
-            <!-- Modal inner content rendered by JS -->
             <div id="homepage-modal-body" class="px-6 pb-8 pt-2"></div>
         </div>
     </div>
@@ -278,7 +276,6 @@
     <!-- Page Templates (hidden, used by homepage modal router) -->
     <template id="tpl-home">
         <div class="max-w-full">
-            <!-- Mini nav bar inside modal -->
             <div class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between rounded-t-xl">
                 <div class="flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 36 36">
@@ -289,9 +286,7 @@
                 </div>
                 <a href="https://signimus.com" target="_blank" class="text-xs text-indigo-600 font-semibold hover:underline flex items-center gap-1"><i class="fas fa-external-link-alt"></i> signimus.com</a>
             </div>
-
             <div class="p-6">
-                <!-- Hero -->
                 <div class="text-center py-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl mb-8">
                     <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hire Vetted Developers</h1>
                     <p class="text-slate-600 mt-2 max-w-lg mx-auto">Access expert guides on technical hiring, interview questions, and salary benchmarks.</p>
@@ -300,53 +295,34 @@
                         <a href="mailto:contact@signimus.com" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg text-sm hover:bg-indigo-700 transition"><i class="fas fa-envelope"></i> Email Us</a>
                     </div>
                 </div>
-
-                <!-- Guides grid -->
                 <h2 class="text-xl font-bold text-slate-800 mb-4">📚 Hiring Resources & Guides</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <button onclick="homepageRoute('react-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="text-2xl">⚛️</span>
-                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring React Developers</h3>
-                        </div>
+                        <div class="flex items-center gap-3 mb-2"><span class="text-2xl">⚛️</span><h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring React Developers</h3></div>
                         <p class="text-sm text-slate-500">Vetting framework, interview questions & coding challenge guide.</p>
                         <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
                     </button>
                     <button onclick="homepageRoute('python-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="text-2xl">🐍</span>
-                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring Python Developers</h3>
-                        </div>
+                        <div class="flex items-center gap-3 mb-2"><span class="text-2xl">🐍</span><h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring Python Developers</h3></div>
                         <p class="text-sm text-slate-500">Web dev vs. data science roles, salary benchmarks, 2025 guide.</p>
                         <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
                     </button>
                     <button onclick="homepageRoute('wordpress-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="text-2xl">🌐</span>
-                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring WordPress Developers</h3>
-                        </div>
+                        <div class="flex items-center gap-3 mb-2"><span class="text-2xl">🌐</span><h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Hiring WordPress Developers</h3></div>
                         <p class="text-sm text-slate-500">Essential skills, PHP depth, interview questions for WP experts.</p>
                         <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
                     </button>
                     <button onclick="homepageRoute('kotlin-vs-java-guide')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="text-2xl">📱</span>
-                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Kotlin vs Java for Android</h3>
-                        </div>
+                        <div class="flex items-center gap-3 mb-2"><span class="text-2xl">📱</span><h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Kotlin vs Java for Android</h3></div>
                         <p class="text-sm text-slate-500">Definitive technical comparison for managers and developers.</p>
                         <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Read Guide →</span>
                     </button>
                     <button onclick="homepageRoute('salary-calculator')" class="text-left bg-white border-2 border-slate-100 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition-all group sm:col-span-2">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="text-2xl">💰</span>
-                            <h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Developer Salary Calculator</h3>
-                        </div>
+                        <div class="flex items-center gap-3 mb-2"><span class="text-2xl">💰</span><h3 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors text-base">Developer Salary Calculator</h3></div>
                         <p class="text-sm text-slate-500">Instant salary estimates based on real market data to make competitive offers.</p>
                         <span class="mt-2 inline-block text-xs font-semibold text-indigo-500 group-hover:underline">Use the Tool →</span>
                     </button>
                 </div>
-
-                <!-- Contact footer -->
                 <div class="bg-indigo-600 rounded-xl p-6 text-white text-center">
                     <p class="font-bold text-lg mb-1">Need to hire fast?</p>
                     <p class="text-indigo-200 text-sm mb-4">All candidates are pre-vetted and available immediately.</p>
@@ -469,11 +445,7 @@
                 <h2>At a Glance: Feature Comparison</h2>
                 <div style="overflow-x:auto; margin: 1.5rem 0;">
                     <table class="w-full text-sm comparison-table border border-slate-200 rounded-lg overflow-hidden">
-                        <thead>
-                            <tr>
-                                <th>Feature</th><th>Java</th><th>Kotlin</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Feature</th><th>Java</th><th>Kotlin</th></tr></thead>
                         <tbody>
                             <tr><td class="font-medium">Null Safety</td><td>Prone to NullPointerException.</td><td class="text-green-600 font-semibold">Built into the type system—eliminates NPE at compile time.</td></tr>
                             <tr><td class="font-medium">Verbosity</td><td>Boilerplate for data classes (getters, setters, equals).</td><td class="text-green-600 font-semibold">Concise with data classes, type inference, extension functions.</td></tr>
@@ -608,10 +580,8 @@
             { id: 'sujit-frontend-2', name: 'Sujit', title: 'Frontend Developer', experience: '2 years', skills: ['Frontend Developer', 'JavaScript', 'HTML', 'CSS'], monthlyRate: '55000', resumeLink: 'Profile on Request', marketRate: '60,000' }
         ];
 
-        // ==================== HOMEPAGE PROFILES (for modal) ====================
-        const homepageProfiles = profilesData; // reuse same data
+        const homepageProfiles = profilesData;
 
-        // ==================== CONFIG ====================
         const SIGNIMUS_WHASSAPP_NUMBER = '918225998112';
         const JOINED_BENCH_STORAGE_KEY = 'signimus_joined_bench_profiles';
         let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
@@ -684,10 +654,8 @@
             if (!tpl) return;
             homepageModalBody.innerHTML = '';
             homepageModalBody.appendChild(tpl.content.cloneNode(true));
-            // scroll modal to top
             document.getElementById('homepage-modal').scrollTop = 0;
 
-            // Post-render: inject matching profiles
             if (page === 'react-guide') {
                 const c = document.getElementById('hp-react-profiles');
                 if (c) c.innerHTML = homepageProfiles.filter(p => p.skills.some(s => s.toLowerCase().includes('react'))).slice(0,4).map(renderHpCard).join('');
@@ -701,12 +669,9 @@
                 const c = document.getElementById('hp-android-profiles');
                 if (c) c.innerHTML = homepageProfiles.filter(p => p.skills.some(s => ['android','kotlin','java','flutter'].includes(s.toLowerCase()))).slice(0,4).map(renderHpCard).join('');
             } else if (page === 'salary-calculator') {
-                // wire up slider
                 const scExp = document.getElementById('sc-exp');
                 const scLabel = document.getElementById('sc-exp-label');
-                if (scExp) {
-                    scExp.addEventListener('input', () => { scLabel.textContent = scExp.value + ' years'; });
-                }
+                if (scExp) { scExp.addEventListener('input', () => { scLabel.textContent = scExp.value + ' years'; }); }
             }
         }
 
@@ -733,50 +698,38 @@
                 </div>`;
         }
 
-        // Salary calculator logic (called from template button)
         window.calcSalary = function() {
             const tech = document.getElementById('sc-tech').value;
             const exp = parseInt(document.getElementById('sc-exp').value);
             const salaryMap = {
-                react:      [55000, 80000, 120000, 160000, 200000, 250000],
-                java:       [50000, 70000, 110000, 150000, 180000, 220000],
-                python:     [45000, 65000, 100000, 140000, 180000, 210000],
-                flutter:    [50000, 70000, 100000, 140000, 170000, 200000],
-                devops:     [80000, 120000, 180000, 250000, 350000, 450000],
-                ai:         [60000, 90000, 150000, 200000, 250000, 300000],
-                wordpress:  [30000, 45000, 60000, 80000, 100000, 130000],
-                fullstack:  [55000, 80000, 120000, 160000, 200000, 260000],
+                react:[55000,80000,120000,160000,200000,250000], java:[50000,70000,110000,150000,180000,220000],
+                python:[45000,65000,100000,140000,180000,210000], flutter:[50000,70000,100000,140000,170000,200000],
+                devops:[80000,120000,180000,250000,350000,450000], ai:[60000,90000,150000,200000,250000,300000],
+                wordpress:[30000,45000,60000,80000,100000,130000], fullstack:[55000,80000,120000,160000,200000,260000],
             };
             const rates = salaryMap[tech] || salaryMap.react;
             const idx = Math.min(Math.floor((exp - 1) / 2), rates.length - 1);
             const base = rates[idx];
             const low = Math.round(base * 0.85 / 1000) * 1000;
             const high = Math.round(base * 1.15 / 1000) * 1000;
-
             const result = document.getElementById('sc-result');
             document.getElementById('sc-range').textContent = `₹${low.toLocaleString('en-IN')} – ₹${high.toLocaleString('en-IN')} /month`;
             document.getElementById('sc-note').textContent = `Based on ${exp} year${exp > 1 ? 's' : ''} of experience in ${document.getElementById('sc-tech').options[document.getElementById('sc-tech').selectedIndex].text}`;
             result.classList.remove('hidden');
         };
 
-        function openHomepagePage() {
-            window.location.href = 'homepage.html';
-        }
+        function openHomepagePage() { window.location.href = 'homepage.html'; }
 
-        function openJobsPage() {
-            window.location.href = 'jobs.html';
-        }
+        // ===== CHANGE 1: Jobs button opens MODAL not page =====
+        function openJobsPage() { openJobsModal(); }
 
-        // wire up heading & logo click
         document.getElementById('main-heading').addEventListener('click', openHomepagePage);
         document.getElementById('logo-btn').addEventListener('click', openHomepagePage);
         homepageModalClose.addEventListener('click', closeHomepageModal);
         homepageModalBackdrop.addEventListener('click', (e) => { if (e.target === homepageModalBackdrop) closeHomepageModal(); });
-        // expose for template onclick
         window.homepageRoute = homepageRoute;
 
         // ==================== MAIN APP LOGIC ====================
-
         function syncUrlWithState() {
             const params = new URLSearchParams();
             if (activeFilters.length > 0) params.set('filters', activeFilters.join(','));
@@ -806,23 +759,19 @@
             statusMessage.textContent = message;
             if (isLoading) {
                 statusIcon.className = 'fas fa-spinner animate-spin';
-                statusBar.classList.remove('bg-green-100', 'text-green-700');
-                statusBar.classList.add('bg-indigo-50', 'text-indigo-700');
+                statusBar.classList.remove('bg-green-100','text-green-700');
+                statusBar.classList.add('bg-indigo-50','text-indigo-700');
             } else {
                 statusIcon.className = 'fas fa-check-circle';
-                statusBar.classList.remove('bg-indigo-50', 'text-indigo-700');
-                statusBar.classList.add('bg-green-100', 'text-green-700');
+                statusBar.classList.remove('bg-indigo-50','text-indigo-700');
+                statusBar.classList.add('bg-green-100','text-green-700');
             }
         }
 
         async function exponentialBackoffFetch(url, options, retries = 3, delay = 1000) {
             try {
                 const response = await fetch(url, options);
-                if (!response.ok) {
-                    const error = new Error(`HTTP error! status: ${response.status}`);
-                    error.status = response.status;
-                    throw error;
-                }
+                if (!response.ok) { const error = new Error(`HTTP error! status: ${response.status}`); error.status = response.status; throw error; }
                 return response.json();
             } catch (error) {
                 if (retries > 0 && (!error.status || error.status >= 500 || error.status === 429)) {
@@ -1257,13 +1206,7 @@
         function hideModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         function escapeHtml(value) {
-            return String(value || '').replace(/[&<>"']/g, ch => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            }[ch]));
+            return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
         }
 
         function getCleanText(value, fallback = '') {
@@ -1272,10 +1215,7 @@
         }
 
         function createSlug(value) {
-            return String(value || 'developer')
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '') || 'developer';
+            return String(value || 'developer').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'developer';
         }
 
         function createUniqueProfileId(name) {
@@ -1294,9 +1234,7 @@
             try {
                 const url = new URL(raw);
                 if (url.protocol === 'http:' || url.protocol === 'https:') return escapeHtml(url.href);
-            } catch (error) {
-                return 'Profile on Request';
-            }
+            } catch (error) { return 'Profile on Request'; }
             return 'Profile on Request';
         }
 
@@ -1304,10 +1242,7 @@
             try {
                 const saved = JSON.parse(localStorage.getItem(JOINED_BENCH_STORAGE_KEY) || '[]');
                 return Array.isArray(saved) ? saved : [];
-            } catch (error) {
-                console.warn('Unable to load joined bench profiles.', error);
-                return [];
-            }
+            } catch (error) { console.warn('Unable to load joined bench profiles.', error); return []; }
         }
 
         function loadJoinedBenchProfiles() {
@@ -1321,11 +1256,8 @@
         function saveJoinedBenchProfile(profile) {
             const joinedProfiles = getJoinedBenchProfiles().filter(existing => existing.id !== profile.id);
             joinedProfiles.push(profile);
-            try {
-                localStorage.setItem(JOINED_BENCH_STORAGE_KEY, JSON.stringify(joinedProfiles));
-            } catch (error) {
-                console.warn('Unable to save joined bench profile.', error);
-            }
+            try { localStorage.setItem(JOINED_BENCH_STORAGE_KEY, JSON.stringify(joinedProfiles)); }
+            catch (error) { console.warn('Unable to save joined bench profile.', error); }
         }
 
         function refreshBenchAfterMutation() {
@@ -1348,7 +1280,8 @@
             if (resetForm) jointBenchForm.reset();
         }
 
-        function handleJointBenchSubmit(event) {
+        // ===== CHANGE 3: Joint Bench saves to DATABASE (add-profile function) =====
+        async function handleJointBenchSubmit(event) {
             event.preventDefault();
             const name = getCleanText(document.getElementById('joint-name').value);
             const title = getCleanText(document.getElementById('joint-title').value);
@@ -1358,7 +1291,7 @@
                 .filter(Boolean);
 
             if (!name || !title || skills.length === 0) {
-                showToast('Name, Title aur Skills required hain.', true);
+                showToast('Name, Title, and Skills are required.', true);
                 return;
             }
 
@@ -1376,11 +1309,29 @@
                 joinedAt: Date.now()
             };
 
+            // Save to database via Netlify function
+            try {
+                const response = await fetch('/.netlify/functions/add-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(profile)
+                });
+                if (response.ok) {
+                    showToast(`${profile.name} saved to database!`);
+                } else {
+                    console.warn('Database save failed, saving locally only.');
+                    showToast(`${profile.name} saved locally (database unavailable).`, true);
+                }
+            } catch (err) {
+                console.warn('Database unavailable, saving locally:', err);
+                showToast(`${profile.name} saved locally (database unavailable).`, true);
+            }
+
+            // Always add to local list and localStorage
             profilesData.push(profile);
             saveJoinedBenchProfile(profile);
             closeJointBenchModal(true);
             refreshBenchAfterMutation();
-            showToast(`${profile.name} bench me add ho gaya!`);
         }
 
         function updateTitle() {
@@ -1417,22 +1368,13 @@
 
         function exportToExcel() {
             const worksheetData = profilesData.map(p => ({
-                'ID': p.id,
-                'Name': p.name,
-                'Title': p.title,
-                'Experience': p.experience,
-                'Skills': p.skills.join('; '),
-                'Monthly Rate': p.monthlyRate,
-                'Resume Link': p.resumeLink,
-                'Market Rate': p.marketRate,
-                'Professional Summary': p.professionalSummary || '',
+                'ID': p.id, 'Name': p.name, 'Title': p.title, 'Experience': p.experience,
+                'Skills': p.skills.join('; '), 'Monthly Rate': p.monthlyRate, 'Resume Link': p.resumeLink,
+                'Market Rate': p.marketRate, 'Professional Summary': p.professionalSummary || '',
                 'Full Experience': (p.fullExperience || '').replace(/\n/g, ' | ')
             }));
             const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-            worksheet['!cols'] = [
-                {wch:22},{wch:24},{wch:30},{wch:14},{wch:50},
-                {wch:16},{wch:50},{wch:16},{wch:40},{wch:60}
-            ];
+            worksheet['!cols'] = [{wch:22},{wch:24},{wch:30},{wch:14},{wch:50},{wch:16},{wch:50},{wch:16},{wch:40},{wch:60}];
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Bench List");
             XLSX.writeFile(workbook, "Signimus_Bench.xlsx");
@@ -1446,13 +1388,9 @@
             for (let i = 0; i < line.length; i++) {
                 const ch = line[i];
                 if (ch === '"') {
-                    if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
-                    else inQuotes = !inQuotes;
-                } else if (ch === ',' && !inQuotes) {
-                    result.push(current.trim()); current = '';
-                } else {
-                    current += ch;
-                }
+                    if (inQuotes && line[i+1] === '"') { current += '"'; i++; } else inQuotes = !inQuotes;
+                } else if (ch === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+                else { current += ch; }
             }
             result.push(current.trim());
             return result;
@@ -1465,7 +1403,7 @@
                 try {
                     const text = e.target.result;
                     const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim() !== '');
-                    if (lines.length < 2) { showToast('CSV file empty hai!', true); return; }
+                    if (lines.length < 2) { showToast('CSV file is empty.', true); return; }
                     const headers = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim());
                     const nameIdx = headers.findIndex(h => h.toLowerCase() === 'name');
                     const titleIdx = headers.findIndex(h => h.toLowerCase() === 'title');
@@ -1477,7 +1415,7 @@
                     const marketIdx = headers.findIndex(h => h.toLowerCase() === 'market rate');
                     const summaryIdx = headers.findIndex(h => h.toLowerCase() === 'professional summary');
                     const fullExpIdx = headers.findIndex(h => h.toLowerCase() === 'full experience');
-                    if (nameIdx === -1 || titleIdx === -1) { showToast('CSV mein "Name" aur "Title" columns hone chahiye!', true); return; }
+                    if (nameIdx === -1 || titleIdx === -1) { showToast('CSV must include "Name" and "Title" columns.', true); return; }
                     const newProfiles = [];
                     for (let i = 1; i < lines.length; i++) {
                         const cols = parseCSVLine(lines[i]);
@@ -1490,7 +1428,7 @@
                         const fullExpRaw = fullExpIdx !== -1 ? (cols[fullExpIdx] || '').replace(/ \| /g, '\n') : '';
                         newProfiles.push({ id, name, title: titleIdx !== -1 ? (cols[titleIdx] || '').trim() : '', experience: expIdx !== -1 ? (cols[expIdx] || '').trim() : '', skills: skills.length > 0 ? skills : ['—'], monthlyRate: rateIdx !== -1 ? (cols[rateIdx] || 'On Request').trim() : 'On Request', resumeLink: resumeIdx !== -1 ? (cols[resumeIdx] || 'Profile on Request').trim() : 'Profile on Request', marketRate: marketIdx !== -1 ? (cols[marketIdx] || '').trim() : '', professionalSummary: summaryIdx !== -1 ? (cols[summaryIdx] || '').trim() || undefined : undefined, fullExperience: fullExpRaw.trim() || undefined });
                     }
-                    if (newProfiles.length === 0) { showToast('CSV mein koi valid data nahi mila!', true); return; }
+                    if (newProfiles.length === 0) { showToast('No valid data was found in the CSV.', true); return; }
                     profilesData.length = 0;
                     newProfiles.forEach(p => profilesData.push(p));
                     allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
@@ -1499,10 +1437,10 @@
                     currentPage = 1;
                     renderFilters();
                     triggerAnalysisForFilteredProfiles();
-                    showToast(`${profilesData.length} profiles import ho gaye CSV se!`);
+                    showToast(`${profilesData.length} profiles imported from CSV!`);
                 } catch(err) {
                     console.error('CSV Import error:', err);
-                    showToast('Import failed! Sahi CSV file use karo.', true);
+                    showToast('Import failed. Please use a valid CSV file.', true);
                 }
             };
             reader.readAsText(file, 'UTF-8');
@@ -1510,168 +1448,12 @@
 
         // ==================== JOBS DATA & LOGIC ====================
         const jobsData = [
-            {
-                id: 'j1',
-                title: 'React.js Frontend Developer',
-                type: 'Full-Time / Remote',
-                experience: '2–5 years',
-                location: 'Remote (India)',
-                badge: 'Urgent',
-                badgeColor: 'bg-red-100 text-red-600',
-                icon: '⚛️',
-                summary: 'We are looking for a skilled React.js developer to build fast, scalable, and beautiful frontend applications for our clients.',
-                responsibilities: [
-                    'Build responsive UI components using React.js and Tailwind CSS',
-                    'Integrate REST APIs and manage state with Redux / Zustand / Context',
-                    'Write clean, maintainable, and well-tested code',
-                    'Collaborate with backend developers and designers',
-                    'Optimize app performance and debug production issues',
-                ],
-                requirements: [
-                    '2+ years of hands-on React.js experience',
-                    'Strong JavaScript (ES6+) and HTML/CSS fundamentals',
-                    'Experience with Next.js is a plus',
-                    'Familiarity with Git and Agile workflows',
-                    'Good communication skills',
-                ],
-                salary: '₹55,000 – ₹1,50,000 /month',
-                applyEmail: 'contact@signimus.com',
-            },
-            {
-                id: 'j2',
-                title: 'Python / Django Backend Developer',
-                type: 'Full-Time / Remote',
-                experience: '3–6 years',
-                location: 'Remote (India)',
-                badge: 'Hiring',
-                badgeColor: 'bg-green-100 text-green-600',
-                icon: '🐍',
-                summary: 'Join our team as a Python backend developer to build robust APIs and data pipelines for cutting-edge SaaS products.',
-                responsibilities: [
-                    'Design and develop REST APIs using Django / FastAPI / Flask',
-                    'Work with PostgreSQL, MySQL, and Redis',
-                    'Implement CI/CD pipelines and Docker-based deployments',
-                    'Write unit and integration tests (Pytest)',
-                    'Mentor junior developers and review pull requests',
-                ],
-                requirements: [
-                    '3+ years of Python backend development experience',
-                    'Deep knowledge of Django ORM, DRF, or FastAPI',
-                    'Experience with AWS / GCP / Azure cloud services',
-                    'Strong understanding of database design and optimization',
-                    'Docker and Linux proficiency',
-                ],
-                salary: '₹70,000 – ₹2,00,000 /month',
-                applyEmail: 'contact@signimus.com',
-            },
-            {
-                id: 'j3',
-                title: 'Java Spring Boot Developer',
-                type: 'Full-Time / Remote',
-                experience: '2–7 years',
-                location: 'Remote (India)',
-                badge: 'Open',
-                badgeColor: 'bg-blue-100 text-blue-600',
-                icon: '☕',
-                summary: 'We need an experienced Java developer to design and implement microservices-based backend systems for enterprise clients.',
-                responsibilities: [
-                    'Develop RESTful microservices using Spring Boot and Spring Cloud',
-                    'Design relational database schemas (MySQL / PostgreSQL)',
-                    'Integrate Kafka for event-driven architecture',
-                    'Ensure high availability, scalability, and security of services',
-                    'Write comprehensive unit and integration tests',
-                ],
-                requirements: [
-                    'Strong proficiency in Core Java and Spring Boot',
-                    'Hands-on with Hibernate / JPA and REST API development',
-                    'Experience with Docker, Kubernetes is a plus',
-                    'Familiarity with AWS services (EC2, S3, RDS)',
-                    'Good problem-solving and debugging skills',
-                ],
-                salary: '₹60,000 – ₹1,80,000 /month',
-                applyEmail: 'contact@signimus.com',
-            },
-            {
-                id: 'j4',
-                title: 'Flutter Mobile App Developer',
-                type: 'Full-Time / Remote',
-                experience: '2–5 years',
-                location: 'Remote (India)',
-                badge: 'Open',
-                badgeColor: 'bg-blue-100 text-blue-600',
-                icon: '📱',
-                summary: 'Build beautiful cross-platform mobile applications for iOS and Android using Flutter and Dart for our growing client base.',
-                responsibilities: [
-                    'Develop high-quality Flutter apps for iOS and Android',
-                    'Integrate Firebase for auth, database, and push notifications',
-                    'Consume REST APIs and manage state with Provider / Riverpod / Bloc',
-                    'Publish apps to Play Store and App Store',
-                    'Debug and performance-tune existing apps',
-                ],
-                requirements: [
-                    '2+ years of Flutter / Dart experience',
-                    'Published at least one app on Play Store or App Store',
-                    'Knowledge of native Android (Kotlin) or iOS (Swift) is a plus',
-                    'Experience with Firebase and REST API integration',
-                    'Strong UI/UX sensibility',
-                ],
-                salary: '₹55,000 – ₹1,60,000 /month',
-                applyEmail: 'contact@signimus.com',
-            },
-            {
-                id: 'j5',
-                title: 'AI / ML Engineer',
-                type: 'Full-Time / Remote',
-                experience: '2–5 years',
-                location: 'Remote (India)',
-                badge: 'Urgent',
-                badgeColor: 'bg-red-100 text-red-600',
-                icon: '🤖',
-                summary: 'Work on cutting-edge AI products — from RAG systems and LLM integrations to computer vision and voice assistants.',
-                responsibilities: [
-                    'Build and deploy ML models using PyTorch / TensorFlow / Scikit-learn',
-                    'Develop RAG pipelines using LlamaIndex / LangChain / FAISS',
-                    'Integrate OpenAI, Azure OpenAI, and HuggingFace APIs',
-                    'Build data pipelines with Pandas, NumPy, and SQL',
-                    'Collaborate with product teams to ship AI features',
-                ],
-                requirements: [
-                    '2+ years of hands-on ML / AI engineering experience',
-                    'Proficiency in Python and core ML libraries',
-                    'Experience with LLMs, embeddings, and vector databases',
-                    'Strong mathematical foundations (linear algebra, statistics)',
-                    'Ability to move fast from prototype to production',
-                ],
-                salary: '₹80,000 – ₹2,50,000 /month',
-                applyEmail: 'contact@signimus.com',
-            },
-            {
-                id: 'j6',
-                title: 'DevOps / AWS Cloud Engineer',
-                type: 'Full-Time / Remote',
-                experience: '4–10 years',
-                location: 'Remote (India)',
-                badge: 'Open',
-                badgeColor: 'bg-blue-100 text-blue-600',
-                icon: '☁️',
-                summary: 'Own the cloud infrastructure for multiple client projects — from CI/CD pipelines to Kubernetes orchestration and cost optimization.',
-                responsibilities: [
-                    'Design and manage AWS infrastructure (EC2, EKS, RDS, S3, CloudFront)',
-                    'Build CI/CD pipelines using GitHub Actions / Jenkins / GitLab CI',
-                    'Manage Kubernetes clusters and Docker-based deployments',
-                    'Write infrastructure-as-code using Terraform / CDK',
-                    'Monitor systems with CloudWatch, Datadog, or Prometheus',
-                ],
-                requirements: [
-                    '4+ years of DevOps / SRE experience',
-                    'AWS certified or strong hands-on AWS experience',
-                    'Proficiency in Kubernetes, Docker, and Terraform',
-                    'Scripting skills in Python or Bash',
-                    'Experience with Linux administration',
-                ],
-                salary: '₹1,50,000 – ₹4,50,000 /month',
-                applyEmail: 'contact@signimus.com',
-            },
+            { id: 'j1', title: 'React.js Frontend Developer', type: 'Full-Time / Remote', experience: '2–5 years', location: 'Remote (India)', badge: 'Urgent', badgeColor: 'bg-red-100 text-red-600', icon: '⚛️', summary: 'We are looking for a skilled React.js developer to build fast, scalable, and beautiful frontend applications for our clients.', responsibilities: ['Build responsive UI components using React.js and Tailwind CSS','Integrate REST APIs and manage state with Redux / Zustand / Context','Write clean, maintainable, and well-tested code','Collaborate with backend developers and designers','Optimize app performance and debug production issues'], requirements: ['2+ years of hands-on React.js experience','Strong JavaScript (ES6+) and HTML/CSS fundamentals','Experience with Next.js is a plus','Familiarity with Git and Agile workflows','Good communication skills'], salary: '₹55,000 – ₹1,50,000 /month', applyEmail: 'contact@signimus.com' },
+            { id: 'j2', title: 'Python / Django Backend Developer', type: 'Full-Time / Remote', experience: '3–6 years', location: 'Remote (India)', badge: 'Hiring', badgeColor: 'bg-green-100 text-green-600', icon: '🐍', summary: 'Join our team as a Python backend developer to build robust APIs and data pipelines for cutting-edge SaaS products.', responsibilities: ['Design and develop REST APIs using Django / FastAPI / Flask','Work with PostgreSQL, MySQL, and Redis','Implement CI/CD pipelines and Docker-based deployments','Write unit and integration tests (Pytest)','Mentor junior developers and review pull requests'], requirements: ['3+ years of Python backend development experience','Deep knowledge of Django ORM, DRF, or FastAPI','Experience with AWS / GCP / Azure cloud services','Strong understanding of database design and optimization','Docker and Linux proficiency'], salary: '₹70,000 – ₹2,00,000 /month', applyEmail: 'contact@signimus.com' },
+            { id: 'j3', title: 'Java Spring Boot Developer', type: 'Full-Time / Remote', experience: '2–7 years', location: 'Remote (India)', badge: 'Open', badgeColor: 'bg-blue-100 text-blue-600', icon: '☕', summary: 'We need an experienced Java developer to design and implement microservices-based backend systems for enterprise clients.', responsibilities: ['Develop RESTful microservices using Spring Boot and Spring Cloud','Design relational database schemas (MySQL / PostgreSQL)','Integrate Kafka for event-driven architecture','Ensure high availability, scalability, and security of services','Write comprehensive unit and integration tests'], requirements: ['Strong proficiency in Core Java and Spring Boot','Hands-on with Hibernate / JPA and REST API development','Experience with Docker, Kubernetes is a plus','Familiarity with AWS services (EC2, S3, RDS)','Good problem-solving and debugging skills'], salary: '₹60,000 – ₹1,80,000 /month', applyEmail: 'contact@signimus.com' },
+            { id: 'j4', title: 'Flutter Mobile App Developer', type: 'Full-Time / Remote', experience: '2–5 years', location: 'Remote (India)', badge: 'Open', badgeColor: 'bg-blue-100 text-blue-600', icon: '📱', summary: 'Build beautiful cross-platform mobile applications for iOS and Android using Flutter and Dart for our growing client base.', responsibilities: ['Develop high-quality Flutter apps for iOS and Android','Integrate Firebase for auth, database, and push notifications','Consume REST APIs and manage state with Provider / Riverpod / Bloc','Publish apps to Play Store and App Store','Debug and performance-tune existing apps'], requirements: ['2+ years of Flutter / Dart experience','Published at least one app on Play Store or App Store','Knowledge of native Android (Kotlin) or iOS (Swift) is a plus','Experience with Firebase and REST API integration','Strong UI/UX sensibility'], salary: '₹55,000 – ₹1,60,000 /month', applyEmail: 'contact@signimus.com' },
+            { id: 'j5', title: 'AI / ML Engineer', type: 'Full-Time / Remote', experience: '2–5 years', location: 'Remote (India)', badge: 'Urgent', badgeColor: 'bg-red-100 text-red-600', icon: '🤖', summary: 'Work on cutting-edge AI products — from RAG systems and LLM integrations to computer vision and voice assistants.', responsibilities: ['Build and deploy ML models using PyTorch / TensorFlow / Scikit-learn','Develop RAG pipelines using LlamaIndex / LangChain / FAISS','Integrate OpenAI, Azure OpenAI, and HuggingFace APIs','Build data pipelines with Pandas, NumPy, and SQL','Collaborate with product teams to ship AI features'], requirements: ['2+ years of hands-on ML / AI engineering experience','Proficiency in Python and core ML libraries','Experience with LLMs, embeddings, and vector databases','Strong mathematical foundations (linear algebra, statistics)','Ability to move fast from prototype to production'], salary: '₹80,000 – ₹2,50,000 /month', applyEmail: 'contact@signimus.com' },
+            { id: 'j6', title: 'DevOps / AWS Cloud Engineer', type: 'Full-Time / Remote', experience: '4–10 years', location: 'Remote (India)', badge: 'Open', badgeColor: 'bg-blue-100 text-blue-600', icon: '☁️', summary: 'Own the cloud infrastructure for multiple client projects — from CI/CD pipelines to Kubernetes orchestration and cost optimization.', responsibilities: ['Design and manage AWS infrastructure (EC2, EKS, RDS, S3, CloudFront)','Build CI/CD pipelines using GitHub Actions / Jenkins / GitLab CI','Manage Kubernetes clusters and Docker-based deployments','Write infrastructure-as-code using Terraform / CDK','Monitor systems with CloudWatch, Datadog, or Prometheus'], requirements: ['4+ years of DevOps / SRE experience','AWS certified or strong hands-on AWS experience','Proficiency in Kubernetes, Docker, and Terraform','Scripting skills in Python or Bash','Experience with Linux administration'], salary: '₹1,50,000 – ₹4,50,000 /month', applyEmail: 'contact@signimus.com' },
         ];
         let remoteJobsData = [];
         let remoteJobsLoaded = false;
@@ -1679,17 +1461,14 @@
         function getAllJobsData() {
             const allJobs = [...jobsData, ...remoteJobsData];
             const seen = new Set();
-            return allJobs.filter(job => {
-                if (seen.has(job.id)) return false;
-                seen.add(job.id);
-                return true;
-            });
+            return allJobs.filter(job => { if (seen.has(job.id)) return false; seen.add(job.id); return true; });
         }
 
+        // ===== CHANGE 2: Use /.netlify/functions/get-jobs instead of /api/job-posting =====
         async function loadRemoteJobsData(force = false) {
             if (remoteJobsLoaded && !force) return;
             try {
-                const response = await fetch('/api/job-posting', { cache: 'no-store' });
+                const response = await fetch('/.netlify/functions/get-jobs', { cache: 'no-store' });
                 if (!response.ok) throw new Error(`API returned ${response.status}`);
                 const data = await response.json();
                 remoteJobsData = Array.isArray(data.jobs)
@@ -1744,7 +1523,6 @@
                         <p class="text-sm text-slate-500">${escapeHtml(job.type)} &bull; ${escapeHtml(job.experience)} &bull; ${escapeHtml(job.location)}</p>
                     </div>
                 </div>
-
                 <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-5 flex items-center justify-between flex-wrap gap-3">
                     <div>
                         <p class="text-xs text-purple-600 font-semibold uppercase tracking-wide">Monthly Salary</p>
@@ -1755,19 +1533,15 @@
                         <i class="fab fa-whatsapp"></i> Apply on WhatsApp
                     </a>
                 </div>
-
                 <p class="text-slate-600 text-sm leading-7 mb-5">${escapeHtml(job.summary)}</p>
-
                 <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-list-check text-purple-500"></i> Responsibilities</h3>
                 <ul class="mb-5 space-y-1.5">
                     ${job.responsibilities.map(r => `<li class="flex items-start gap-2 text-sm text-slate-600"><i class="fas fa-circle-check text-green-500 mt-0.5 flex-shrink-0"></i>${escapeHtml(r)}</li>`).join('')}
                 </ul>
-
                 <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-star text-purple-500"></i> Requirements</h3>
                 <ul class="mb-6 space-y-1.5">
                     ${job.requirements.map(r => `<li class="flex items-start gap-2 text-sm text-slate-600"><i class="fas fa-check text-indigo-500 mt-0.5 flex-shrink-0"></i>${escapeHtml(r)}</li>`).join('')}
                 </ul>
-
                 <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-100">
                     <a href="https://wa.me/918225998112?text=Hi%20Signimus%2C%20I%20want%20to%20apply%20for%20the%20${encodeURIComponent(job.title)}%20role." target="_blank"
                         class="flex-1 py-3 px-4 bg-green-500 text-white font-bold rounded-xl text-sm hover:bg-green-600 transition flex items-center justify-center gap-2">
@@ -1828,8 +1602,8 @@
         closeFiltersModal.addEventListener('click', () => hideModal('all-filters-modal'));
         allFiltersModal.addEventListener('click', (e) => { if (e.target === allFiltersModal) hideModal('all-filters-modal'); });
 
-        // Jobs modal
-        document.getElementById('jobs-button').addEventListener('click', openJobsPage);
+        // ===== CHANGE 1: Jobs button opens modal =====
+        document.getElementById('jobs-button').addEventListener('click', openJobsModal);
         document.getElementById('jobs-modal-close').addEventListener('click', closeJobsModal);
         document.getElementById('jobs-modal-backdrop').addEventListener('click', (e) => { if (e.target === document.getElementById('jobs-modal-backdrop')) closeJobsModal(); });
         document.getElementById('job-detail-close').addEventListener('click', closeJobDetailModal);

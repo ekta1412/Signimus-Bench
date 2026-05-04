@@ -190,7 +190,7 @@
                 <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0"><i class="fas fa-user-plus text-indigo-600"></i></div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Joint Bench Developer Form</h3>
-                    <p class="text-xs text-gray-400">Form submit karte hi developer bench list me add ho jayega.</p>
+                    <p class="text-xs text-gray-400">Once the form is submitted, the developer will be added to the bench list.</p>
                 </div>
             </div>
             <form id="joint-bench-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1358,7 +1358,7 @@
                 .filter(Boolean);
 
             if (!name || !title || skills.length === 0) {
-                showToast('Name, Title aur Skills required hain.', true);
+                showToast('Name, Title, and Skills are required.', true);
                 return;
             }
 
@@ -1380,7 +1380,7 @@
             saveJoinedBenchProfile(profile);
             closeJointBenchModal(true);
             refreshBenchAfterMutation();
-            showToast(`${profile.name} bench me add ho gaya!`);
+            showToast(`${profile.name} has been added to the bench!`);
         }
 
         function updateTitle() {
@@ -1465,7 +1465,7 @@
                 try {
                     const text = e.target.result;
                     const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim() !== '');
-                    if (lines.length < 2) { showToast('CSV file empty hai!', true); return; }
+                    if (lines.length < 2) { showToast('CSV file is empty.', true); return; }
                     const headers = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim());
                     const nameIdx = headers.findIndex(h => h.toLowerCase() === 'name');
                     const titleIdx = headers.findIndex(h => h.toLowerCase() === 'title');
@@ -1477,7 +1477,7 @@
                     const marketIdx = headers.findIndex(h => h.toLowerCase() === 'market rate');
                     const summaryIdx = headers.findIndex(h => h.toLowerCase() === 'professional summary');
                     const fullExpIdx = headers.findIndex(h => h.toLowerCase() === 'full experience');
-                    if (nameIdx === -1 || titleIdx === -1) { showToast('CSV mein "Name" aur "Title" columns hone chahiye!', true); return; }
+                    if (nameIdx === -1 || titleIdx === -1) { showToast('CSV must include "Name" and "Title" columns.', true); return; }
                     const newProfiles = [];
                     for (let i = 1; i < lines.length; i++) {
                         const cols = parseCSVLine(lines[i]);
@@ -1490,7 +1490,7 @@
                         const fullExpRaw = fullExpIdx !== -1 ? (cols[fullExpIdx] || '').replace(/ \| /g, '\n') : '';
                         newProfiles.push({ id, name, title: titleIdx !== -1 ? (cols[titleIdx] || '').trim() : '', experience: expIdx !== -1 ? (cols[expIdx] || '').trim() : '', skills: skills.length > 0 ? skills : ['—'], monthlyRate: rateIdx !== -1 ? (cols[rateIdx] || 'On Request').trim() : 'On Request', resumeLink: resumeIdx !== -1 ? (cols[resumeIdx] || 'Profile on Request').trim() : 'Profile on Request', marketRate: marketIdx !== -1 ? (cols[marketIdx] || '').trim() : '', professionalSummary: summaryIdx !== -1 ? (cols[summaryIdx] || '').trim() || undefined : undefined, fullExperience: fullExpRaw.trim() || undefined });
                     }
-                    if (newProfiles.length === 0) { showToast('CSV mein koi valid data nahi mila!', true); return; }
+                    if (newProfiles.length === 0) { showToast('No valid data was found in the CSV.', true); return; }
                     profilesData.length = 0;
                     newProfiles.forEach(p => profilesData.push(p));
                     allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
@@ -1499,10 +1499,10 @@
                     currentPage = 1;
                     renderFilters();
                     triggerAnalysisForFilteredProfiles();
-                    showToast(`${profilesData.length} profiles import ho gaye CSV se!`);
+                    showToast(`${profilesData.length} profiles imported from CSV!`);
                 } catch(err) {
                     console.error('CSV Import error:', err);
-                    showToast('Import failed! Sahi CSV file use karo.', true);
+                    showToast('Import failed. Please use a valid CSV file.', true);
                 }
             };
             reader.readAsText(file, 'UTF-8');
