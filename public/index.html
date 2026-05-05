@@ -584,6 +584,7 @@
 
         const SIGNIMUS_WHASSAPP_NUMBER = '918225998112';
         const JOINED_BENCH_STORAGE_KEY = 'signimus_joined_bench_profiles';
+        const REMOTE_PROFILES_ENDPOINT = '/.netlify/functions/get-profiles';
         let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
         const allSkillsAndRoles = ['Salesforce Developer','Design','Bootstrap','Tailwind CSS','Material UI','Responsive Websites','Animations','Figma','Photoshop','Adobe XD','React.js','Ruby on Rails','.NET','Angular','Java','Core Java','Spring','Spring Boot','REST API','Spring Data JPA','Hibernate','JPA','MySQL','Kafka','Redis','AWS','Spring Security','Marketing','Product Designer','UI/UX','Graphics Design','XD','DaVinci Resolve','UIZARD','Zeplin','Illustrator','Canva','Ethical Hacking','Penetration Tester','WAPT','Python','Scapy','Reverse Engineering','Automation','iOS','Swift','Objective-C','SwiftUI','Python Django Developer','Scikit-learn','Basic Data Science','Data Scientist','AI/ML Engineer','TensorFlow','PyTorch','Data Engineer','Frontend','Java Developer','MERN Stack','Node.js','Microservices','Docker','Next.js','J2EE','Django','DRF','FastAPI','Pytest','Flask','TypeScript','NodeJs','Technical Lead','Flutter','Dart','Android','Kotlin','Laravel','CodeIgniter','PHP','DevOps','SRE','Kubernetes','Terraform','CI/CD','Dell Boomi Developer','Integration','API Development','App Script','Core PHP','MongoDB','GoDaddy','Digital Ocean','Razorpay Payment Gateway','Git','Firebase','Sr iOS Developer','Power BI','AI Development','Oracle','Data Warehousing','ETL','DataStage','SQL','Data Analytics','Adobe DTM','Adobe Launch','Google Tag Manager','Adobe Analytics','Front-End Technologies','Selenium','AutoGen','Gen AI (Azure)','MS Excel','Machine Learning','Gen AI Assistant','Junior Developer','Project Manager','WordPress Website Developer','Frontend Development'];
         let allSkills = [...new Set(allSkillsAndRoles)].sort();
@@ -1238,6 +1239,52 @@
             return 'Profile on Request';
         }
 
+        function normalizeProfile(profile) {
+            if (!profile || !profile.name || !profile.title) return null;
+            const skills = Array.isArray(profile.skills)
+                ? profile.skills.map(skill => String(skill || '').trim()).filter(Boolean)
+                : String(profile.skills || '').split(/[;,]/).map(skill => skill.trim()).filter(Boolean);
+
+            return {
+                ...profile,
+                id: String(profile.id || createUniqueProfileId(profile.name)),
+                name: String(profile.name || '').trim(),
+                title: String(profile.title || '').trim(),
+                experience: String(profile.experience || '0 years').trim(),
+                skills: skills.length > 0 ? skills : ['General'],
+                monthlyRate: String(profile.monthlyRate || 'On Request').trim(),
+                resumeLink: String(profile.resumeLink || 'Profile on Request').trim(),
+                marketRate: String(profile.marketRate || '80,000').trim(),
+                joinedAt: Number(profile.joinedAt || profile.createdAt || Date.now())
+            };
+        }
+
+        function getProfileSignature(profile) {
+            return [
+                String(profile.name || '').trim().toLowerCase(),
+                String(profile.title || '').trim().toLowerCase(),
+                (Array.isArray(profile.skills) ? profile.skills : []).map(skill => String(skill || '').trim().toLowerCase()).sort().join('|')
+            ].join('::');
+        }
+
+        function upsertProfile(profile) {
+            const normalized = normalizeProfile(profile);
+            if (!normalized) return null;
+
+            const signature = getProfileSignature(normalized);
+            const existingIndex = profilesData.findIndex(existing =>
+                existing.id === normalized.id || getProfileSignature(existing) === signature
+            );
+
+            if (existingIndex >= 0) {
+                profilesData[existingIndex] = { ...profilesData[existingIndex], ...normalized };
+            } else {
+                profilesData.push(normalized);
+            }
+
+            return normalized;
+        }
+
         function getJoinedBenchProfiles() {
             try {
                 const saved = JSON.parse(localStorage.getItem(JOINED_BENCH_STORAGE_KEY) || '[]');
@@ -1247,17 +1294,41 @@
 
         function loadJoinedBenchProfiles() {
             getJoinedBenchProfiles().forEach(profile => {
-                if (profile && profile.id && !profilesData.some(existing => existing.id === profile.id)) {
-                    profilesData.push(profile);
-                }
+                upsertProfile(profile);
             });
         }
 
         function saveJoinedBenchProfile(profile) {
-            const joinedProfiles = getJoinedBenchProfiles().filter(existing => existing.id !== profile.id);
-            joinedProfiles.push(profile);
+            const normalized = normalizeProfile(profile);
+            if (!normalized) return;
+            const normalizedSignature = getProfileSignature(normalized);
+            const joinedProfiles = getJoinedBenchProfiles().filter(existing =>
+                existing.id !== normalized.id && getProfileSignature(existing) !== normalizedSignature
+            );
+            joinedProfiles.push(normalized);
             try { localStorage.setItem(JOINED_BENCH_STORAGE_KEY, JSON.stringify(joinedProfiles)); }
             catch (error) { console.warn('Unable to save joined bench profile.', error); }
+        }
+
+        async function loadDatabaseProfiles() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8000);
+            try {
+                const response = await fetch(REMOTE_PROFILES_ENDPOINT, { cache: 'no-store', signal: controller.signal });
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+                const data = await response.json();
+                const remoteProfiles = Array.isArray(data.profiles) ? data.profiles : [];
+                remoteProfiles.forEach(profile => upsertProfile(profile));
+                if (remoteProfiles.length > 0) {
+                    allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
+                }
+                return remoteProfiles.length;
+            } catch (error) {
+                console.warn('Unable to load shared bench profiles from database.', error);
+                return 0;
+            } finally {
+                clearTimeout(timeout);
+            }
         }
 
         function refreshBenchAfterMutation() {
@@ -1317,6 +1388,8 @@
                     body: JSON.stringify(profile)
                 });
                 if (response.ok) {
+                    const result = await response.json().catch(() => ({}));
+                    if (result.id) profile.id = result.id;
                     showToast(`${profile.name} saved to database!`);
                 } else {
                     console.warn('Database save failed, saving locally only.');
@@ -1328,7 +1401,7 @@
             }
 
             // Always add to local list and localStorage
-            profilesData.push(profile);
+            upsertProfile(profile);
             saveJoinedBenchProfile(profile);
             closeJointBenchModal(true);
             refreshBenchAfterMutation();
@@ -1565,8 +1638,22 @@
             document.getElementById('job-detail-modal-backdrop').classList.add('hidden');
         }
 
-        // ==================== INIT ====================
-        window.addEventListener('DOMContentLoaded', () => {
+        async function loadProfilesFromDatabase() {
+    try {
+        const response = await fetch('/.netlify/functions/get-profiles', { cache: 'no-store' });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (Array.isArray(data.profiles) && data.profiles.length > 0) {
+            data.profiles.forEach(profile => {
+                if (!profilesData.some(p => p.id === profile.id)) profilesData.push(profile);
+            });
+            allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
+            renderProfiles(); renderFilters();
+        }
+    } catch(err) { console.warn('Could not load profiles from database.', err); }
+}
+// ==================== INIT ====================
+        window.addEventListener('DOMContentLoaded', async () => {
             loadJoinedBenchProfiles();
             loadStateFromUrl();
             renderProfiles();
@@ -1574,6 +1661,8 @@
             updateTitle();
             updateExperienceSlider();
             fetchAndCacheResumes();
+            const remoteProfileCount = await loadDatabaseProfiles();
+            if (remoteProfileCount > 0) refreshBenchAfterMutation();
         });
 
         document.getElementById('filter-bar').addEventListener('click', (e) => {

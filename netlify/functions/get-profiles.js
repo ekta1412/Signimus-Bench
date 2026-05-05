@@ -43,6 +43,7 @@ exports.handler = async (event) => {
       marketRate: row.market_rate || '80,000',
       professionalSummary: row.summary || undefined,
       fullExperience: row.full_experience || undefined,
+      joinedAt: row.created_at ? new Date(row.created_at).getTime() : 0,
       source: 'database',
     }));
 
