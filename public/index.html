@@ -299,6 +299,8 @@
                     <button type="submit" class="px-5 py-2 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center gap-2"><i class="fas fa-plus"></i> Add to Bench</button>
                 </div>
             </form>
+        </div>
+    </div>
 
     <!-- ===== JOBS MODAL ===== -->
     <div id="jobs-modal-backdrop" class="modal-backdrop hidden" style="z-index:200;">
@@ -1029,6 +1031,13 @@
                     <span class="font-medium">${profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request'}</span>
                 </div>
                 <p class="text-xs text-gray-400 italic mb-4">Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month</p>
+                ${profile.fulfilled_by ? `<div class="flex items-center gap-2 mb-3 flex-wrap">
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${profile.company_type === 'partner' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}">
+                        <i class="fas ${profile.company_type === 'partner' ? 'fa-handshake' : 'fa-building'} mr-1"></i>
+                        Fulfilled by: ${profile.fulfilled_by}
+                    </span>
+                    ${profile.platform_fee ? `<span class="text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-600"><i class="fas fa-percent mr-1"></i>Platform Fee: ${profile.platform_fee}</span>` : ''}
+                </div>` : ''}
                 <div class="flex flex-wrap gap-2 mb-6">${skillsHtml}</div>
                 ${experienceDetailsHtml}
                 <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">${resumeActionHtml}</div>
