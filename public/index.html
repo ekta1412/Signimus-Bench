@@ -1028,7 +1028,15 @@
                     <i class="fas fa-briefcase"></i><span>${profile.experience} Experience</span>
                     <span class="mx-2">•</span>
                     <i class="fas fa-indian-rupee-sign"></i>
-                    <span class="font-medium">${profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request'}</span>
+                    <span class="font-medium">${(() => {
+                        const rawRate = String(profile.monthlyRate || '').replace(/,/g, '');
+                        const rateNum = parseInt(rawRate);
+                        if (profile.company_type === 'partner' && !isNaN(rateNum)) {
+                            const increased = Math.round(rateNum * 1.3);
+                            return `Monthly Rate: ${increased.toLocaleString('en-IN')} INR <span class="text-xs text-orange-500 font-bold">(incl. 30% fee)</span>`;
+                        }
+                        return profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request';
+                    })()}</span>
                 </div>
                 <p class="text-xs text-gray-400 italic mb-4">Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month</p>
                 ${profile.fulfilled_by ? `<div class="flex items-center gap-2 mb-3 flex-wrap">
@@ -1400,13 +1408,23 @@
             if (!workEmail) { showToast('Work Email is required.', true); return; }
             if (isPartner && !companyName) { showToast('Company Name is required for Partner.', true); return; }
 
+            // Calculate 30% increased rate for partner
+            const rawMonthlyRate = document.getElementById('joint-monthly-rate').value.trim();
+            let finalMonthlyRate = getCleanText(rawMonthlyRate, 'On Request');
+            if (isPartner && rawMonthlyRate) {
+                const rateNum = parseInt(rawMonthlyRate.replace(/,/g, ''));
+                if (!isNaN(rateNum)) {
+                    finalMonthlyRate = String(Math.round(rateNum * 1.3));
+                }
+            }
+
             const profile = {
                 id: createUniqueProfileId(name),
                 name,
                 title,
                 experience: getCleanText(document.getElementById('joint-experience').value, '0 years'),
                 skills,
-                monthlyRate: getCleanText(document.getElementById('joint-monthly-rate').value, 'On Request'),
+                monthlyRate: finalMonthlyRate,
                 resumeLink: getValidResumeLink(document.getElementById('joint-resume-link').value),
                 marketRate: getCleanText(document.getElementById('joint-market-rate').value, '80,000'),
                 professionalSummary: getCleanText(document.getElementById('joint-summary').value) || undefined,
