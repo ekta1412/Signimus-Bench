@@ -28,6 +28,27 @@ exports.handler = async (event) => {
   let conn;
   try {
     conn = await getConnection();
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS profiles (
+        id VARCHAR(160) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        experience VARCHAR(80),
+        skills LONGTEXT,
+        monthly_rate VARCHAR(80),
+        resume_link TEXT,
+        market_rate VARCHAR(80),
+        summary TEXT,
+        full_experience LONGTEXT,
+        company_name VARCHAR(255),
+        company_type VARCHAR(40),
+        fulfilled_by VARCHAR(160),
+        contact_number VARCHAR(80),
+        work_email VARCHAR(255),
+        platform_fee VARCHAR(40),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
     const [rows] = await conn.execute(
       'SELECT * FROM profiles ORDER BY created_at DESC'
     );
@@ -43,6 +64,11 @@ exports.handler = async (event) => {
       marketRate: row.market_rate || '80,000',
       professionalSummary: row.summary || undefined,
       fullExperience: row.full_experience || undefined,
+      company_name: row.company_name || undefined,
+      company_type: row.company_type || 'signimus',
+      fulfilled_by: row.company_type === 'partner' ? 'Partner' : (row.fulfilled_by || undefined),
+      contact_number: row.contact_number || undefined,
+      work_email: row.work_email || undefined,
       joinedAt: row.created_at ? new Date(row.created_at).getTime() : 0,
       source: 'database',
     }));

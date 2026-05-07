@@ -30,23 +30,49 @@ function isLocalSupabaseUrl(url?: string) {
   return Boolean(url && /127\.0\.0\.1|localhost/.test(url));
 }
 
+function isPlaceholderValue(value?: string) {
+  return Boolean(
+    value &&
+      (/^your[_-]/i.test(value) ||
+        /_here$/i.test(value) ||
+        value.includes("your_") ||
+        value.includes("your-"))
+  );
+}
+
+function getUsableEnvValue(value?: string) {
+  const trimmed = value?.trim();
+  return trimmed && !isPlaceholderValue(trimmed) ? trimmed : undefined;
+}
+
+function getUsableUrl(value?: string) {
+  const candidate = getUsableEnvValue(value);
+  if (!candidate) return undefined;
+  try {
+    return new URL(candidate).toString().replace(/\/$/, "");
+  } catch {
+    return undefined;
+  }
+}
+
 export function getSupabaseEnv() {
   const stagingEnv = readStagingEnv();
-  const envUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const envUrl = getUsableUrl(process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL);
   const envKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.SUPABASE_ANON_KEY ||
-    process.env.SUPABASE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    getUsableEnvValue(process.env.SUPABASE_SERVICE_ROLE_KEY) ||
+    getUsableEnvValue(process.env.SUPABASE_ANON_KEY) ||
+    getUsableEnvValue(process.env.SUPABASE_KEY) ||
+    getUsableEnvValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const stagingUrl = getUsableUrl(stagingEnv.SUPABASE_URL || stagingEnv.NEXT_PUBLIC_SUPABASE_URL);
+  const stagingKey =
+    getUsableEnvValue(stagingEnv.SUPABASE_SERVICE_ROLE_KEY) ||
+    getUsableEnvValue(stagingEnv.SUPABASE_ANON_KEY) ||
+    getUsableEnvValue(stagingEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
   if (!envUrl || isLocalSupabaseUrl(envUrl)) {
     return {
-      url: stagingEnv.SUPABASE_URL || stagingEnv.NEXT_PUBLIC_SUPABASE_URL || envUrl,
-      key:
-        stagingEnv.SUPABASE_SERVICE_ROLE_KEY ||
-        stagingEnv.SUPABASE_ANON_KEY ||
-        stagingEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-        envKey,
+      url: stagingUrl || envUrl,
+      key: stagingKey || envKey,
     };
   }
 
@@ -88,10 +114,6 @@ import { createClient } from '@supabase/supabase-js';
 
 const { url, key } = getSupabaseEnv();
 
-if (!url || !key) {
-  throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
-}
-
 const fetchWithTimeout: typeof fetch = async (input, init = {}) => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
@@ -106,8 +128,21 @@ const fetchWithTimeout: typeof fetch = async (input, init = {}) => {
   }
 };
 
-export const supabase = createClient(url, key, {
-  global: {
-    fetch: fetchWithTimeout,
-  },
-});
+function createMissingSupabaseClient(): ReturnType<typeof createClient> {
+  return new Proxy(
+    {},
+    {
+      get() {
+        throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
+      },
+    }
+  ) as ReturnType<typeof createClient>;
+}
+
+export const supabase = url && key
+  ? createClient(url, key, {
+      global: {
+        fetch: fetchWithTimeout,
+      },
+    })
+  : createMissingSupabaseClient();

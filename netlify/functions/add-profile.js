@@ -42,6 +42,27 @@ exports.handler = async (event) => {
   });
 
   try {
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS profiles (
+        id VARCHAR(160) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        experience VARCHAR(80),
+        skills LONGTEXT,
+        monthly_rate VARCHAR(80),
+        resume_link TEXT,
+        market_rate VARCHAR(80),
+        summary TEXT,
+        full_experience LONGTEXT,
+        company_name VARCHAR(255),
+        company_type VARCHAR(40),
+        fulfilled_by VARCHAR(160),
+        contact_number VARCHAR(80),
+        work_email VARCHAR(255),
+        platform_fee VARCHAR(40),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
     await conn.execute(
       `INSERT INTO profiles 
         (id, name, title, experience, skills, monthly_rate, resume_link, market_rate,

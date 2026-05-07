@@ -204,29 +204,29 @@
                             <div class="peer-checked:border-indigo-500 peer-checked:bg-indigo-50 border-2 border-gray-200 rounded-xl p-3 text-center transition-all">
                                 <div class="text-lg mb-1">🏢</div>
                                 <p class="text-sm font-bold text-gray-800">Signimus</p>
-                                <p class="text-xs text-gray-400">No platform fee</p>
+                                <p class="text-xs text-gray-400">In-house bench</p>
                                 <span class="mt-1 inline-block text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Free</span>
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="joint-company-type" id="joint-type-partner" value="partner" class="sr-only peer">
-                            <div class="peer-checked:border-orange-500 peer-checked:bg-orange-50 border-2 border-gray-200 rounded-xl p-3 text-center transition-all">
+                            <div class="peer-checked:border-slate-400 peer-checked:bg-slate-50 border-2 border-gray-200 rounded-xl p-3 text-center transition-all">
                                 <div class="text-lg mb-1">🤝</div>
                                 <p class="text-sm font-bold text-gray-800">Partner Company</p>
                                 <p class="text-xs text-gray-400">External company</p>
-                                <span class="mt-1 inline-block text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">30% Fee</span>
+                                <span class="mt-1 inline-block text-xs font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-full">Partner</span>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <!-- 30% Fee Warning (Partner only) -->
+                <!-- Partner note -->
                 <div id="partner-fee-warning" class="sm:col-span-2 hidden">
-                    <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-start gap-2">
-                        <i class="fas fa-exclamation-triangle text-orange-500 mt-0.5 flex-shrink-0"></i>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-start gap-2">
+                        <i class="fas fa-info-circle text-slate-400 mt-0.5 flex-shrink-0"></i>
                         <div>
-                            <p class="text-sm font-bold text-orange-700">30% Platform Fee Applies</p>
-                            <p class="text-xs text-orange-600 mt-0.5">Since this is a partner company developer, Signimus will charge 30% platform fee on successful placement. Profile will show "Fulfilled by Partner".</p>
+                            <p class="text-sm font-bold text-slate-600">Partner profile</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Profile will show as fulfilled by a partner.</p>
                         </div>
                     </div>
                 </div>
@@ -235,7 +235,7 @@
                 <div id="company-name-row" class="sm:col-span-2 hidden">
                     <label class="text-sm font-semibold text-gray-700">
                         Company Name <span class="text-red-500">*</span>
-                        <input id="joint-company-name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-orange-400" placeholder="e.g. TechCorp Solutions">
+                        <input id="joint-company-name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Partner company">
                     </label>
                 </div>
 
@@ -291,7 +291,7 @@
                 <!-- Fulfilled By preview -->
                 <div class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-2">
                     <i class="fas fa-info-circle text-indigo-400"></i>
-                    <p class="text-xs text-slate-600">Profile will show: <span id="fulfilled-by-preview" class="font-bold text-indigo-600">Fulfilled by Signimus</span></p>
+                    <p class="text-xs text-slate-600">Profile will show: <span id="fulfilled-by-preview" class="font-bold text-slate-600">Fulfilled by Signimus</span></p>
                 </div>
 
                 <div class="sm:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100">
@@ -519,7 +519,7 @@
                     </table>
                 </div>
                 <h2>Verdict: Kotlin is the Future</h2>
-                <p>Google's official preference for Kotlin is backed by real-world advantages. Kotlin's focus on safety and conciseness directly translates to faster development and fewer bugs.</p>
+                <p>Kotlin's Android adoption is backed by real-world advantages. Its focus on safety and conciseness directly translates to faster development and fewer bugs.</p>
                 <blockquote>In Kotlin, the type system distinguishes between nullable and non-null references at compile time—eliminating an entire class of runtime errors.</blockquote>
             </div>
             <div class="mt-8">
@@ -1031,20 +1031,15 @@
                     <span class="font-medium">${(() => {
                         const rawRate = String(profile.monthlyRate || '').replace(/,/g, '');
                         const rateNum = parseInt(rawRate);
-                        if (profile.company_type === 'partner' && !isNaN(rateNum)) {
-                            const increased = Math.round(rateNum * 1.3);
-                            return `Monthly Rate: ${increased.toLocaleString('en-IN')} INR <span class="text-xs text-orange-500 font-bold">(incl. 30% fee)</span>`;
-                        }
                         return profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request';
                     })()}</span>
                 </div>
                 <p class="text-xs text-gray-400 italic mb-4">Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month</p>
                 ${profile.fulfilled_by ? `<div class="flex items-center gap-2 mb-3 flex-wrap">
-                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${profile.company_type === 'partner' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}">
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${profile.company_type === 'partner' ? 'bg-white text-slate-500 border border-slate-200' : 'bg-green-100 text-green-700'}">
                         <i class="fas ${profile.company_type === 'partner' ? 'fa-handshake' : 'fa-building'} mr-1"></i>
-                        Fulfilled by: ${profile.fulfilled_by}
+                        Fulfilled by: ${profile.company_type === 'partner' ? 'Partner' : profile.fulfilled_by}
                     </span>
-                    ${profile.platform_fee ? `<span class="text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-600"><i class="fas fa-percent mr-1"></i>Platform Fee: ${profile.platform_fee}</span>` : ''}
                 </div>` : ''}
                 <div class="flex flex-wrap gap-2 mb-6">${skillsHtml}</div>
                 ${experienceDetailsHtml}
@@ -1332,6 +1327,25 @@
             });
         }
 
+        function upsertProfile(profile) {
+            if (!profile || !profile.id) return;
+            const existingIndex = profilesData.findIndex(existing => existing.id === profile.id);
+            if (existingIndex >= 0) profilesData[existingIndex] = { ...profilesData[existingIndex], ...profile };
+            else profilesData.push(profile);
+        }
+
+        async function loadDatabaseProfiles() {
+            try {
+                const response = await fetch('/.netlify/functions/get-profiles', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                const data = await response.json();
+                const remoteProfiles = Array.isArray(data.profiles) ? data.profiles : [];
+                remoteProfiles.forEach(upsertProfile);
+            } catch (error) {
+                console.warn('Unable to load database profiles.', error);
+            }
+        }
+
         function saveJoinedBenchProfile(profile) {
             const joinedProfiles = getJoinedBenchProfiles().filter(existing => existing.id !== profile.id);
             joinedProfiles.push(profile);
@@ -1367,7 +1381,7 @@
                 document.getElementById('company-name-row').classList.toggle('hidden', !isPartner);
                 const companyName = document.getElementById('joint-company-name').value.trim();
                 document.getElementById('fulfilled-by-preview').textContent = isPartner
-                    ? `Fulfilled by Partner${companyName ? ' (' + companyName + ')' : ''}`
+                    ? 'Fulfilled by: Partner'
                     : 'Fulfilled by Signimus';
             });
         });
@@ -1375,9 +1389,7 @@
             const isPartner = document.getElementById('joint-type-partner').checked;
             if (isPartner) {
                 const companyName = document.getElementById('joint-company-name').value.trim();
-                document.getElementById('fulfilled-by-preview').textContent = companyName
-                    ? `Fulfilled by Partner (${companyName})`
-                    : 'Fulfilled by Partner';
+                document.getElementById('fulfilled-by-preview').textContent = 'Fulfilled by: Partner';
             }
         });
 
@@ -1395,10 +1407,8 @@
             const isPartner = document.getElementById('joint-type-partner').checked;
             const companyName = isPartner ? document.getElementById('joint-company-name').value.trim() : 'Signimus';
             const companyType = isPartner ? 'partner' : 'signimus';
-            const fulfilledBy = isPartner
-                ? `Partner${companyName && companyName !== 'Signimus' ? ' (' + companyName + ')' : ''}`
-                : 'Signimus';
-            const platformFee = isPartner ? '30%' : null;
+            const fulfilledBy = isPartner ? 'Partner' : 'Signimus';
+            const platformFee = null;
 
             if (!name || !title || skills.length === 0) {
                 showToast('Name, Title, and Skills are required.', true);
@@ -1408,15 +1418,8 @@
             if (!workEmail) { showToast('Work Email is required.', true); return; }
             if (isPartner && !companyName) { showToast('Company Name is required for Partner.', true); return; }
 
-            // Calculate 30% increased rate for partner
             const rawMonthlyRate = document.getElementById('joint-monthly-rate').value.trim();
             let finalMonthlyRate = getCleanText(rawMonthlyRate, 'On Request');
-            if (isPartner && rawMonthlyRate) {
-                const rateNum = parseInt(rawMonthlyRate.replace(/,/g, ''));
-                if (!isNaN(rateNum)) {
-                    finalMonthlyRate = String(Math.round(rateNum * 1.3));
-                }
-            }
 
             const profile = {
                 id: createUniqueProfileId(name),
@@ -1456,7 +1459,7 @@
             }
 
             // Always add to local list and localStorage
-            profilesData.push(profile);
+            upsertProfile(profile);
             saveJoinedBenchProfile(profile);
             closeJointBenchModal(true);
             refreshBenchAfterMutation();
@@ -1694,8 +1697,9 @@
         }
 
         // ==================== INIT ====================
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             loadJoinedBenchProfiles();
+            await loadDatabaseProfiles();
             loadStateFromUrl();
             renderProfiles();
             renderFilters();
