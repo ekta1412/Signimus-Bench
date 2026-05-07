@@ -65,14 +65,20 @@ async function ensureTable(conn) {
 
 async function seedBlogs(conn) {
   const blogs = [...new Set(BLOG_SKILLS)].map(makeBlog);
-  for (const blog of blogs) {
-    await conn.execute(
-      `INSERT IGNORE INTO hiring_blogs
-        (id, slug, skill, title, excerpt, content, read_minutes)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [blog.id, blog.slug, blog.skill, blog.title, blog.excerpt, JSON.stringify(blog.content), blog.readMinutes]
-    );
-  }
+  await conn.query(
+    `INSERT IGNORE INTO hiring_blogs
+      (id, slug, skill, title, excerpt, content, read_minutes)
+     VALUES ?`,
+    [blogs.map((blog) => [
+      blog.id,
+      blog.slug,
+      blog.skill,
+      blog.title,
+      blog.excerpt,
+      JSON.stringify(blog.content),
+      blog.readMinutes,
+    ])]
+  );
 }
 
 function parseContent(value) {
