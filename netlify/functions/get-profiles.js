@@ -24,7 +24,7 @@ async function getConnection() {
     user: getRequiredEnv('TIDB_USER'),
     password: getRequiredEnv('TIDB_PASSWORD'),
     database: getRequiredEnv('TIDB_DATABASE'),
-    ssl: { rejectUnauthorized: true },
+    ssl: { rejectUnauthorized: false },
   });
 }
 
