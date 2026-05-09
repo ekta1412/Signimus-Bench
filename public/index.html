@@ -226,7 +226,7 @@
                         <i class="fas fa-info-circle text-slate-400 mt-0.5 flex-shrink-0"></i>
                         <div>
                             <p class="text-sm font-bold text-slate-600">Partner profile</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Profile will show as fulfilled by a partner.</p>
+                            <p class="text-xs text-slate-500 mt-0.5">30% will be added to the monthly rate for external company profiles.</p>
                         </div>
                     </div>
                 </div>
@@ -648,6 +648,10 @@
 
         const SIGNIMUS_WHASSAPP_NUMBER = '918225998112';
         const JOINED_BENCH_STORAGE_KEY = 'signimus_joined_bench_profiles';
+        const IS_LOCAL_PREVIEW = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        const PROFILE_READ_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/profiles', '/.netlify/functions/get-profiles'] : ['/.netlify/functions/get-profiles', '/api/profiles'];
+        const PROFILE_WRITE_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/profiles', '/.netlify/functions/add-profile'] : ['/.netlify/functions/add-profile', '/api/profiles'];
+        const JOB_READ_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/jobs', '/api/job-posting', '/.netlify/functions/get-jobs'] : ['/.netlify/functions/get-jobs', '/api/jobs', '/api/job-posting'];
         let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
         const allSkillsAndRoles = ['Salesforce Developer','Design','Bootstrap','Tailwind CSS','Material UI','Responsive Websites','Animations','Figma','Photoshop','Adobe XD','React.js','Ruby on Rails','.NET','Angular','Java','Core Java','Spring','Spring Boot','REST API','Spring Data JPA','Hibernate','JPA','MySQL','Kafka','Redis','AWS','Spring Security','Marketing','Product Designer','UI/UX','Graphics Design','XD','DaVinci Resolve','UIZARD','Zeplin','Illustrator','Canva','Ethical Hacking','Penetration Tester','WAPT','Python','Scapy','Reverse Engineering','Automation','iOS','Swift','Objective-C','SwiftUI','Python Django Developer','Scikit-learn','Basic Data Science','Data Scientist','AI/ML Engineer','TensorFlow','PyTorch','Data Engineer','Frontend','Java Developer','MERN Stack','Node.js','Microservices','Docker','Next.js','J2EE','Django','DRF','FastAPI','Pytest','Flask','TypeScript','NodeJs','Technical Lead','Flutter','Dart','Android','Kotlin','Laravel','CodeIgniter','PHP','DevOps','SRE','Kubernetes','Terraform','CI/CD','Dell Boomi Developer','Integration','API Development','App Script','Core PHP','MongoDB','GoDaddy','Digital Ocean','Razorpay Payment Gateway','Git','Firebase','Sr iOS Developer','Power BI','AI Development','Oracle','Data Warehousing','ETL','DataStage','SQL','Data Analytics','Adobe DTM','Adobe Launch','Google Tag Manager','Adobe Analytics','Front-End Technologies','Selenium','AutoGen','Gen AI (Azure)','MS Excel','Machine Learning','Gen AI Assistant','Junior Developer','Project Manager','WordPress Website Developer','Frontend Development'];
         let allSkills = [...new Set(allSkillsAndRoles)].sort();
@@ -740,7 +744,8 @@
         }
 
         function renderHpCard(profile) {
-            const rateNum = parseInt(String(profile.monthlyRate).replace(/,/g,''));
+            const displayRate = getDisplayMonthlyRate(profile);
+            const rateNum = displayRate === 'On Request' ? NaN : parseMonthlyRate(displayRate);
             const rateHtml = isNaN(rateNum) ? 'On Request' : '₹' + rateNum.toLocaleString('en-IN') + ' /mo';
             const resumeHtml = profile.resumeLink && profile.resumeLink !== 'Profile on Request'
                 ? `<a href="${profile.resumeLink}" target="_blank" class="text-xs text-indigo-600 font-semibold hover:underline">View Resume</a>`
@@ -1028,17 +1033,13 @@
                     <i class="fas fa-briefcase"></i><span>${profile.experience} Experience</span>
                     <span class="mx-2">•</span>
                     <i class="fas fa-indian-rupee-sign"></i>
-                    <span class="font-medium">${(() => {
-                        const rawRate = String(profile.monthlyRate || '').replace(/,/g, '');
-                        const rateNum = parseInt(rawRate);
-                        return profile.monthlyRate !== 'On Request' ? `Monthly Rate: ${profile.monthlyRate} INR` : 'Monthly Rate: On Request';
-                    })()}</span>
+                    <span class="font-medium">Monthly Rate: ${getDisplayMonthlyRate(profile)}</span>
                 </div>
                 <p class="text-xs text-gray-400 italic mb-4">Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month</p>
-                ${profile.fulfilled_by ? `<div class="flex items-center gap-2 mb-3 flex-wrap">
+                ${getFulfilledByLabel(profile) ? `<div class="flex items-center gap-2 mb-3 flex-wrap">
                     <span class="text-xs font-semibold px-2 py-1 rounded-full ${profile.company_type === 'partner' ? 'bg-white text-slate-500 border border-slate-200' : 'bg-green-100 text-green-700'}">
                         <i class="fas ${profile.company_type === 'partner' ? 'fa-handshake' : 'fa-building'} mr-1"></i>
-                        Fulfilled by: ${profile.company_type === 'partner' ? 'Partner' : profile.fulfilled_by}
+                        Fulfilled by: ${getFulfilledByLabel(profile)}
                     </span>
                 </div>` : ''}
                 <div class="flex flex-wrap gap-2 mb-6">${skillsHtml}</div>
@@ -1235,8 +1236,9 @@
             const profiles = profilesData.filter(p => selectedProfiles.includes(p.id));
             const details = profiles.map((p, i) => {
                 const resumeInfo = p.resumeLink === 'Profile on Request' ? 'Resume: On Request' : `Resume Link: ${p.resumeLink}`;
-                const rateInfo = p.monthlyRate === 'On Request' ? 'Monthly Rate: On Request' : `Monthly Rate: ${p.monthlyRate} INR`;
-                return `\n${i+1}. Name: ${p.name}\nExperience: ${p.experience}\nSkills: ${p.skills.join(', ')}\n${rateInfo}\n${resumeInfo}`;
+                const rateInfo = `Monthly Rate: ${getDisplayMonthlyRate(p)}`;
+                const companyInfo = getFulfilledByLabel(p) ? `\nFulfilled By: ${getFulfilledByLabel(p)}` : '';
+                return `\n${i+1}. Name: ${p.name}\nExperience: ${p.experience}\nSkills: ${p.skills.join(', ')}\n${rateInfo}${companyInfo}\n${resumeInfo}`;
             }).join('\n\n---\n\n');
             const message = `Total Profiles Selected: ${selectedProfiles.length}\n\nThese are available profiles for an interview.\n\n${details}`;
             try {
@@ -1253,8 +1255,9 @@
             const profiles = profilesData.filter(p => selectedProfiles.includes(p.id));
             const details = profiles.map((p, i) => {
                 const resumeInfo = p.resumeLink === 'Profile on Request' ? 'Resume: On Request' : `Resume: ${p.resumeLink}`;
-                const rateInfo = p.monthlyRate === 'On Request' ? 'Monthly Rate: On Request' : `Monthly Rate: ${p.monthlyRate} INR`;
-                return `${i+1}. *${p.name}*\n   Title: ${p.title}\n   Experience: ${p.experience}\n   Skills: ${p.skills.join(', ')}\n   ${rateInfo}\n   ${resumeInfo}`;
+                const rateInfo = `Monthly Rate: ${getDisplayMonthlyRate(p)}`;
+                const companyInfo = getFulfilledByLabel(p) ? `\n   Fulfilled By: ${getFulfilledByLabel(p)}` : '';
+                return `${i+1}. *${p.name}*\n   Title: ${p.title}\n   Experience: ${p.experience}\n   Skills: ${p.skills.join(', ')}\n   ${rateInfo}${companyInfo}\n   ${resumeInfo}`;
             }).join('\n\n');
             const message = `Hello Signimus, I would like to arrange an interview for ${profiles.length} candidate(s):\n\n${details}`;
             window.open(`https://wa.me/${SIGNIMUS_WHASSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
@@ -1286,6 +1289,43 @@
         function getCleanText(value, fallback = '') {
             const cleaned = String(value || '').trim();
             return cleaned ? escapeHtml(cleaned) : fallback;
+        }
+
+        const PARTNER_RATE_MARKUP_PERCENT = 30;
+
+        function parseMonthlyRate(value) {
+            const numeric = String(value || '').replace(/[^0-9.]/g, '');
+            const rate = parseFloat(numeric);
+            return Number.isFinite(rate) ? rate : null;
+        }
+
+        function formatIndianRate(value) {
+            return Math.round(value).toLocaleString('en-IN');
+        }
+
+        function isExternalCompanyProfile(profile) {
+            const companyType = String(profile?.company_type || '').toLowerCase();
+            const companyName = String(profile?.company_name || profile?.fulfilled_by || '').trim();
+            return companyType === 'partner' || (companyName && !/signimus/i.test(companyName));
+        }
+
+        function getDisplayMonthlyRate(profile) {
+            const rawRate = profile?.monthlyRate;
+            const parsedRate = parseMonthlyRate(rawRate);
+            if (parsedRate === null) return 'On Request';
+            const finalRate = isExternalCompanyProfile(profile)
+                ? parsedRate * (1 + PARTNER_RATE_MARKUP_PERCENT / 100)
+                : parsedRate;
+            return `${formatIndianRate(finalRate)} INR`;
+        }
+
+        function getFulfilledByLabel(profile) {
+            const companyType = String(profile?.company_type || '').toLowerCase();
+            if (!profile?.fulfilled_by && !profile?.company_name && !companyType) return '';
+            if (isExternalCompanyProfile(profile)) {
+                return 'Partner';
+            }
+            return profile.fulfilled_by || profile.company_name || 'Signimus';
         }
 
         function createSlug(value) {
@@ -1334,12 +1374,25 @@
             else profilesData.push(profile);
         }
 
+        async function fetchJsonFromFirstAvailable(endpoints, options = {}) {
+            let lastError;
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint, { cache: 'no-store', ...options });
+                    if (!response.ok) throw new Error(`${endpoint} returned ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    console.warn(`Endpoint unavailable: ${endpoint}`, error);
+                    lastError = error;
+                }
+            }
+            throw lastError || new Error('No database endpoint available');
+        }
+
         async function loadDatabaseProfiles() {
             try {
-                const response = await fetch('/.netlify/functions/get-profiles', { cache: 'no-store' });
-                if (!response.ok) throw new Error(`Server error: ${response.status}`);
-                const data = await response.json();
-                const remoteProfiles = Array.isArray(data.profiles) ? data.profiles : [];
+                const data = await fetchJsonFromFirstAvailable(PROFILE_READ_ENDPOINTS);
+                const remoteProfiles = Array.isArray(data) ? data : (Array.isArray(data.profiles) ? data.profiles : []);
                 remoteProfiles.forEach(upsertProfile);
             } catch (error) {
                 console.warn('Unable to load database profiles.', error);
@@ -1379,17 +1432,15 @@
                 const isPartner = document.getElementById('joint-type-partner').checked;
                 document.getElementById('partner-fee-warning').classList.toggle('hidden', !isPartner);
                 document.getElementById('company-name-row').classList.toggle('hidden', !isPartner);
-                const companyName = document.getElementById('joint-company-name').value.trim();
                 document.getElementById('fulfilled-by-preview').textContent = isPartner
-                    ? 'Fulfilled by: Partner'
+                    ? 'Fulfilled by Partner'
                     : 'Fulfilled by Signimus';
             });
         });
         document.getElementById('joint-company-name').addEventListener('input', () => {
             const isPartner = document.getElementById('joint-type-partner').checked;
             if (isPartner) {
-                const companyName = document.getElementById('joint-company-name').value.trim();
-                document.getElementById('fulfilled-by-preview').textContent = 'Fulfilled by: Partner';
+                document.getElementById('fulfilled-by-preview').textContent = 'Fulfilled by Partner';
             }
         });
 
@@ -1405,10 +1456,10 @@
             const contactNumber = document.getElementById('joint-contact-number').value.trim();
             const workEmail = document.getElementById('joint-work-email').value.trim();
             const isPartner = document.getElementById('joint-type-partner').checked;
-            const companyName = isPartner ? document.getElementById('joint-company-name').value.trim() : 'Signimus';
+            const companyName = isPartner ? getCleanText(document.getElementById('joint-company-name').value) : 'Signimus';
             const companyType = isPartner ? 'partner' : 'signimus';
             const fulfilledBy = isPartner ? 'Partner' : 'Signimus';
-            const platformFee = null;
+            const platformFee = isPartner ? `${PARTNER_RATE_MARKUP_PERCENT}%` : null;
 
             if (!name || !title || skills.length === 0) {
                 showToast('Name, Title, and Skills are required.', true);
@@ -1418,16 +1469,13 @@
             if (!workEmail) { showToast('Work Email is required.', true); return; }
             if (isPartner && !companyName) { showToast('Company Name is required for Partner.', true); return; }
 
-            const rawMonthlyRate = document.getElementById('joint-monthly-rate').value.trim();
-            let finalMonthlyRate = getCleanText(rawMonthlyRate, 'On Request');
-
             const profile = {
                 id: createUniqueProfileId(name),
                 name,
                 title,
                 experience: getCleanText(document.getElementById('joint-experience').value, '0 years'),
                 skills,
-                monthlyRate: finalMonthlyRate,
+                monthlyRate: getCleanText(document.getElementById('joint-monthly-rate').value, 'On Request'),
                 resumeLink: getValidResumeLink(document.getElementById('joint-resume-link').value),
                 marketRate: getCleanText(document.getElementById('joint-market-rate').value, '80,000'),
                 professionalSummary: getCleanText(document.getElementById('joint-summary').value) || undefined,
@@ -1443,16 +1491,12 @@
 
             // Save to database via Netlify function
             try {
-                const response = await fetch('/.netlify/functions/add-profile', {
+                await fetchJsonFromFirstAvailable(PROFILE_WRITE_ENDPOINTS, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(profile)
                 });
-                if (response.ok) {
-                    showToast(`${profile.name} saved to database! (${fulfilledBy})`);
-                } else {
-                    showToast(`${profile.name} saved locally (database unavailable).`, true);
-                }
+                showToast(`${profile.name} saved to database! (${getFulfilledByLabel(profile)})`);
             } catch (err) {
                 console.warn('Database unavailable, saving locally:', err);
                 showToast(`${profile.name} saved locally (database unavailable).`, true);
@@ -1500,12 +1544,14 @@
         function exportToExcel() {
             const worksheetData = profilesData.map(p => ({
                 'ID': p.id, 'Name': p.name, 'Title': p.title, 'Experience': p.experience,
-                'Skills': p.skills.join('; '), 'Monthly Rate': p.monthlyRate, 'Resume Link': p.resumeLink,
-                'Market Rate': p.marketRate, 'Professional Summary': p.professionalSummary || '',
+                'Skills': p.skills.join('; '), 'Monthly Rate': getDisplayMonthlyRate(p), 'Resume Link': p.resumeLink,
+                'Market Rate': p.marketRate, 'Company Type': p.company_type || 'signimus',
+                'Fulfilled By': getFulfilledByLabel(p) || 'Signimus', 'Platform Fee': p.platform_fee || '',
+                'Professional Summary': p.professionalSummary || '',
                 'Full Experience': (p.fullExperience || '').replace(/\n/g, ' | ')
             }));
             const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-            worksheet['!cols'] = [{wch:22},{wch:24},{wch:30},{wch:14},{wch:50},{wch:16},{wch:50},{wch:16},{wch:40},{wch:60}];
+            worksheet['!cols'] = [{wch:22},{wch:24},{wch:30},{wch:14},{wch:50},{wch:16},{wch:50},{wch:16},{wch:16},{wch:24},{wch:14},{wch:40},{wch:60}];
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Bench List");
             XLSX.writeFile(workbook, "Signimus_Bench.xlsx");
@@ -1544,6 +1590,10 @@
                     const rateIdx = headers.findIndex(h => h.toLowerCase() === 'monthly rate');
                     const resumeIdx = headers.findIndex(h => h.toLowerCase() === 'resume link');
                     const marketIdx = headers.findIndex(h => h.toLowerCase() === 'market rate');
+                    const companyTypeIdx = headers.findIndex(h => h.toLowerCase() === 'company type');
+                    const companyNameIdx = headers.findIndex(h => h.toLowerCase() === 'company name');
+                    const fulfilledByIdx = headers.findIndex(h => h.toLowerCase() === 'fulfilled by');
+                    const platformFeeIdx = headers.findIndex(h => h.toLowerCase() === 'platform fee');
                     const summaryIdx = headers.findIndex(h => h.toLowerCase() === 'professional summary');
                     const fullExpIdx = headers.findIndex(h => h.toLowerCase() === 'full experience');
                     if (nameIdx === -1 || titleIdx === -1) { showToast('CSV must include "Name" and "Title" columns.', true); return; }
@@ -1557,7 +1607,10 @@
                         const skillsRaw = skillsIdx !== -1 ? (cols[skillsIdx] || '') : '';
                         const skills = skillsRaw.split(/[;,]/).map(s => s.trim()).filter(Boolean);
                         const fullExpRaw = fullExpIdx !== -1 ? (cols[fullExpIdx] || '').replace(/ \| /g, '\n') : '';
-                        newProfiles.push({ id, name, title: titleIdx !== -1 ? (cols[titleIdx] || '').trim() : '', experience: expIdx !== -1 ? (cols[expIdx] || '').trim() : '', skills: skills.length > 0 ? skills : ['—'], monthlyRate: rateIdx !== -1 ? (cols[rateIdx] || 'On Request').trim() : 'On Request', resumeLink: resumeIdx !== -1 ? (cols[resumeIdx] || 'Profile on Request').trim() : 'Profile on Request', marketRate: marketIdx !== -1 ? (cols[marketIdx] || '').trim() : '', professionalSummary: summaryIdx !== -1 ? (cols[summaryIdx] || '').trim() || undefined : undefined, fullExperience: fullExpRaw.trim() || undefined });
+                        const companyType = companyTypeIdx !== -1 ? (cols[companyTypeIdx] || '').trim().toLowerCase() : '';
+                        const companyName = companyNameIdx !== -1 ? (cols[companyNameIdx] || '').trim() : '';
+                        const fulfilledBy = fulfilledByIdx !== -1 ? (cols[fulfilledByIdx] || '').trim() : companyName;
+                        newProfiles.push({ id, name, title: titleIdx !== -1 ? (cols[titleIdx] || '').trim() : '', experience: expIdx !== -1 ? (cols[expIdx] || '').trim() : '', skills: skills.length > 0 ? skills : ['—'], monthlyRate: rateIdx !== -1 ? (cols[rateIdx] || 'On Request').trim() : 'On Request', resumeLink: resumeIdx !== -1 ? (cols[resumeIdx] || 'Profile on Request').trim() : 'Profile on Request', marketRate: marketIdx !== -1 ? (cols[marketIdx] || '').trim() : '', company_type: companyType || (companyName && !/signimus/i.test(companyName) ? 'partner' : 'signimus'), company_name: companyName || undefined, fulfilled_by: fulfilledBy || undefined, platform_fee: platformFeeIdx !== -1 ? (cols[platformFeeIdx] || '').trim() : undefined, professionalSummary: summaryIdx !== -1 ? (cols[summaryIdx] || '').trim() || undefined : undefined, fullExperience: fullExpRaw.trim() || undefined });
                     }
                     if (newProfiles.length === 0) { showToast('No valid data was found in the CSV.', true); return; }
                     profilesData.length = 0;
@@ -1599,9 +1652,7 @@
         async function loadRemoteJobsData(force = false) {
             if (remoteJobsLoaded && !force) return;
             try {
-                const response = await fetch('/.netlify/functions/get-jobs', { cache: 'no-store' });
-                if (!response.ok) throw new Error(`API returned ${response.status}`);
-                const data = await response.json();
+                const data = await fetchJsonFromFirstAvailable(JOB_READ_ENDPOINTS);
                 remoteJobsData = Array.isArray(data.jobs)
                     ? data.jobs.map(job => ({ ...job, icon: job.icon || '' }))
                     : [];

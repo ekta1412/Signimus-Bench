@@ -50,6 +50,7 @@ async function listJobs() {
   let conn;
   try {
     conn = await getConnection();
+    await ensureJobsTable(conn);
     const [rows] = await conn.execute(
       'SELECT * FROM jobs ORDER BY created_at DESC'
     );
@@ -104,6 +105,7 @@ async function createJob(event) {
     const id = uuidv4();
 
     conn = await getConnection();
+    await ensureJobsTable(conn);
     await conn.execute(
       `INSERT INTO jobs 
         (id, title, type, experience, location, badge, badge_color,
@@ -125,6 +127,27 @@ async function createJob(event) {
   } finally {
     if (conn) await conn.end();
   }
+}
+
+async function ensureJobsTable(conn) {
+  await conn.execute(`
+    CREATE TABLE IF NOT EXISTS jobs (
+      id VARCHAR(160) PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      type VARCHAR(120),
+      experience VARCHAR(120),
+      location VARCHAR(255),
+      badge VARCHAR(40),
+      badge_color VARCHAR(80),
+      icon_class VARCHAR(120),
+      summary TEXT,
+      responsibilities LONGTEXT,
+      requirements LONGTEXT,
+      salary VARCHAR(120),
+      apply_email VARCHAR(255),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 }
 
 exports.handler = async (event) => {

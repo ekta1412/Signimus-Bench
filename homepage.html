@@ -342,6 +342,29 @@
             }[ch]));
         }
 
+        const PARTNER_RATE_MARKUP_PERCENT = 30;
+
+        function parseMonthlyRate(value) {
+            const numeric = String(value || '').replace(/[^0-9.]/g, '');
+            const rate = parseFloat(numeric);
+            return Number.isFinite(rate) ? rate : null;
+        }
+
+        function isExternalCompanyProfile(profile) {
+            const companyType = String(profile?.company_type || '').toLowerCase();
+            const companyName = String(profile?.company_name || profile?.fulfilled_by || '').trim();
+            return companyType === 'partner' || (companyName && !/signimus/i.test(companyName));
+        }
+
+        function getDisplayMonthlyRate(profile) {
+            const parsedRate = parseMonthlyRate(profile?.monthlyRate);
+            if (parsedRate === null) return 'On Request';
+            const finalRate = isExternalCompanyProfile(profile)
+                ? parsedRate * (1 + PARTNER_RATE_MARKUP_PERCENT / 100)
+                : parsedRate;
+            return `₹${Math.round(finalRate).toLocaleString('en-IN')} INR`;
+        }
+
         function slugify(value) {
             return String(value || 'blog').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'blog';
         }
@@ -473,8 +496,7 @@
                 resumeActionHtml = `<a href="mailto:contact@signimus.com?subject=Profile Request: ${profile.name}" class="text-sm font-medium text-indigo-600 hover:underline">Profile on Request</a>`;
             }
 
-            const monthlyRateNum = parseInt(String(profile.monthlyRate).replace(/,/g, ''));
-            let rateHtml = isNaN(monthlyRateNum) ? 'On Request' : `₹${monthlyRateNum.toLocaleString('en-IN')} INR`;
+            const rateHtml = getDisplayMonthlyRate(profile);
 
             return `
                 <div class="bg-white p-6 rounded-xl shadow-lg border-2 transition-all duration-200 ease-in-out">
