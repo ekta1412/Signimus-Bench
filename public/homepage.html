@@ -627,23 +627,28 @@
                                 <option value="global">Global Remote</option>
                             </select>
                         </label>
-                        <button type="submit" class="w-full py-3 px-4 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition">Calculate</button>
                     `;
                     const experienceSlider = document.getElementById('experience');
                     const experienceLabel = document.getElementById('experience-label');
+                    const technologySelect = document.getElementById('technology');
+                    const locationSelect = document.getElementById('location');
                     const resultsContainer = document.getElementById('results-container');
+
+                    const updateResults = () => {
+                        const technology = technologySelect.value;
+                        const experience = parseInt(experienceSlider.value);
+                        const location = locationSelect.value;
+                        renderCalculatorResults(technology, experience, location, resultsContainer);
+                    };
 
                     experienceSlider.addEventListener('input', (e) => {
                         experienceLabel.textContent = e.target.value;
+                        updateResults();
                     });
-
-                    form.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        const technology = document.getElementById('technology').value;
-                        const experience = parseInt(document.getElementById('experience').value);
-                        const location = document.getElementById('location').value;
-                        renderCalculatorResults(technology, experience, location, resultsContainer);
-                    });
+                    technologySelect.addEventListener('change', updateResults);
+                    locationSelect.addEventListener('change', updateResults);
+                    form.addEventListener('submit', (e) => e.preventDefault());
+                    updateResults();
                 }
             }
         };

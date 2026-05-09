@@ -533,10 +533,7 @@
                         <option value="US_EU">Remote US/EU</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-3">
-                    <button id="calc-btn" type="submit" class="px-5 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Calculate</button>
-                    <a id="open-bench-btn" href="#" target="_top" class="px-5 py-3 rounded-full border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50">Open in Bench</a>
-                </div>
+                <a id="open-bench-btn" href="#" target="_top" class="inline-flex items-center justify-center px-5 py-3 rounded-full border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50">Open in Bench</a>
             `;
 
             const experienceSlider = document.getElementById('experience');
@@ -549,21 +546,23 @@
                 const tech = technologySelect.value;
                 openBenchBtn.href = `/bench?skills=${encodeURIComponent(tech)}`;
             };
-            updateBenchLink();
 
-            experienceSlider.addEventListener('input', (e) => {
-                experienceLabel.textContent = e.target.value;
-            });
-            technologySelect.addEventListener('change', updateBenchLink);
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
+            const updateResults = () => {
                 const technology = technologySelect.value;
                 const experience = parseInt(experienceSlider.value);
                 const location = locationSelect.value;
                 renderCalculatorResults(technology, experience, location, resultsContainer);
                 updateBenchLink();
+            };
+
+            experienceSlider.addEventListener('input', (e) => {
+                experienceLabel.textContent = e.target.value;
+                updateResults();
             });
+            technologySelect.addEventListener('change', updateResults);
+            locationSelect.addEventListener('change', updateResults);
+            form.addEventListener('submit', (e) => e.preventDefault());
+            updateResults();
         }
 
         function renderCalculatorResults(technology, experience, location, resultsContainer) {

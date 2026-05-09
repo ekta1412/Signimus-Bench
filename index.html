@@ -6,6 +6,7 @@
     <title id="page-title">Signimus Developer Profiles</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='8' fill='%234F46E5'/%3E%3Cpath d='M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5' stroke='white' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/index-tailwind.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -647,8 +648,13 @@
         const SIGNIMUS_WHASSAPP_NUMBER = '918225998112';
         const JOINED_BENCH_STORAGE_KEY = 'signimus_joined_bench_profiles';
         const IS_LOCAL_PREVIEW = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-        const PROFILE_READ_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/profiles', '/.netlify/functions/get-profiles'] : ['/.netlify/functions/get-profiles', '/api/profiles'];
-        const PROFILE_WRITE_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/profiles', '/.netlify/functions/add-profile'] : ['/.netlify/functions/add-profile', '/api/profiles'];
+        const LIVE_API_BASE = 'https://signimus-bench.netlify.app';
+        const PROFILE_READ_ENDPOINTS = IS_LOCAL_PREVIEW
+            ? [`${LIVE_API_BASE}/.netlify/functions/get-profiles`, `${LIVE_API_BASE}/api/profiles`, '/api/profiles', '/.netlify/functions/get-profiles']
+            : ['/.netlify/functions/get-profiles', '/api/profiles'];
+        const PROFILE_WRITE_ENDPOINTS = IS_LOCAL_PREVIEW
+            ? [`${LIVE_API_BASE}/.netlify/functions/add-profile`, `${LIVE_API_BASE}/api/profiles`, '/api/profiles', '/.netlify/functions/add-profile']
+            : ['/.netlify/functions/add-profile', '/api/profiles'];
         const JOB_READ_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/jobs', '/api/job-posting', '/.netlify/functions/get-jobs'] : ['/.netlify/functions/get-jobs', '/api/jobs', '/api/job-posting'];
         let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
         const allSkillsAndRoles = ['Salesforce Developer','Design','Bootstrap','Tailwind CSS','Material UI','Responsive Websites','Animations','Figma','Photoshop','Adobe XD','React.js','Ruby on Rails','.NET','Angular','Java','Core Java','Spring','Spring Boot','REST API','Spring Data JPA','Hibernate','JPA','MySQL','Kafka','Redis','AWS','Spring Security','Marketing','Product Designer','UI/UX','Graphics Design','XD','DaVinci Resolve','UIZARD','Zeplin','Illustrator','Canva','Ethical Hacking','Penetration Tester','WAPT','Python','Scapy','Reverse Engineering','Automation','iOS','Swift','Objective-C','SwiftUI','Python Django Developer','Scikit-learn','Basic Data Science','Data Scientist','AI/ML Engineer','TensorFlow','PyTorch','Data Engineer','Frontend','Java Developer','MERN Stack','Node.js','Microservices','Docker','Next.js','J2EE','Django','DRF','FastAPI','Pytest','Flask','TypeScript','NodeJs','Technical Lead','Flutter','Dart','Android','Kotlin','Laravel','CodeIgniter','PHP','DevOps','SRE','Kubernetes','Terraform','CI/CD','Dell Boomi Developer','Integration','API Development','App Script','Core PHP','MongoDB','GoDaddy','Digital Ocean','Razorpay Payment Gateway','Git','Firebase','Sr iOS Developer','Power BI','AI Development','Oracle','Data Warehousing','ETL','DataStage','SQL','Data Analytics','Adobe DTM','Adobe Launch','Google Tag Manager','Adobe Analytics','Front-End Technologies','Selenium','AutoGen','Gen AI (Azure)','MS Excel','Machine Learning','Gen AI Assistant','Junior Developer','Project Manager','WordPress Website Developer','Frontend Development'];
@@ -1380,7 +1386,7 @@
                     if (!response.ok) throw new Error(`${endpoint} returned ${response.status}`);
                     return await response.json();
                 } catch (error) {
-                    console.warn(`Endpoint unavailable: ${endpoint}`, error);
+                    console.debug(`Endpoint unavailable: ${endpoint}`, error);
                     lastError = error;
                 }
             }
@@ -1496,11 +1502,11 @@
                 });
                 showToast(`${profile.name} saved to database! (${getFulfilledByLabel(profile)})`);
             } catch (err) {
-                console.warn('Database unavailable, saving locally:', err);
-                showToast(`${profile.name} saved locally (database unavailable).`, true);
+                console.warn('Database save failed; profile will only appear in this browser:', err);
+                showToast(`Database save failed. ${profile.name} will not appear in incognito until TiDB login is fixed.`, true);
             }
 
-            // Always add to local list and localStorage
+            // Keep the profile visible in this browser even if the shared database is unavailable.
             upsertProfile(profile);
             saveJoinedBenchProfile(profile);
             closeJointBenchModal(true);

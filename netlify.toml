@@ -8,6 +8,11 @@
   included_files = ["staging.env"]
 
 [[redirects]]
+  from = "/api/profiles"
+  to = "/.netlify/functions/profiles"
+  status = 200
+
+[[redirects]]
   from = "/api/job-posting"
   to = "/.netlify/functions/job-posting"
   status = 200
