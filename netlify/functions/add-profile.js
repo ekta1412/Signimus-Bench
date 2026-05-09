@@ -11,19 +11,13 @@ function json(statusCode, body) {
   return { statusCode, headers: jsonHeaders, body: JSON.stringify(body) };
 }
 
-function getRequiredEnv(name) {
-  const value = (process.env[name] || '').trim();
-  if (!value) throw new Error(`Missing ${name}`);
-  return value;
-}
-
 async function getConnection() {
   return mysql.createConnection({
-    host: getRequiredEnv('TIDB_HOST'),
-    port: parseInt(process.env.TIDB_PORT || '4000', 10),
-    user: getRequiredEnv('TIDB_USER'),
-    password: getRequiredEnv('TIDB_PASSWORD'),
-    database: getRequiredEnv('TIDB_DATABASE'),
+    host: 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
+    port: 4000,
+    user: '4U2qZCUDWtsTpiQ.root',
+    password: process.env.TIDB_PASSWORD,
+    database: 'signimus_jobs',
     ssl: { rejectUnauthorized: false },
   });
 }
@@ -58,7 +52,6 @@ function parseSkills(value) {
   if (Array.isArray(value)) {
     return value.map((skill) => String(skill || '').trim()).filter(Boolean);
   }
-
   if (typeof value === 'string') {
     try {
       return parseSkills(JSON.parse(value || '[]'));
@@ -66,7 +59,6 @@ function parseSkills(value) {
       return value.split(/[;,]/).map((skill) => skill.trim()).filter(Boolean);
     }
   }
-
   return [];
 }
 
@@ -145,22 +137,10 @@ exports.handler = async (event) => {
          platform_fee=VALUES(platform_fee)`,
       [
         rows.map((row) => [
-          row.id,
-          row.name,
-          row.title,
-          row.experience,
-          row.skills,
-          row.monthly_rate,
-          row.resume_link,
-          row.market_rate,
-          row.summary,
-          row.full_experience,
-          row.company_name,
-          row.company_type,
-          row.fulfilled_by,
-          row.contact_number,
-          row.work_email,
-          row.platform_fee,
+          row.id, row.name, row.title, row.experience, row.skills,
+          row.monthly_rate, row.resume_link, row.market_rate, row.summary,
+          row.full_experience, row.company_name, row.company_type,
+          row.fulfilled_by, row.contact_number, row.work_email, row.platform_fee,
         ]),
       ]
     );
