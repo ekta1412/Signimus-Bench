@@ -3,20 +3,14 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-function getRequiredEnv(name: string) {
-  const value = process.env[name]?.trim();
-  if (!value) throw new Error(`Missing ${name}`);
-  return value;
-}
-
 async function getConnection() {
   return mysql.createConnection({
-    host: getRequiredEnv("TIDB_HOST"),
-    port: parseInt(process.env.TIDB_PORT || "4000", 10),
-    user: getRequiredEnv("TIDB_USER"),
-    password: getRequiredEnv("TIDB_PASSWORD"),
-    database: getRequiredEnv("TIDB_DATABASE"),
-    ssl: { rejectUnauthorized: true },
+    host: 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
+    port: 4000,
+    user: '4U2qZCUDWtsTpiQ.root',
+    password: process.env.TIDB_PASSWORD,
+    database: 'signimus_jobs',
+    ssl: { rejectUnauthorized: false },
   });
 }
 
@@ -79,7 +73,6 @@ export async function GET() {
       createdAt: row.created_at,
       source: "database",
     }));
-
     return NextResponse.json({ jobs });
   } catch (error) {
     console.error("api/jobs GET error:", error);
@@ -87,6 +80,45 @@ export async function GET() {
       { error: error instanceof Error ? error.message : "Unable to load jobs" },
       { status: 500 }
     );
+  } finally {
+    if (conn) await conn.end();
+  }
+}
+
+export async function POST(request: Request) {
+  let conn: mysql.Connection | undefined;
+  try {
+    const job = await request.json();
+    if (!job.title) return NextResponse.json({ error: "Title is required" }, { status: 400 });
+
+    const id = job.id || job.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 160);
+
+    conn = await getConnection();
+    await ensureJobsTable(conn);
+
+    await conn.execute(
+      `INSERT INTO jobs (id, title, type, experience, location, badge, badge_color, icon_class, summary, responsibilities, requirements, salary, apply_email)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         title=VALUES(title), type=VALUES(type), experience=VALUES(experience),
+         location=VALUES(location), badge=VALUES(badge), badge_color=VALUES(badge_color),
+         icon_class=VALUES(icon_class), summary=VALUES(summary),
+         responsibilities=VALUES(responsibilities), requirements=VALUES(requirements),
+         salary=VALUES(salary), apply_email=VALUES(apply_email)`,
+      [
+        id, job.title, job.type || '', job.experience || '', job.location || '',
+        job.badge || 'Open', job.badgeColor || getBadgeColor(job.badge), job.iconClass || 'fas fa-briefcase',
+        job.summary || '',
+        JSON.stringify(job.responsibilities || []),
+        JSON.stringify(job.requirements || []),
+        job.salary || '', job.applyEmail || 'contact@signimus.com'
+      ]
+    );
+
+    return NextResponse.json({ success: true, id });
+  } catch (error) {
+    console.error("api/jobs POST error:", error);
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to save job" }, { status: 500 });
   } finally {
     if (conn) await conn.end();
   }
