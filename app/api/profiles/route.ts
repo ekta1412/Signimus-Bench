@@ -32,12 +32,12 @@ function getRequiredEnv(name: string) {
 
 async function getConnection() {
   return mysql.createConnection({
-    host: getRequiredEnv("TIDB_HOST"),
-    port: parseInt(process.env.TIDB_PORT || "4000", 10),
-    user: getRequiredEnv("TIDB_USER"),
-    password: getRequiredEnv("TIDB_PASSWORD"),
-    database: getRequiredEnv("TIDB_DATABASE"),
-    ssl: { rejectUnauthorized: true },
+    host: 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
+    port: 4000,
+    user: '4U2qZCUDWtsTpiQ.root',
+    password: process.env.TIDB_PASSWORD,
+    database: 'signimus_jobs',
+    ssl: { rejectUnauthorized: false },
   });
 }
 
@@ -71,7 +71,6 @@ function parseSkills(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value.map((skill) => String(skill || "").trim()).filter(Boolean);
   }
-
   if (typeof value === "string") {
     try {
       return parseSkills(JSON.parse(value || "[]"));
@@ -79,7 +78,6 @@ function parseSkills(value: unknown): string[] {
       return value.split(/[;,]/).map((skill) => skill.trim()).filter(Boolean);
     }
   }
-
   return [];
 }
 
@@ -196,22 +194,10 @@ export async function POST(request: Request) {
          platform_fee=VALUES(platform_fee)`,
       [
         rows.map((row) => [
-          row.id,
-          row.name,
-          row.title,
-          row.experience,
-          row.skills,
-          row.monthly_rate,
-          row.resume_link,
-          row.market_rate,
-          row.summary,
-          row.full_experience,
-          row.company_name,
-          row.company_type,
-          row.fulfilled_by,
-          row.contact_number,
-          row.work_email,
-          row.platform_fee,
+          row.id, row.name, row.title, row.experience, row.skills,
+          row.monthly_rate, row.resume_link, row.market_rate, row.summary,
+          row.full_experience, row.company_name, row.company_type,
+          row.fulfilled_by, row.contact_number, row.work_email, row.platform_fee,
         ]),
       ]
     );
