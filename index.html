@@ -6,7 +6,7 @@
     <title id="page-title">Signimus Developer Profiles</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='8' fill='%234F46E5'/%3E%3Cpath d='M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5' stroke='white' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/index-tailwind.css">
+    <link rel="stylesheet" href="index-tailwind.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -300,6 +300,8 @@
                     <button type="submit" class="px-5 py-2 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700 flex items-center gap-2"><i class="fas fa-plus"></i> Add to Bench</button>
                 </div>
             </form>
+        </div>
+    </div>
 
     <!-- ===== JOBS MODAL ===== -->
     <div id="jobs-modal-backdrop" class="modal-backdrop hidden" style="z-index:200;">
@@ -655,7 +657,7 @@
         const PROFILE_WRITE_ENDPOINTS = IS_LOCAL_PREVIEW
             ? [`${LIVE_API_BASE}/.netlify/functions/add-profile`, `${LIVE_API_BASE}/api/profiles`, '/api/profiles', '/.netlify/functions/add-profile']
             : ['/.netlify/functions/add-profile', '/api/profiles'];
-        const JOB_READ_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/jobs', '/api/job-posting', '/.netlify/functions/get-jobs'] : ['/.netlify/functions/get-jobs', '/api/jobs', '/api/job-posting'];
+        const JOB_READ_ENDPOINTS = IS_LOCAL_PREVIEW ? ['/api/job-posting', '/api/jobs', '/.netlify/functions/get-jobs'] : ['/.netlify/functions/get-jobs', '/api/job-posting', '/api/jobs'];
         let popularSkills = ['React.js', 'Python', 'Java', 'AI/ML Engineer', '.NET'];
         const allSkillsAndRoles = ['Salesforce Developer','Design','Bootstrap','Tailwind CSS','Material UI','Responsive Websites','Animations','Figma','Photoshop','Adobe XD','React.js','Ruby on Rails','.NET','Angular','Java','Core Java','Spring','Spring Boot','REST API','Spring Data JPA','Hibernate','JPA','MySQL','Kafka','Redis','AWS','Spring Security','Marketing','Product Designer','UI/UX','Graphics Design','XD','DaVinci Resolve','UIZARD','Zeplin','Illustrator','Canva','Ethical Hacking','Penetration Tester','WAPT','Python','Scapy','Reverse Engineering','Automation','iOS','Swift','Objective-C','SwiftUI','Python Django Developer','Scikit-learn','Basic Data Science','Data Scientist','AI/ML Engineer','TensorFlow','PyTorch','Data Engineer','Frontend','Java Developer','MERN Stack','Node.js','Microservices','Docker','Next.js','J2EE','Django','DRF','FastAPI','Pytest','Flask','TypeScript','NodeJs','Technical Lead','Flutter','Dart','Android','Kotlin','Laravel','CodeIgniter','PHP','DevOps','SRE','Kubernetes','Terraform','CI/CD','Dell Boomi Developer','Integration','API Development','App Script','Core PHP','MongoDB','GoDaddy','Digital Ocean','Razorpay Payment Gateway','Git','Firebase','Sr iOS Developer','Power BI','AI Development','Oracle','Data Warehousing','ETL','DataStage','SQL','Data Analytics','Adobe DTM','Adobe Launch','Google Tag Manager','Adobe Analytics','Front-End Technologies','Selenium','AutoGen','Gen AI (Azure)','MS Excel','Machine Learning','Gen AI Assistant','Junior Developer','Project Manager','WordPress Website Developer','Frontend Development'];
         let allSkills = [...new Set(allSkillsAndRoles)].sort();
@@ -1395,12 +1397,31 @@
 
         async function loadDatabaseProfiles() {
             try {
+                updateStatusBar('Loading profiles from database...', true);
                 const data = await fetchJsonFromFirstAvailable(PROFILE_READ_ENDPOINTS);
                 const remoteProfiles = Array.isArray(data) ? data : (Array.isArray(data.profiles) ? data.profiles : []);
                 remoteProfiles.forEach(upsertProfile);
+                if (remoteProfiles.length > 0) {
+                    updateStatusBar(`${remoteProfiles.length} database profiles loaded.`);
+                } else {
+                    updateStatusBar('Bench ready. Database has no extra profiles yet.');
+                }
             } catch (error) {
                 console.warn('Unable to load database profiles.', error);
+                updateStatusBar('Bench ready. Database unavailable, using local data.');
             }
+        }
+
+        async function saveProfilesToDatabase(profiles) {
+            const cleanProfiles = (Array.isArray(profiles) ? profiles : [profiles])
+                .filter(profile => profile && profile.name && profile.title);
+            if (cleanProfiles.length === 0) throw new Error('No valid profiles to save');
+
+            return fetchJsonFromFirstAvailable(PROFILE_WRITE_ENDPOINTS, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cleanProfiles.length === 1 ? cleanProfiles[0] : { profiles: cleanProfiles })
+            });
         }
 
         function saveJoinedBenchProfile(profile) {
@@ -1408,6 +1429,18 @@
             joinedProfiles.push(profile);
             try { localStorage.setItem(JOINED_BENCH_STORAGE_KEY, JSON.stringify(joinedProfiles)); }
             catch (error) { console.warn('Unable to save joined bench profile.', error); }
+        }
+
+        async function syncJoinedBenchCacheToDatabase() {
+            const cachedProfiles = getJoinedBenchProfiles().filter(profile => profile && profile.id && profile.name && profile.title);
+            if (cachedProfiles.length === 0) return;
+
+            try {
+                await saveProfilesToDatabase(cachedProfiles);
+                updateStatusBar(`${cachedProfiles.length} locally cached profiles synced to database.`);
+            } catch (error) {
+                console.warn('Unable to sync local bench cache to database.', error);
+            }
         }
 
         function refreshBenchAfterMutation() {
@@ -1493,13 +1526,9 @@
                 joinedAt: Date.now()
             };
 
-            // Save to database via Netlify function
+            // Save to database through the first available app or Netlify endpoint.
             try {
-                await fetchJsonFromFirstAvailable(PROFILE_WRITE_ENDPOINTS, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(profile)
-                });
+                await saveProfilesToDatabase(profile);
                 showToast(`${profile.name} saved to database! (${getFulfilledByLabel(profile)})`);
             } catch (err) {
                 console.warn('Database save failed; profile will only appear in this browser:', err);
@@ -1580,7 +1609,7 @@
         function importFromCSV(file) {
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const text = e.target.result;
                     const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim() !== '');
@@ -1604,19 +1633,44 @@
                     const newProfiles = [];
                     for (let i = 1; i < lines.length; i++) {
                         const cols = parseCSVLine(lines[i]);
-                        const name = (cols[nameIdx] || '').trim();
+                        const name = getCleanText(cols[nameIdx] || '');
                         if (!name) continue;
-                        const rawId = idIdx !== -1 ? (cols[idIdx] || '').trim() : '';
-                        const id = rawId || name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i;
+                        const rawId = idIdx !== -1 ? createSlug(cols[idIdx] || '') : '';
+                        const id = rawId || createSlug(name) + '-' + i;
                         const skillsRaw = skillsIdx !== -1 ? (cols[skillsIdx] || '') : '';
-                        const skills = skillsRaw.split(/[;,]/).map(s => s.trim()).filter(Boolean);
+                        const skills = skillsRaw.split(/[;,]/).map(s => getCleanText(s)).filter(Boolean);
                         const fullExpRaw = fullExpIdx !== -1 ? (cols[fullExpIdx] || '').replace(/ \| /g, '\n') : '';
-                        const companyType = companyTypeIdx !== -1 ? (cols[companyTypeIdx] || '').trim().toLowerCase() : '';
-                        const companyName = companyNameIdx !== -1 ? (cols[companyNameIdx] || '').trim() : '';
-                        const fulfilledBy = fulfilledByIdx !== -1 ? (cols[fulfilledByIdx] || '').trim() : companyName;
+                        const companyType = companyTypeIdx !== -1 ? getCleanText(cols[companyTypeIdx] || '').toLowerCase() : '';
+                        const companyName = companyNameIdx !== -1 ? getCleanText(cols[companyNameIdx] || '') : '';
+                        const fulfilledBy = fulfilledByIdx !== -1 ? getCleanText(cols[fulfilledByIdx] || '') : companyName;
+                        const sanitizedProfile = {
+                            id,
+                            name,
+                            title: titleIdx !== -1 ? getCleanText(cols[titleIdx] || '') : '',
+                            experience: expIdx !== -1 ? getCleanText(cols[expIdx] || '') : '',
+                            skills: skills.length > 0 ? skills : ['N/A'],
+                            monthlyRate: rateIdx !== -1 ? getCleanText(cols[rateIdx] || 'On Request') : 'On Request',
+                            resumeLink: resumeIdx !== -1 ? getValidResumeLink(cols[resumeIdx] || 'Profile on Request') : 'Profile on Request',
+                            marketRate: marketIdx !== -1 ? getCleanText(cols[marketIdx] || '') : '',
+                            company_type: companyType || (companyName && !/signimus/i.test(companyName) ? 'partner' : 'signimus'),
+                            company_name: companyName || undefined,
+                            fulfilled_by: fulfilledBy || undefined,
+                            platform_fee: platformFeeIdx !== -1 ? getCleanText(cols[platformFeeIdx] || '') : undefined,
+                            professionalSummary: summaryIdx !== -1 ? getCleanText(cols[summaryIdx] || '') || undefined : undefined,
+                            fullExperience: getCleanText(fullExpRaw) || undefined
+                        };
                         newProfiles.push({ id, name, title: titleIdx !== -1 ? (cols[titleIdx] || '').trim() : '', experience: expIdx !== -1 ? (cols[expIdx] || '').trim() : '', skills: skills.length > 0 ? skills : ['—'], monthlyRate: rateIdx !== -1 ? (cols[rateIdx] || 'On Request').trim() : 'On Request', resumeLink: resumeIdx !== -1 ? (cols[resumeIdx] || 'Profile on Request').trim() : 'Profile on Request', marketRate: marketIdx !== -1 ? (cols[marketIdx] || '').trim() : '', company_type: companyType || (companyName && !/signimus/i.test(companyName) ? 'partner' : 'signimus'), company_name: companyName || undefined, fulfilled_by: fulfilledBy || undefined, platform_fee: platformFeeIdx !== -1 ? (cols[platformFeeIdx] || '').trim() : undefined, professionalSummary: summaryIdx !== -1 ? (cols[summaryIdx] || '').trim() || undefined : undefined, fullExperience: fullExpRaw.trim() || undefined });
+                        Object.assign(newProfiles[newProfiles.length - 1], sanitizedProfile);
                     }
                     if (newProfiles.length === 0) { showToast('No valid data was found in the CSV.', true); return; }
+                    updateStatusBar(`Saving ${newProfiles.length} imported profiles to database...`, true);
+                    try {
+                        await saveProfilesToDatabase(newProfiles);
+                        showToast(`${newProfiles.length} profiles imported and saved to database!`);
+                    } catch (dbError) {
+                        console.warn('CSV profiles could not be saved to database:', dbError);
+                        showToast(`Database save failed. Imported profiles will not appear in incognito until TiDB login is fixed.`, true);
+                    }
                     profilesData.length = 0;
                     newProfiles.forEach(p => profilesData.push(p));
                     allSkills = [...new Set(profilesData.flatMap(p => p.skills))].sort();
@@ -1625,7 +1679,6 @@
                     currentPage = 1;
                     renderFilters();
                     triggerAnalysisForFilteredProfiles();
-                    showToast(`${profilesData.length} profiles imported from CSV!`);
                 } catch(err) {
                     console.error('CSV Import error:', err);
                     showToast('Import failed. Please use a valid CSV file.', true);
@@ -1755,6 +1808,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             loadJoinedBenchProfiles();
             await loadDatabaseProfiles();
+            await syncJoinedBenchCacheToDatabase();
             loadStateFromUrl();
             renderProfiles();
             renderFilters();
