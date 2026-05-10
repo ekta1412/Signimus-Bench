@@ -1844,7 +1844,7 @@
         allFiltersModal.addEventListener('click', (e) => { if (e.target === allFiltersModal) hideModal('all-filters-modal'); });
 
         // ===== CHANGE 1: Jobs button opens modal =====
-        document.getElementById('jobs-button').addEventListener('click', openJobsModal);
+        document.getElementById('jobs-button').addEventListener('click', () => { window.location.href = '/jobs.html'; });
         document.getElementById('jobs-modal-close').addEventListener('click', closeJobsModal);
         document.getElementById('jobs-modal-backdrop').addEventListener('click', (e) => { if (e.target === document.getElementById('jobs-modal-backdrop')) closeJobsModal(); });
         document.getElementById('job-detail-close').addEventListener('click', closeJobDetailModal);
