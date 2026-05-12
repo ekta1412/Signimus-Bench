@@ -19,10 +19,7 @@
     <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
         <nav class="container mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <a href="index.html" class="inline-flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-                    <rect width="36" height="36" rx="8" fill="#4F46E5"/>
-                    <path d="M24.5 13.5C24.5 11.015 22.485 9 20 9H14C11.515 9 9.5 11.015 9.5 13.5C9.5 15.985 11.515 18 14 18H22C24.485 18 26.5 20.015 26.5 22.5C26.5 24.985 24.485 27 22 27H16C13.515 27 11.5 24.985 11.5 22.5" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                </svg>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSCGMWnjEiSXGHHbMRcNmXh4dVoWKBhLKFDg&s" alt="Signimus Logo" width="36" height="36" style="border-radius:8px;object-fit:cover;">
                 <div>
                     <p class="text-lg font-extrabold leading-tight text-slate-900">Signimus Jobs</p>
                     <p class="text-xs text-slate-500">Remote developer roles and hiring requirements</p>
@@ -44,7 +41,6 @@
         const CUSTOM_JOBS_KEY = 'signimus_custom_jobs';
         const JOB_APPLICATIONS_KEY = 'signimus_job_applications';
 
-        // ✅ TiDB Netlify Functions endpoints
         const GET_JOBS_ENDPOINT = '/api/jobs';
         const ADD_JOB_ENDPOINT = '/api/jobs';
 
@@ -74,7 +70,8 @@
                     'Good communication skills'
                 ],
                 salary: 'INR 55,000 - 1,50,000 /month',
-                applyEmail: 'contact@signimus.com'
+                applyEmail: 'contact@signimus.com',
+                contactNumber: ''
             },
             {
                 id: 'python-django-backend-developer',
@@ -101,7 +98,8 @@
                     'Docker and Linux proficiency'
                 ],
                 salary: 'INR 70,000 - 2,00,000 /month',
-                applyEmail: 'contact@signimus.com'
+                applyEmail: 'contact@signimus.com',
+                contactNumber: ''
             },
             {
                 id: 'java-spring-boot-developer',
@@ -128,7 +126,8 @@
                     'Good problem-solving and debugging skills'
                 ],
                 salary: 'INR 60,000 - 1,80,000 /month',
-                applyEmail: 'contact@signimus.com'
+                applyEmail: 'contact@signimus.com',
+                contactNumber: ''
             },
             {
                 id: 'flutter-mobile-app-developer',
@@ -155,7 +154,8 @@
                     'Strong UI/UX sensibility'
                 ],
                 salary: 'INR 55,000 - 1,60,000 /month',
-                applyEmail: 'contact@signimus.com'
+                applyEmail: 'contact@signimus.com',
+                contactNumber: ''
             },
             {
                 id: 'ai-ml-engineer',
@@ -182,7 +182,8 @@
                     'Ability to move from prototype to production'
                 ],
                 salary: 'INR 80,000 - 2,50,000 /month',
-                applyEmail: 'contact@signimus.com'
+                applyEmail: 'contact@signimus.com',
+                contactNumber: ''
             },
             {
                 id: 'devops-aws-cloud-engineer',
@@ -209,7 +210,8 @@
                     'Experience with Linux administration'
                 ],
                 salary: 'INR 1,50,000 - 4,50,000 /month',
-                applyEmail: 'contact@signimus.com'
+                applyEmail: 'contact@signimus.com',
+                contactNumber: ''
             }
         ];
 
@@ -256,7 +258,6 @@
             return getJobs().find(job => job.id === id);
         }
 
-        // ✅ GET jobs from TiDB via Netlify Function
         async function loadRemoteJobs(force = false) {
             if (jobsLoaded && !force) return;
             try {
@@ -274,7 +275,6 @@
             }
         }
 
-        // ✅ POST new job to TiDB via Netlify Function
         async function saveJobToDatabase(job) {
             const response = await fetch(ADD_JOB_ENDPOINT, {
                 method: 'POST',
@@ -319,6 +319,7 @@
                         <p class="hidden md:block text-sm font-bold text-purple-700 whitespace-nowrap">${escapeHtml(job.salary)}</p>
                     </div>
                     <p class="text-sm text-slate-600 leading-6 mt-4">${escapeHtml(job.summary)}</p>
+                    ${job.contactNumber ? `<p class="text-xs text-slate-500 mt-2"><i class="fas fa-phone mr-1"></i>${escapeHtml(job.contactNumber)}</p>` : ''}
                     <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-slate-100 pt-4">
                         <p class="text-sm font-bold text-purple-700 md:hidden">${escapeHtml(job.salary)}</p>
                         <div class="flex flex-wrap gap-2">
@@ -384,6 +385,9 @@
                         <label class="text-sm font-bold text-slate-700">Location
                             <input id="job-location" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Remote (India)">
                         </label>
+                        <label class="text-sm font-bold text-slate-700">Contact Number
+                            <input id="job-contact" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g. +91 98765 43210">
+                        </label>
                         <label class="text-sm font-bold text-slate-700">Salary
                             <input id="job-salary" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="INR 80,000 - 1,80,000 /month">
                         </label>
@@ -433,6 +437,7 @@
                                     <span class="text-xs font-bold px-2 py-1 rounded-full ${job.badgeColor || 'bg-slate-100 text-slate-600'}">${escapeHtml(job.badge || 'Open')}</span>
                                 </div>
                                 <p class="text-sm text-slate-500 mt-2">${escapeHtml(job.type)} | ${escapeHtml(job.experience)} | ${escapeHtml(job.location)}</p>
+                                ${job.contactNumber ? `<p class="text-sm text-slate-500 mt-1"><i class="fas fa-phone mr-1"></i>${escapeHtml(job.contactNumber)}</p>` : ''}
                             </div>
                         </div>
                         <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 lg:min-w-72">
@@ -533,6 +538,7 @@
                 requirements: splitLines(document.getElementById('job-requirements').value).slice(0, 10),
                 salary: document.getElementById('job-salary').value.trim() || 'On Request',
                 applyEmail: 'contact@signimus.com',
+                contactNumber: document.getElementById('job-contact').value.trim() || '',
             };
 
             if (job.responsibilities.length === 0) job.responsibilities = ['Role responsibilities will be discussed during screening.'];
