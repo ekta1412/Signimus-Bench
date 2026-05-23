@@ -695,7 +695,7 @@
         const statusBar = document.getElementById('status-bar');
         const statusIcon = document.getElementById('status-icon');
         const statusMessage = document.getElementById('status-message');
-        document.getElementById("candidate-search-input").addEventListener("input", function() { const query = this.value.toLowerCase(); document.querySelectorAll(".profile-card").forEach(card => { const name = card.querySelector(".candidate-name") ? card.querySelector(".candidate-name").textContent.toLowerCase() : ""; card.style.display = name.includes(query) ? "" : "none"; }); });
+        document.getElementById("candidate-search-input").addEventListener("input", function() { const query = this.value.toLowerCase().trim(); document.querySelectorAll(".profile-card").forEach(card => { const text = card.innerText.toLowerCase(); card.style.display = !query || text.includes(query) ? "" : "none"; }); });
         const minExpSlider = document.getElementById('min-exp-slider');
         const maxExpSlider = document.getElementById('max-exp-slider');
         const experienceRangeLabel = document.getElementById('experience-range-label');
@@ -1030,7 +1030,7 @@
 
             card.innerHTML = `
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2"><i class="fas fa-user-circle text-2xl text-gray-400"></i><span>${profile.name}</span></h3>
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2 candidate-name"><i class="fas fa-user-circle text-2xl text-gray-400"></i><span>${profile.name}</span></h3>
                     ${aiBadge}
                 </div>
                 <p class="text-lg font-semibold text-gray-800 -mt-2 mb-4">${profile.title}</p>
