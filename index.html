@@ -672,6 +672,7 @@
             : '';
 
         let currentPage = 1;
+        let nameSearchQuery = "";
         let pageSize = 10;
         let totalPagesGlobal = 1;
 
@@ -1063,6 +1064,14 @@
         }
 
         function getFilteredAndSortedProfiles() {
+            if(nameSearchQuery) {
+              const allP = profilesData || [];
+              const filtered = allP.filter(p => {
+                const hay = ((p.name||'')+(p.title||'')+(Array.isArray(p.skills)?p.skills.join(' '):'')).toLowerCase();
+                return hay.includes(nameSearchQuery);
+              });
+              return { matching: filtered, nonMatching: [] };
+            }
             const jobDescription = jobDescriptionInput.value.trim().toLowerCase();
             const isJdActive = jobDescription !== '';
             const isFilterActive = activeFilters.length > 0;
@@ -1830,6 +1839,12 @@
             if (card) toggleProfileSelection(card.dataset.profileId, !card.classList.contains('not-a-fit-card'));
         });
 
+        const nameSearchBox = document.getElementById('name-search-input');
+        if(nameSearchBox) nameSearchBox.addEventListener('input', function() {
+          nameSearchQuery = this.value.toLowerCase().trim();
+          currentPage = 1;
+          renderProfiles();
+        });
         if(jobDescriptionInput) jobDescriptionInput.addEventListener('input', debounce(() => {
             const q = jobDescriptionInput.value.toLowerCase().trim();
             document.querySelectorAll('.profile-card').forEach(card => {
@@ -1870,7 +1885,7 @@
 
 
 <script>
-document.addEventListener("DOMContentLoaded",function(){var box=document.getElementById("name-search-input");if(box){box.addEventListener("input",function(){var q=this.value.toLowerCase().trim();document.querySelectorAll(".profile-card").forEach(function(card){card.style.display=q===""||card.textContent.toLowerCase().indexOf(q)>-1?"":"none";});});}});
+
 </script>
 </body>
 </html>
