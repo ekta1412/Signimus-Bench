@@ -115,7 +115,7 @@
                         <button id="main-heading" class="text-xl font-extrabold tracking-tight text-left leading-tight" title="Click to explore Signimus resources">Signimus Talent Bench</button>
                         <div id="main-heading-hint"><i class="fas fa-external-link-alt" style="font-size:0.6rem;"></i> Click to explore guides &amp; resources</div>
                     </div>
-                    <div class="relative mt-1">
+                    <div class="relative mt-1"><input type="text" id="candidate-search-input" class="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2" placeholder="Search by candidate name..."></div><div class="relative mt-1 hidden">
                         <textarea id="job-description-input" class="w-full h-12 p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 resize-none" placeholder="Paste a job description here..."></textarea>
                     </div>
                     <div class="mt-2 flex flex-col sm:flex-row gap-2">
@@ -695,6 +695,7 @@
         const statusBar = document.getElementById('status-bar');
         const statusIcon = document.getElementById('status-icon');
         const statusMessage = document.getElementById('status-message');
+        document.getElementById("candidate-search-input").addEventListener("input", function() { const query = this.value.toLowerCase(); document.querySelectorAll(".profile-card").forEach(card => { const name = card.querySelector(".candidate-name") ? card.querySelector(".candidate-name").textContent.toLowerCase() : ""; card.style.display = name.includes(query) ? "" : "none"; }); });
         const minExpSlider = document.getElementById('min-exp-slider');
         const maxExpSlider = document.getElementById('max-exp-slider');
         const experienceRangeLabel = document.getElementById('experience-range-label');
