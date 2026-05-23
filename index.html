@@ -1832,7 +1832,7 @@
             if (card) toggleProfileSelection(card.dataset.profileId, !card.classList.contains('not-a-fit-card'));
         });
 
-        jobDescriptionInput.addEventListener('input', debounce(() => {
+        if(jobDescriptionInput) jobDescriptionInput.addEventListener('input', debounce(() => {
             const q = jobDescriptionInput.value.toLowerCase().trim();
             document.querySelectorAll('.profile-card').forEach(card => {
                 card.style.display = q === '' || card.innerText.toLowerCase().includes(q) ? '' : 'none';
