@@ -1,7 +1,8 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*\\.html)", "destination": "/$1" },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/index.html", "destination": "/index.html" },
+    { "source": "/jobs.html", "destination": "/public/jobs.html" },
+    { "source": "/homepage.html", "destination": "/public/homepage.html" }
   ]
 }
