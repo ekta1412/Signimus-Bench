@@ -1867,8 +1867,7 @@
             if (file) { importFromCSV(file); e.target.value = ''; }
         });
     </script>
-document.querySelectorAll(".profile-card").forEach(card=>{card.style.display=q===""||card.innerText.toLowerCase().includes(q)?"":"none";});});
-document.querySelectorAll(".profile-card").forEach(card=>{card.style.display=q===""||card.innerText.toLowerCase().includes(q)?"":"none";});});
+
 
 <script>
 document.addEventListener("DOMContentLoaded",function(){var box=document.getElementById("name-search-input");if(box){box.addEventListener("input",function(){var q=this.value.toLowerCase().trim();document.querySelectorAll(".profile-card").forEach(function(card){card.style.display=q===""||card.innerText.toLowerCase().indexOf(q)>-1?"":"none";});});}});
