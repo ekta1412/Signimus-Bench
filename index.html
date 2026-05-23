@@ -809,7 +809,7 @@
             const params = new URLSearchParams();
             if (activeFilters.length > 0) params.set('filters', activeFilters.join(','));
             const jd = jobDescriptionInput.value.trim();
-            if (jd) params.set('jd', jd);
+            // if (jd) params.set('jd', jd);
             const minExp = parseInt(minExpSlider.value);
             const maxExp = parseInt(maxExpSlider.value);
             if (minExp > 0 || maxExp < 15) { params.set('minExp', minExp); params.set('maxExp', maxExp); }
