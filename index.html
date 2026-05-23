@@ -1565,7 +1565,7 @@
 
         function updateExperienceSlider() {
             const min = parseInt(minExpSlider.value), max = parseInt(maxExpSlider.value);
-            if (min > max) { minExpSlider.value = max; return; }
+            if (min > max) { minExpSlider.value = max; maxExpSlider.value = min; }
             const range = parseInt(maxExpSlider.max) - parseInt(maxExpSlider.min);
             const minPercent = ((min - minExpSlider.min) / range) * 100;
             const maxPercent = ((max - minExpSlider.min) / range) * 100;
