@@ -1833,11 +1833,12 @@
         });
 
         jobDescriptionInput.addEventListener('input', debounce(() => {
-            currentPage = 1;
-            syncUrlWithState();
-            triggerAnalysisForFilteredProfiles();
+            const q = jobDescriptionInput.value.toLowerCase().trim();
+            document.querySelectorAll('.profile-card').forEach(card => {
+                card.style.display = q === '' || card.innerText.toLowerCase().includes(q) ? '' : 'none';
+            });
             updateTitle();
-        }, 300));
+        }, 100));
 
         moreFiltersButton.addEventListener('click', () => showModal('all-filters-modal'));
         closeFiltersModal.addEventListener('click', () => hideModal('all-filters-modal'));
