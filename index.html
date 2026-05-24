@@ -1408,12 +1408,12 @@
 
         async function loadDatabaseProfiles() {
             try {
-                updateStatusBar('Loading profiles from database...', true);
+                const CACHE_KEY='signimus_profiles_cache';const CACHE_TIME=Date.now();const cached=localStorage.getItem(CACHE_KEY);const cachedAt=localStorage.getItem(CACHE_KEY+'_t');if(cached&&cachedAt&&(CACHE_TIME-parseInt(cachedAt))<300000){JSON.parse(cached).forEach(upsertProfile);updateStatusBar('Profiles loaded.');renderProfiles();fetch(PROFILE_READ_ENDPOINTS[0]).then(r=>r.json()).then(d=>{const p=Array.isArray(d)?d:(d.profiles||[]);localStorage.setItem(CACHE_KEY,JSON.stringify(p));localStorage.setItem(CACHE_KEY+'_t',Date.now());p.forEach(upsertProfile);renderProfiles();}).catch(()=>{});return;}updateStatusBar('Loading profiles from database...', true);
                 const data = await fetchJsonFromFirstAvailable(PROFILE_READ_ENDPOINTS);
                 const remoteProfiles = Array.isArray(data) ? data : (Array.isArray(data.profiles) ? data.profiles : []);
                 remoteProfiles.forEach(upsertProfile);
                 if (remoteProfiles.length > 0) {
-                    updateStatusBar(`${remoteProfiles.length} database profiles loaded.`);
+                    localStorage.setItem(CACHE_KEY,JSON.stringify(remoteProfiles));localStorage.setItem(CACHE_KEY+'_t',Date.now());updateStatusBar(`${remoteProfiles.length} database profiles loaded.`);
                 } else {
                     updateStatusBar('Bench ready. Database has no extra profiles yet.');
                 }
