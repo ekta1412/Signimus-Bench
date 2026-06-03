@@ -1,0 +1,6 @@
+app/roles/page.tsx:4:  "Frontend Developer",
+app/roles/page.tsx:5:  "Backend Developer",
+app/roles/page.tsx:11:  "Mobile Developer",
+app/sitemap.xml/route.ts:3:    "Frontend Developer",
+app/sitemap.xml/route.ts:4:    "Backend Developer",
+app/sitemap.xml/route.ts:10:    "Mobile Developer",

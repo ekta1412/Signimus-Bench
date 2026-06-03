@@ -1,0 +1,463 @@
+{
+  "total_developers": 57,
+  "developers": [
+    {
+      "employee_id": "78",
+      "name": "Sunny",
+      "skills": "Django, Flask, Fastapi, Expressjs",
+      "experience": "4 years",
+      "monthly_rate_inr": "100000",
+      "resume_link": "https://docs.google.com/document/d/1Rc84WXE_PQKpA999VZ8JgKN0xAE9Fsgw/edit?usp=sharing&ouid=117177505366594186454&rtpof=true&sd=true"
+    },
+    {
+      "employee_id": "136",
+      "name": "Ankur",
+      "skills": "Python, Django, DRF, fastAPI,Pytest,  Flask",
+      "experience": "5 years",
+      "monthly_rate_inr": "200000",
+      "resume_link": "https://docs.google.com/document/d/1YXAO0VrfQO5-UJLibgh9psra8wDGTpgw5H9VxjDDJ1c/edit?usp=sharing"
+    },
+    {
+      "employee_id": "214",
+      "name": "Akash",
+      "skills": "Python, Pytest and AI developer,",
+      "experience": "3 years",
+      "monthly_rate_inr": "60000",
+      "resume_link": "https://docs.google.com/document/d/10Xpu8R1Zy7rfCIKRHIrzpDJKhoOfOTz8n084f5pK5BI/edit?tab=t.0"
+    },
+    {
+      "employee_id": "338",
+      "name": "Atif",
+      "skills": "Python, Go lang, Flask , fast api, Pytest, django gin , express js",
+      "experience": "5-6 years",
+      "monthly_rate_inr": "150000",
+      "resume_link": "https://docs.google.com/document/d/1g3IVKjbPd7wRKkIfYHJBFBryNyoPxvye3NhhSywTYPU/edit?usp=sharing"
+    },
+    {
+      "employee_id": "446",
+      "name": "shatrunjay",
+      "skills": "Python, Data analyst",
+      "experience": "3 years",
+      "monthly_rate_inr": "80000",
+      "resume_link": "https://docs.google.com/document/d/1qTRTPLROeOcGoDnGjDk56dp77eMzQtbSZ7n7d0VKUdw/edit?usp=sharing"
+    },
+    {
+      "employee_id": "517",
+      "name": "Ayan",
+      "skills": "Python/selenium/django/sql",
+      "experience": "1.6",
+      "monthly_rate_inr": "20000",
+      "resume_link": "https://docs.google.com/document/d/1EeIhZEXgSyWIA9ygzty_DLZ0RiCL1shH/edit"
+    },
+    {
+      "employee_id": "605",
+      "name": "Shahzaib",
+      "skills": "Java Springboot, mysql, postgresql",
+      "experience": "3 years",
+      "monthly_rate_inr": "30000",
+      "resume_link": "https://docs.google.com/document/d/1xZH_njdjzg6xG54OllMnb3J7tDXv7B5Uuyc82qElnqE/edit?usp=sharing"
+    },
+    {
+      "employee_id": "692",
+      "name": "Ankit",
+      "skills": "Java developer, spring boot",
+      "experience": "2 years",
+      "monthly_rate_inr": "40,000",
+      "resume_link": "https://docs.google.com/document/d/1tkjTteVMCQiAOfD_47E8ELkx2AN3xcbUbH8csulFONc/edit?usp=sharing"
+    },
+    {
+      "employee_id": "771",
+      "name": "vijay",
+      "skills": "Laravel, Nextjs, Codeigniter",
+      "experience": "9",
+      "monthly_rate_inr": "180000",
+      "resume_link": "https://docs.google.com/document/d/1U0Uh7tEe9RqyVaNDrLGf3tyHIHf_KX-8JQ7Qzv32u-Y/edit?usp=sharing"
+    },
+    {
+      "employee_id": "863",
+      "name": "Bhavik",
+      "skills": "ReactJs, NodeJs",
+      "experience": "3 years",
+      "monthly_rate_inr": "110000",
+      "resume_link": "https://drive.google.com/file/d/1fJDuun2-0c26Do5Kkvj-ndyHIJB-yb1V/view?usp=sharing"
+    },
+    {
+      "employee_id": "954",
+      "name": "Hemant",
+      "skills": "ReactJs, NodeJs",
+      "experience": "6+",
+      "monthly_rate_inr": "200000",
+      "resume_link": "https://docs.google.com/document/d/1lbdqZMUSaTnE2lyHvWWDKtN3ITQdfkqM8INpx-mfEXI/edit?tab=t.0"
+    },
+    {
+      "employee_id": "742",
+      "name": "Ishika S Dabare",
+      "skills": "Python, C++, SQL, DBMS, Prompt Engineering, RAG, Autogen, Gen AI on Azure, MS Excel, Machine Learning/ Preffered Role: Gen AI assistant or Junior Developer or Project Manager",
+      "experience": "1.8*",
+      "monthly_rate_inr": "#VALUE!",
+      "resume_link": "https://docs.google.com/document/d/19odqw3zP8Ya6W7NwTdQnw0B0VNF-4ySro6H8vXVkQIc/edit?usp=sharing"
+    },
+    {
+      "employee_id": "131",
+      "name": "Gauri",
+      "skills": "Node JS, AWS services, Angular, React JS",
+      "experience": "8 years",
+      "monthly_rate_inr": "500000",
+      "resume_link": "https://docs.google.com/document/d/1Niw2MCfBgBuvU1l3l2G5VsTqG9balYE-/edit?usp=sharing&ouid=117364931730985774716&rtpof=true&sd=true"
+    },
+    {
+      "employee_id": "121",
+      "name": "Hema",
+      "skills": "Data Analytics, Adobe DTM, Adobe Launch, Google Tag Manager, Adobe Analytics, and front-end technologies.",
+      "experience": "3 years",
+      "monthly_rate_inr": "120000",
+      "resume_link": "https://docs.google.com/document/d/1vtNS8ObZPkSX-deXxiPDfO6Qcqs8xR4hlhpda8a2yeo/edit?tab=t.0#heading=h.dj5ewqwogcx"
+    },
+    {
+      "employee_id": "130",
+      "name": "Yasir",
+      "skills": "ReactJS, NextJS, NodeJS",
+      "experience": "3 years",
+      "monthly_rate_inr": "140000",
+      "resume_link": "https://docs.google.com/document/d/1g1_kJYbDe_d_AHC54BnjCSVDGLt1f0tf4MyNq8VKS7c/edit?tab=t.0#heading=h.dqajha86lp2k"
+    },
+    {
+      "employee_id": "761",
+      "name": "Helly",
+      "skills": "Python Developer",
+      "experience": "4.5 yeras",
+      "monthly_rate_inr": "157000",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/13XiEyxnWZfy-ydcwAyVDna98byLlLig3"
+    },
+    {
+      "employee_id": "261",
+      "name": "Kaushik",
+      "skills": "Python Developer",
+      "experience": "4 years",
+      "monthly_rate_inr": "140000",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/13XiEyxnWZfy-ydcwAyVDna98byLlLig3"
+    },
+    {
+      "employee_id": "569",
+      "name": "Dinesh",
+      "skills": "Python + Django Developer",
+      "experience": "5+",
+      "monthly_rate_inr": "110K",
+      "resume_link": null
+    },
+    {
+      "employee_id": "570",
+      "name": "Gopal",
+      "skills": "Python + Django Developer",
+      "experience": "5+",
+      "monthly_rate_inr": "110K",
+      "resume_link": "https://docs.google.com/document/d/12ReXm9HVNW_cjADTnRLKfjW3eLBKfFn6/edit"
+    },
+    {
+      "employee_id": "121",
+      "name": "Divyesh",
+      "skills": "Python + Django Developer",
+      "experience": "5 years",
+      "monthly_rate_inr": "175000",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/13XiEyxnWZfy-ydcwAyVDna98byLlLig3"
+    },
+    {
+      "employee_id": "521",
+      "name": "Ankit",
+      "skills": "Python + Django Developer",
+      "experience": "4 years",
+      "monthly_rate_inr": "140000",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/13XiEyxnWZfy-ydcwAyVDna98byLlLig3"
+    },
+    {
+      "employee_id": "122",
+      "name": "Siddharth",
+      "skills": "Python + Django Developer",
+      "experience": "2 years",
+      "monthly_rate_inr": "70000",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/13XiEyxnWZfy-ydcwAyVDna98byLlLig3"
+    },
+    {
+      "employee_id": null,
+      "name": "Md Rehan",
+      "skills": "Python + Django Developer/ Full stack developer",
+      "experience": "8 years",
+      "monthly_rate_inr": null,
+      "resume_link": "https://docs.google.com/document/d/1vaNOxx_Erm1d2UWEh_e15yDWtBAL2gqx/edit"
+    },
+    {
+      "employee_id": "567",
+      "name": "Kinajal",
+      "skills": "Manual Tester",
+      "experience": "4 years",
+      "monthly_rate_inr": "95 K",
+      "resume_link": null
+    },
+    {
+      "employee_id": "568",
+      "name": "Shubham",
+      "skills": "Manual Tester",
+      "experience": "3",
+      "monthly_rate_inr": "95 K",
+      "resume_link": null
+    },
+    {
+      "employee_id": "522",
+      "name": "Ashish",
+      "skills": "Machine Learning Developer",
+      "experience": "3.5+",
+      "monthly_rate_inr": "130k",
+      "resume_link": "https://docs.google.com/document/d/1RpjvcDJICHrQ85yGLEtYkpGiwWyznti8/edit"
+    },
+    {
+      "employee_id": "551",
+      "name": "Vasanthi",
+      "skills": "Java Full Stack Developer",
+      "experience": "7+ years",
+      "monthly_rate_inr": "1.50L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": null,
+      "name": "Vivek",
+      "skills": "Java Developer",
+      "experience": null,
+      "monthly_rate_inr": null,
+      "resume_link": "https://docs.google.com/document/d/1q5zldFJe9224-K64XyZ44XkexH0M-zJn/edit"
+    },
+    {
+      "employee_id": "552",
+      "name": "Aadil",
+      "skills": "Java Developer",
+      "experience": "4 years",
+      "monthly_rate_inr": "1.65L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "553",
+      "name": "Shivani",
+      "skills": "Java Developer",
+      "experience": "4 years",
+      "monthly_rate_inr": "1.65L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "554",
+      "name": "Yash",
+      "skills": "Java Developer",
+      "experience": "4 years",
+      "monthly_rate_inr": "1.65L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "555",
+      "name": "Anil",
+      "skills": "Java Developer",
+      "experience": "18+",
+      "monthly_rate_inr": "2.25L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "556",
+      "name": "Vishnu",
+      "skills": "Java Developer",
+      "experience": "4 years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "557",
+      "name": "Mahi",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "558",
+      "name": "Bhargavi",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "559",
+      "name": "Naveen",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "560",
+      "name": "Vasanthi",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "561",
+      "name": "Mahesh",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "562",
+      "name": "Mahi",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "563",
+      "name": "Bhargavi",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "564",
+      "name": "Naveen",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "565",
+      "name": "Vasanthi",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "566",
+      "name": "Mahesh",
+      "skills": "Angular Developer",
+      "experience": "2.5+ years",
+      "monthly_rate_inr": "1L + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "567",
+      "name": "Sasank",
+      "skills": "MERN",
+      "experience": "5+ years",
+      "monthly_rate_inr": "1.60 + GST",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/10qMQP4cS57Im2Mhuw39TlM6SrOBrvHLy"
+    },
+    {
+      "employee_id": "568",
+      "name": "Shivam",
+      "skills": "MERN",
+      "experience": "5+ years",
+      "monthly_rate_inr": "1.65 +GST",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/10qMQP4cS57Im2Mhuw39TlM6SrOBrvHLy"
+    },
+    {
+      "employee_id": "569",
+      "name": "Sangram",
+      "skills": "MERN",
+      "experience": "8+ Years",
+      "monthly_rate_inr": "1.50 +GST",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/10qMQP4cS57Im2Mhuw39TlM6SrOBrvHLy"
+    },
+    {
+      "employee_id": "570",
+      "name": "Aashish",
+      "skills": "MERN",
+      "experience": "5+ years",
+      "monthly_rate_inr": "2.30 + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "571",
+      "name": "Vidhi",
+      "skills": "MERN",
+      "experience": "5+ years",
+      "monthly_rate_inr": "1.60 +GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "572",
+      "name": "Mohsin",
+      "skills": "MERN",
+      "experience": "4+ years",
+      "monthly_rate_inr": "1.60+ GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "573",
+      "name": "Priyal",
+      "skills": "MERN",
+      "experience": "5+ years",
+      "monthly_rate_inr": "1.80 +GST",
+      "resume_link": "https://drive.google.com/drive/u/1/folders/10qMQP4cS57Im2Mhuw39TlM6SrOBrvHLy"
+    },
+    {
+      "employee_id": "574",
+      "name": "Ashish",
+      "skills": "MERN",
+      "experience": "5 years",
+      "monthly_rate_inr": "1.60 + GST",
+      "resume_link": null
+    },
+    {
+      "employee_id": "575",
+      "name": "Amit",
+      "skills": "Reactjs/SQL",
+      "experience": "5 years",
+      "monthly_rate_inr": null,
+      "resume_link": "https://drive.google.com/drive/u/1/folders/1SymJi9GJEkcGyr03D0yaRhJFz1xDydto"
+    },
+    {
+      "employee_id": "576",
+      "name": "Satyam",
+      "skills": "Angular/Reactjs",
+      "experience": "5 years",
+      "monthly_rate_inr": null,
+      "resume_link": "https://drive.google.com/drive/u/1/folders/1SymJi9GJEkcGyr03D0yaRhJFz1xDydto"
+    },
+    {
+      "employee_id": "577",
+      "name": "Simram",
+      "skills": "Frontend/Reactjs",
+      "experience": "3 years",
+      "monthly_rate_inr": null,
+      "resume_link": "https://drive.google.com/drive/u/1/folders/1SymJi9GJEkcGyr03D0yaRhJFz1xDydto"
+    },
+    {
+      "employee_id": "578",
+      "name": "Param",
+      "skills": "Dot net/Full stack",
+      "experience": "10+ Years",
+      "monthly_rate_inr": null,
+      "resume_link": null
+    },
+    {
+      "employee_id": "579",
+      "name": "Logesh",
+      "skills": null,
+      "experience": null,
+      "monthly_rate_inr": null,
+      "resume_link": null
+    },
+    {
+      "employee_id": null,
+      "name": "Raj",
+      "skills": "Dot net",
+      "experience": "5 years",
+      "monthly_rate_inr": null,
+      "resume_link": null
+    }
+  ],
+  "sheet_name": "Pythonmate Developers Bench Rate Card Sheet",
+  "exported_date": "2026-06-03T04:24:51.372Z"
+}

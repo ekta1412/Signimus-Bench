@@ -32,11 +32,31 @@ export default function BenchPage() {
   // API CALL
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('/api/profiles');
-      const data: Profile[] = await res.json();
+      try {
+        // Try local endpoint first (for development)
+        const res = await fetch('/api/profiles/local');
+        if (res.ok) {
+          const data = await res.json();
+          setProfiles(data);
+          setFilteredProfiles(data);
+          return;
+        }
+      } catch (err) {
+        console.log('Local profiles not available, trying main endpoint');
+      }
 
-      setProfiles(data);
-      setFilteredProfiles(data);
+      // Fallback to main profiles endpoint
+      try {
+        const res = await fetch('/api/profiles');
+        const data = await res.json();
+        const profiles = data.profiles || data || [];
+        setProfiles(profiles);
+        setFilteredProfiles(profiles);
+      } catch (err) {
+        console.error('Failed to load profiles:', err);
+        setProfiles([]);
+        setFilteredProfiles([]);
+      }
     };
 
     fetchData();
