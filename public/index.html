@@ -1397,9 +1397,20 @@
 
         function upsertProfile(profile) {
             if (!profile || !profile.id) return;
-            const existingIndex = profilesData.findIndex(existing => existing.id === profile.id);
-            if (existingIndex >= 0) profilesData[existingIndex] = { ...profilesData[existingIndex], ...profile };
-            else profilesData.push(profile);
+            let existingIndex = profilesData.findIndex(existing => existing.id === profile.id);
+            
+            // Fallback: Name aur Email se check karein taaki duplication na ho
+            if (existingIndex === -1 && profile.work_email && profile.name) {
+                existingIndex = profilesData.findIndex(existing => 
+                    existing.name === profile.name && existing.work_email === profile.work_email
+                );
+            }
+
+            if (existingIndex >= 0) {
+                profilesData[existingIndex] = { ...profilesData[existingIndex], ...profile };
+            } else {
+                profilesData.push(profile);
+            }
         }
 
         async function fetchJsonFromFirstAvailable(endpoints, options = {}) {
