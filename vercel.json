@@ -1,22 +1,16 @@
 {
+  "headers": [
+    {
+      "source": "/(.*).html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/index.html", "destination": "/index.html" },
     { "source": "/jobs.html", "destination": "/jobs.html" },
     { "source": "/homepage.html", "destination": "/homepage.html" }
-  ],
-  "crons": [
-    {
-      "path": "/api/ping",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/profiles",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/jobs",
-      "schedule": "*/5 * * * *"
-    }
   ]
 }
