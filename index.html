@@ -219,6 +219,15 @@
                                 <span class="mt-1 inline-block text-xs font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-full">Partner</span>
                             </div>
                         </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="joint-company-type" id="joint-type-individual" value="individual" class="sr-only peer">
+                            <div class="peer-checked:border-green-500 peer-checked:bg-green-50 border-2 border-gray-200 rounded-xl p-3 text-center transition-all">
+                                <div class="text-lg mb-1">👨‍💻</div>
+                                <p class="text-sm font-bold text-gray-800">Individual</p>
+                                <p class="text-xs text-gray-400">Direct Applicant</p>
+                                <span class="mt-1 inline-block text-xs font-bold text-green-600 bg-white border border-green-200 px-2 py-0.5 rounded-full">Apply</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
@@ -236,8 +245,8 @@
                 <!-- Company Name (Partner only) -->
                 <div id="company-name-row" class="sm:col-span-2 hidden">
                     <label class="text-sm font-semibold text-gray-700">
-                        Company Name <span class="text-red-500">*</span>
-                        <input id="joint-company-name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Partner company">
+                        <span id="company-name-label">Company Name</span> <span class="text-red-500">*</span>
+                        <input id="joint-company-name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 font-normal focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Enter name">
                     </label>
                 </div>
 
@@ -1477,12 +1486,26 @@
         // ===== Company type radio toggle logic =====
         document.querySelectorAll('input[name="joint-company-type"]').forEach(radio => {
             radio.addEventListener('change', () => {
-                const isPartner = document.getElementById('joint-type-partner').checked;
+                const typeValue = document.querySelector('input[name="joint-company-type"]:checked').value;
+                const isPartner = typeValue === 'partner';
+                const isIndividual = typeValue === 'individual';
+                const isSignimus = typeValue === 'signimus';
+
                 document.getElementById('partner-fee-warning').classList.toggle('hidden', !isPartner);
-                document.getElementById('company-name-row').classList.toggle('hidden', !isPartner);
-                document.getElementById('fulfilled-by-preview').textContent = isPartner
-                    ? 'Fulfilled by Partner'
-                    : 'Fulfilled by Signimus';
+                document.getElementById('company-name-row').classList.toggle('hidden', isSignimus);
+                
+                const labelSpan = document.getElementById('company-name-label');
+                const input = document.getElementById('joint-company-name');
+                
+                if (isIndividual) {
+                    labelSpan.textContent = 'Current Company (where you work)';
+                    input.placeholder = 'e.g. Acme Corp / Freelance';
+                    document.getElementById('fulfilled-by-preview').textContent = 'Direct Application';
+                } else {
+                    labelSpan.textContent = 'Company Name';
+                    input.placeholder = isPartner ? 'Partner company' : 'Signimus';
+                    document.getElementById('fulfilled-by-preview').textContent = isPartner ? 'Fulfilled by Partner' : 'Fulfilled by Signimus';
+                }
             });
         });
         document.getElementById('joint-company-name').addEventListener('input', () => {
@@ -1503,10 +1526,12 @@
                 .filter(Boolean);
             const contactNumber = document.getElementById('joint-contact-number').value.trim();
             const workEmail = document.getElementById('joint-work-email').value.trim();
-            const isPartner = document.getElementById('joint-type-partner').checked;
-            const companyName = isPartner ? getCleanText(document.getElementById('joint-company-name').value) : 'Signimus';
-            const companyType = isPartner ? 'partner' : 'signimus';
-            const fulfilledBy = isPartner ? 'Partner' : 'Signimus';
+            const typeValue = document.querySelector('input[name="joint-company-type"]:checked').value;
+            const isPartner = typeValue === 'partner';
+            const isIndividual = typeValue === 'individual';
+            const companyName = (isPartner || isIndividual) ? getCleanText(document.getElementById('joint-company-name').value) : 'Signimus';
+            const companyType = typeValue;
+            const fulfilledBy = isPartner ? 'Partner' : (isIndividual ? 'Direct' : 'Signimus');
             const platformFee = isPartner ? `${PARTNER_RATE_MARKUP_PERCENT}%` : null;
 
             if (!name || !title || skills.length === 0) {
@@ -1515,7 +1540,7 @@
             }
             if (!contactNumber) { showToast('Contact Number is required.', true); return; }
             if (!workEmail) { showToast('Work Email is required.', true); return; }
-            if (isPartner && !companyName) { showToast('Company Name is required for Partner.', true); return; }
+            if ((isPartner || isIndividual) && !companyName) { showToast(`${isIndividual ? 'Current Company' : 'Company Name'} is required.`, true); return; }
 
             const profile = {
                 id: createUniqueProfileId(name),
