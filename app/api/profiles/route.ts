@@ -35,7 +35,7 @@ async function getConnection() {
     host: 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
     port: 4000,
     user: '4U2qZCUDWtsTpiQ.root',
-    password: process.env.TIDB_PASSWORD,
+    password: process.env.TIDB_PASSWORD || 'VJVsC0FBMekCd5ez',
     database: 'signimus_jobs',
     ssl: { rejectUnauthorized: false },
   });
