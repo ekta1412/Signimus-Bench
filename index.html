@@ -1331,7 +1331,7 @@
 
         function isExternalCompanyProfile(profile) {
             const companyType = String(profile?.company_type || '').toLowerCase();
-            if (companyType === 'individual') return false; // Individual applications are not partners
+            if (companyType === 'individual') return false;
             const companyName = String(profile?.company_name || profile?.fulfilled_by || '').trim();
             return companyType === 'partner' || (companyName && !/signimus/i.test(companyName));
         }
