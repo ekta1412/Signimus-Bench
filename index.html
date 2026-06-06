@@ -1055,8 +1055,8 @@
                 </div>
                 <p class="text-xs text-gray-400 italic mb-4">Market Rate for similar profiles: ~₹${profile.marketRate || '80,000'}/month</p>
                 ${getFulfilledByLabel(profile) ? `<div class="flex items-center gap-2 mb-3 flex-wrap">
-                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${profile.company_type === 'partner' ? 'bg-white text-slate-500 border border-slate-200' : 'bg-green-100 text-green-700'}">
-                        <i class="fas ${profile.company_type === 'partner' ? 'fa-handshake' : 'fa-building'} mr-1"></i>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${profile.company_type === 'partner' ? 'bg-white text-slate-500 border border-slate-200' : (profile.company_type === 'individual' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : 'bg-green-100 text-green-700')}">
+                        <i class="fas ${profile.company_type === 'partner' ? 'fa-handshake' : (profile.company_type === 'individual' ? 'fa-user-tie' : 'fa-building')} mr-1"></i>
                         Fulfilled by: ${getFulfilledByLabel(profile)}
                     </span>
                 </div>` : ''}
@@ -1331,6 +1331,7 @@
 
         function isExternalCompanyProfile(profile) {
             const companyType = String(profile?.company_type || '').toLowerCase();
+            if (companyType === 'individual') return false; // Individual applications are not partners
             const companyName = String(profile?.company_name || profile?.fulfilled_by || '').trim();
             return companyType === 'partner' || (companyName && !/signimus/i.test(companyName));
         }
@@ -1351,6 +1352,7 @@
             if (isExternalCompanyProfile(profile)) {
                 return 'Partner';
             }
+            if (companyType === 'individual') return 'Direct';
             return profile.fulfilled_by || profile.company_name || 'Signimus';
         }
 

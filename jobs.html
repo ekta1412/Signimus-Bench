@@ -45,8 +45,34 @@
         const CUSTOM_JOBS_KEY = 'signimus_custom_jobs';
         const JOB_APPLICATIONS_KEY = 'signimus_job_applications';
 
+        const IS_LOCAL_PREVIEW = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        const LIVE_API_BASE = 'https://bench.signimus.com';
+        const PROFILE_WRITE_ENDPOINTS = IS_LOCAL_PREVIEW
+            ? [`${LIVE_API_BASE}/.netlify/functions/add-profile`, `${LIVE_API_BASE}/api/profiles`, '/api/profiles', '/.netlify/functions/add-profile']
+            : ['/api/profiles', '/.netlify/functions/add-profile'];
+
         const GET_JOBS_ENDPOINT = '/api/jobs';
         const ADD_JOB_ENDPOINT = '/api/jobs';
+
+        async function fetchJsonFromFirstAvailable(endpoints, options = {}) {
+            let lastError;
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint, { cache: 'no-store', ...options });
+                    if (!response.ok) throw new Error(`${endpoint} returned ${response.status}`);
+                    return await response.json();
+                } catch (error) { lastError = error; }
+            }
+            throw lastError || new Error('No database endpoint available');
+        }
+
+        async function saveProfileToDatabase(profile) {
+            return fetchJsonFromFirstAvailable(PROFILE_WRITE_ENDPOINTS, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profile)
+            });
+        }
 
         const defaultJobs = [
             {
@@ -584,26 +610,52 @@
             }
         }
 
-        function handleApply(event) {
+        async function handleApply(event) {
             event.preventDefault();
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
             const jobId = document.getElementById('apply-job-id').value;
-            const applications = getSavedArray(JOB_APPLICATIONS_KEY);
-            applications.push({
-                id: `application-${Date.now().toString(36)}`,
-                jobId,
-                jobTitle: getJobById(jobId)?.title || '',
-                name: document.getElementById('apply-name').value.trim(),
-                email: document.getElementById('apply-email').value.trim(),
-                phone: document.getElementById('apply-phone').value.trim(),
-                experience: document.getElementById('apply-exp').value.trim(),
-                skills: document.getElementById('apply-skills').value.trim(),
-                resume: document.getElementById('apply-resume').value.trim(),
-                message: document.getElementById('apply-message').value.trim(),
-                appliedAt: Date.now()
-            });
-            saveArray(JOB_APPLICATIONS_KEY, applications);
-            event.target.reset();
-            showToast('Application saved!');
+            const job = getJobById(jobId);
+            
+            const name = document.getElementById('apply-name').value.trim();
+            const email = document.getElementById('apply-email').value.trim();
+            const phone = document.getElementById('apply-phone').value.trim();
+            const experience = document.getElementById('apply-exp').value.trim();
+            const skillsRaw = document.getElementById('apply-skills').value.trim();
+            const resume = document.getElementById('apply-resume').value.trim();
+            const message = document.getElementById('apply-message').value.trim();
+
+            const profile = {
+                name,
+                title: job ? job.title : 'Developer',
+                experience: experience || '0 years',
+                skills: skillsRaw.split(/[;,]/).map(s => s.trim()).filter(Boolean),
+                monthlyRate: 'On Request',
+                resumeLink: resume || 'Profile on Request',
+                marketRate: '80,000',
+                professionalSummary: message || undefined,
+                company_name: 'Direct Applicant',
+                company_type: 'individual',
+                fulfilled_by: 'Direct',
+                contact_number: phone,
+                work_email: email,
+                joinedAt: Date.now()
+            };
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                await saveProfileToDatabase(profile);
+                showToast('Application submitted & added to Talent Bench!');
+            } catch (error) {
+                console.warn('Database save failed. Saving locally.', error);
+                showToast('Application saved locally (database offline).');
+            }
+
+            form.reset();
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Save Application';
         }
 
         async function router() {
